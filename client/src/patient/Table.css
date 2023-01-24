@@ -1,0 +1,86 @@
+   @import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+   * {
+       box-sizing: border-box;
+       font-family: 'Roboto', sans-serif;
+   }
+
+   table {
+       width: 95%;
+       font-size: 14px;
+ 
+   }
+
+   thead {
+       
+       color: white;
+   }
+
+   th,
+   td {
+       text-align: center;
+       border: 0;
+       border-bottom: 1px solid gray;
+       height: 50px;
+       border-right: 1px solid gray;
+   }
+
+
+ @media (max-width: 700px) {
+
+     th,
+     td {
+         display: block;
+         float: left;
+     }
+
+     th {
+         width: 100%;
+         background-color: rgb(103 232 249);
+         color: white;
+         padding-top: 10px;
+     }
+
+     td {
+         width: 33.33%;
+     }
+
+     thead th {
+         display: none;
+     }
+
+     td::before {
+         display: block;
+         font-weight: bold;
+         margin-top: .33em;
+         margin-bottom: .33em;
+     }
+
+     td:nth-child(2):before {
+         content: "Doctor";
+     }
+
+     td:nth-child(3):before {
+         content: "Appointment date";
+     }
+
+     td:nth-child(4):before {
+         content: "medicines";
+     }
+
+     td:nth-child(5):before {
+         content: "Tests";
+     }
+
+     td:nth-child(6):before {
+         content: "Prescription";
+     }
+
+    
+ }
+
+ @media (min-width: 501px) and (max-width: 700px) {
+     td {
+         width: 25%;
+     }
+ }
