@@ -185,7 +185,8 @@ router.get("/appointments/:id",extractToken, checkDoctor, async (req, res) => {
 router.get("/appointments/:id/:date", async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const appointmentDate = req.params.date;
+    const appointmentDate = new Date(req.params.date);
+    
 
     // Get the appointments for the current day
     const appointments = await Appointment.find({

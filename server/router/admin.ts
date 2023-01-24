@@ -655,9 +655,7 @@ router.post("/register-dr", async (req, res) => {
     Hospital: req.body.Hospital,
     availableDays: req.body.availableDays,
     availableTime: req.body.availableTime,
-    
-     
-  
+    pushSubscription: req.body.pushSubscription,
 
     HospitalAddress: req.body.HospitalAddress,
     date: req.body.date,

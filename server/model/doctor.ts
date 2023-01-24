@@ -21,21 +21,24 @@ const doctorSchema = new mongoose.Schema({
   availableTime: {
     start: {
       type: String,
-      required: true,
+
       default: "",
     },
     end: {
       type: String,
-      required: true,
+
       default: "",
     },
   },
 
-  appointmentCount: { type: Number, default: 0 },
+  appointmentCount: {type: Number, default: 0},
+
+  pushSubscription: {
+    type: Object,
+    default: {},
+  },
   
-
-  pushSubscription: { type: Object },
-
+  
 
   Hospital: {
     type: String,

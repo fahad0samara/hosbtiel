@@ -399,11 +399,17 @@ router.post("/appointment", async (req, res) => {
     const appointmentDate = req.body.appointmentDate;
     const appointmentTime = req.body.appointmentTime;
 
+
+
+
+    
+
     // Check if the doctor is available at the desired date and time
     const existingAppointment = await Appointment.findOne({
       doctor: doctorId,
       appointmentDate: appointmentDate,
       appointmentTime: appointmentTime,
+
     });
     if (existingAppointment) {
       // If the doctor is not available, return an error message
@@ -425,11 +431,35 @@ router.post("/appointment", async (req, res) => {
     // Update appointment count for doctor
     const appointmentCount = await Appointment.countDocuments({
       doctor: doctorId,
+
       appointmentDate: appointmentDate,
     });
     await Doctor.findByIdAndUpdate(doctorId, {
       appointmentCount: appointmentCount,
+
     });
+
+    console.log('====================================');
+    console.log(appointmentCount);
+    console.log('====================================');
+ await Doctor.findByIdAndUpdate(doctorId, {
+   pushSubscription: req.body.pushSubscription,
+ });
+//  // Send push notification to doctor
+// const subscription = doctor.pushSubscription;
+// if (!subscription || !subscription.endpoint) {
+//   return res.status(400).json({error: "Invalid or missing push subscription"});
+// }
+//  const payload = JSON.stringify({
+//    title: "New Appointment",
+//    body: "You have a new appointment scheduled",
+//    icon: "path/to/icon.png",
+//  });
+//  webpush.sendNotification(subscription, payload);
+    
+
+
+
 
 
     
@@ -438,31 +468,15 @@ router.post("/appointment", async (req, res) => {
 
 
 
-    // Send a notification to the doctor
-     const payload = JSON.stringify({
-       title: "New Appointment Request",
-       body: `Patient ${
-        patient.name
-       } has requested an appointment on ${appointment.appointmentDate} at ${appointment.appointmentTime}.`,
-     });
 
-     webpush.sendNotification(doctor.pushSubscription, payload).catch((error: any) => {
-       console.error(error);
-     });
-
-
-
-
-
-
-
-    // Return success message to the patient
+// Return success message to the patient
     res.json({
       message: "Appointment request sent successfully",
       success: true,
       appointmentCount,
       appointment,
-      payload,
+
+     
     });
   } catch (error) {
     console.log(error.message);
