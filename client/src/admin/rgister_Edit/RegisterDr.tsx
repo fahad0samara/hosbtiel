@@ -11,11 +11,11 @@ import {useNavigate} from "react-router-dom";
 import img1 from "../assets/1.png";
 import img2 from "../assets/2.png";
 import img3 from "../assets/3.png";
-import e from "cors";
+
 const RegisterDr = () => {
   const Navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState("");
+
 
   const [success, setsuccess] = useState(false);
 
@@ -29,6 +29,7 @@ const RegisterDr = () => {
     },
     email: "",
     password: "",
+    role: "",
 
     user: "",
     phoneNumber: "",
@@ -40,6 +41,7 @@ const RegisterDr = () => {
       ZipCode: "",
       Country: "",
     },
+   
     specialty: "",
     degree: "",
     experience: "",
@@ -86,6 +88,7 @@ const RegisterDr = () => {
       name,
       email,
       password,
+      role, 
     
       user,
       Hospital,
@@ -120,7 +123,10 @@ const RegisterDr = () => {
       try {
         const res = await axios.post(
           "http://localhost:3000/admin/register-user",
-          {name, email, password, role}
+          {
+            name, email, password,
+            role,
+          }
         );
 
         setStep(2);
@@ -139,7 +145,9 @@ const RegisterDr = () => {
 
 
       } catch (error) {
+        //@ts-ignore
         console.log("Error: ", error.response.data);
+           //@ts-ignore
         setError(error.response.data);
         setTimeout(() => setError(""), 2000);
         setLoading(false);
@@ -180,17 +188,21 @@ const RegisterDr = () => {
         });
         setStep(3);
         setLoading(false);
+        console.log('====================================');
+        console.log(
+          "user",
+          user,
+        );
+        console.log('====================================');
+   
         // Navigate to the appropriate route based on the user's role
-        if (role === "admin") {
-          Navigate("/admin/doctorList");
-        } else if (role === "user") {
-          Navigate("/user");
-        } else if (role === "doctor") {
-          Navigate("/admin/doctorList");
-        }
+      
       } catch (error) {
+           //@ts-ignore
         console.log("Error: ", error.response.data);
+           //@ts-ignore
         setError(error.response.data);
+        setTimeout(() => setError(""), 2000);
         setLoading(false);
       }
     }
@@ -318,29 +330,29 @@ const RegisterDr = () => {
                     type="checkbox"
                     name="role"
                     value="admin"
-                    checked={
-                      role ==="role"
+                    checked={formData.role === "admin"}
+                    onChange={handleChange("role")}
+                    
+                 
 
-                    }
-                    onChange={e => {
+                        
+                     
+                      
 
-                      setRole(e.target.value)
-                      console.log(e.target.value)
- 
-                    } 
-                    }  
+
+                    
                   />
                   <span className="ml-2">Admin</span>
                 </label>
 
                 <label className="inline-flex items-center ml-4">
-                  {/* <input
+                  <input
                     type="checkbox"
                     name="role"
                     value="doctor"
                     checked={formData.role === "doctor"}
                     onChange={handleChange("role")}
-                  /> */}
+                  />
                   <span className="ml-2">Dr</span>
                 </label>
               </div>

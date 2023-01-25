@@ -145,7 +145,7 @@ const MyCalendar = () => {
         )
           : (<div
             className="
-            w-1/2
+      
           
 
             "
@@ -208,8 +208,8 @@ const MyCalendar = () => {
                 },
               }}
               style={{
-                height: 550,
-                width: 700,
+                height: 430,
+                width: 750,
 
                 backgroundColor: dark ? "#000" : "white",
                 color: dark ? "white" : "black",

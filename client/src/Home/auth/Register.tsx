@@ -52,22 +52,24 @@ const Register = () => {
           logIN
         );
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errResp = error.response;
-        if (errResp) {
-          setError(errResp.data.message);
-        }
-      } else {
-        // Handle the unknown
-        console.log(
-          "🚀 ~ file: RegisterAdmin.tsx ~ line 64 ~ HandelLogin ~ error",
-          error
-        );
-      }
+    } catch (error) {   
+
+      console.log('====================================');
+      console.log(
+        "🚀 ~ file: RegisterAdmin.tsx ~ line 48 ~ HandelLogin ~ error",
+        error
+      );
+      console.log('====================================');
+
+
 
       setLoading(false);
+      setError(error.response.data.message);
+
     }
+
+
+
   };
 
   return (
