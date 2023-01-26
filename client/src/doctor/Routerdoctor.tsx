@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 import SideNav from "./SideNavigate";
 import DoctorProfile from "./DoctorProfile";
 import MyCalendar from "./MyCalendar";
+import ViewPatient from "../admin/List/ViewPatient";
 
 const Routerdoctor = () => {
 
@@ -21,11 +22,9 @@ const Routerdoctor = () => {
           path="MyCalendar"
 
           element={<MyCalendar />} />
-        {
-          // pass the actual id value here
-          //http://localhost:3000/doctor/doctors/63af46e39b3184d62a652f4e
-        }
+
         <Route path="/doctor/:id" element={<DoctorProfile />} />
+        <Route path="/ViewPatient/:id" element={<ViewPatient />} />
       </Routes>
 
 

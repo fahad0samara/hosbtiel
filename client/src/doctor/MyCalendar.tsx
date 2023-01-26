@@ -2,18 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 
-
 import moment from "moment-timezone";
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import "./Calendar.css";
 import { useLogIN } from "../../ContextLog";
-import { BsHourglassTop } from 'react-icons/bs';
-
+import { BsHourglassTop } from "react-icons/bs";
 
 const MyCalendar = () => {
-  const { Doctor, dark } =useLogIN();
+  const { Doctor, dark } = useLogIN();
   if (!Doctor || !Doctor.availableDays) return null;
   //map the Doctor.availableTime
   const workingHoursEvents =
@@ -34,7 +32,6 @@ const MyCalendar = () => {
         };
       })
       : [];
-
 
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<
@@ -64,8 +61,6 @@ const MyCalendar = () => {
   const localizer = momentLocalizer(moment);
 
   useEffect(() => {
-
-
     // Fetch appointments
     const getAppointments = async () => {
       setLoading(true);
@@ -79,10 +74,8 @@ const MyCalendar = () => {
           }
         );
 
-
         const appointments = response.data.appointments;
         const appointmentEvents = appointments.map(appointment => {
-
           return {
             start: moment(
               `${appointment.appointmentDate} ${appointment.appointmentTime}`,
@@ -108,7 +101,6 @@ const MyCalendar = () => {
           ...breaks,
         ]);
         setLoading(false);
-
       } catch (error) {
         console.log("Error while fetching appointments: ", error);
         setLoading(false);
@@ -119,43 +111,20 @@ const MyCalendar = () => {
   }, []);
 
   return (
-
-
     <>
       {
         // loding
         loading ? (
-
           <div className="flex justify-center items-center h-screen">
-            <h1>
-              <BsHourglassTop
-                className="animate-spin"
-
-                color="#00BFFF"
-                size="3rem"
-
-              />
-
-              loding...
-
-            </h1>
-
-
+            <div className="progress"></div>
           </div>
-        )
-          : (<div
-            className="
-      
-          
+        ) : (
 
-            "
-          >
             <Calendar
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
-
               components={{
                 toolbar: ({ view, onView, date, onNavigate, label }) => {
                   const viewNames = Object.keys(Views).map(k => Views[k]);
@@ -208,12 +177,14 @@ const MyCalendar = () => {
                 },
               }}
               style={{
-                height: 430,
+                height: 330,
                 width: 750,
+
+
+
 
                 backgroundColor: dark ? "#000" : "white",
                 color: dark ? "white" : "black",
-            
               }}
               timeslots={6}
               eventPropGetter={(event: any) => {
@@ -284,27 +255,11 @@ const MyCalendar = () => {
                 };
               }}
               popup
-
-
-
-
-
-
-
-
-
-
-
-
-
             />
-          </div>)
 
+          )
       }
-
     </>
-
-
   );
 };
 
