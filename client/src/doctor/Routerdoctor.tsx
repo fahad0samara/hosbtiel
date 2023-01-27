@@ -7,6 +7,7 @@ import SideNav from "./SideNavigate";
 import DoctorProfile from "./DoctorProfile";
 import MyCalendar from "./MyCalendar";
 import ViewPatient from "../admin/List/ViewPatient";
+import Chart from "./Chart";
 
 const Routerdoctor = () => {
 
@@ -17,7 +18,7 @@ const Routerdoctor = () => {
       <SideNav />
 
       <Routes>
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="Chart" element={<Chart />} />
         <Route
           path="MyCalendar"
 
