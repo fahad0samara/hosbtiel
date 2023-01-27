@@ -6,10 +6,10 @@ import MyCalendar from "./MyCalendar";
 import { useLogIN } from "../../ContextLog";
 import Loder from "../tools/Loder";
 import { Link } from "react-router-dom";
-import { BsHourglassTop } from "react-icons/bs";
-import { BsArrowRight } from "react-icons/bs";
-import { BsArrowLeft } from "react-icons/bs";
+
 import "./Loder.css";
+
+import Chart from "./Chart";
 const Dashboard = () => {
   const { Doctor, dark } = useLogIN();
 
@@ -443,6 +443,7 @@ const Dashboard = () => {
               <div className="progress"></div>
             )}
           </div>
+          <Chart />
         </div>
       </div>
   );

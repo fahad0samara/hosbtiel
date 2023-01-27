@@ -1,5 +1,5 @@
 
-import {Routes, Route, useParams} from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
 
 
 import Dashboard from "./Dashboard";
@@ -18,18 +18,19 @@ const Routerdoctor = () => {
       <SideNav />
 
       <Routes>
-        <Route path="Chart" element={<Chart />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route
           path="MyCalendar"
 
           element={<MyCalendar />} />
 
         <Route path="/doctor/:id" element={<DoctorProfile />} />
+        <Route path="Chart" element={<Chart />} />
         <Route path="/ViewPatient/:id" element={<ViewPatient />} />
       </Routes>
 
 
-      
+
     </div>
   );
 };

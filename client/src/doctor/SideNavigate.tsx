@@ -29,8 +29,8 @@ const {id} = useParams();
           : "0px 0px 10px 0px #000",
       }}
       onSelect={(selected: string) => {
-        if (selected === "Chart") {
-          navigate("/doctor/Chart");
+        if (selected === "dashboard") {
+          navigate("/doctor/dashboard");
         } else if (selected === "MyCalendar") {
           navigate("/doctor/MyCalendar");
         } else if (selected === "doctor") {
@@ -53,7 +53,7 @@ const {id} = useParams();
         }}
       />
       <SideNav.Nav
-        defaultOpenKeys={["Chart"]}
+        defaultOpenKeys={["dashboard"]}
         className="
 
         "
@@ -62,9 +62,9 @@ const {id} = useParams();
           fontSize: "1.5rem",
           fontWeight: "bold",
         }}
-        defaultSelected="Chart"
+        defaultSelected="dashboard"
       >
-        <NavItem eventKey="Chart">
+        <NavItem eventKey="dashboard">
           <NavIcon>
             <RiDashboardFill
               style={{
