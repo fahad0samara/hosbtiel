@@ -4,6 +4,7 @@ import HighchartsReact from "highcharts-react-official";
 import { useLogIN } from "../../ContextLog";
 import axios from "axios";
 import moment from "moment-timezone";
+import { RiLoader2Fill } from "react-icons/ri";
 
 function App() {
     const [data, setData] = useState([]);
@@ -17,14 +18,19 @@ function App() {
     const [chartOptions, setChartOptions] = useState({});
 
     useEffect(() => {
+        setLoading(true);
         // Fetch data and update chart options
         const getAppointmentsData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/doctor/appointments/${Doctor._id}/${dateString}`);
+                const response = await axios.get(
+                    `http://localhost:3000/doctor/appointments/${Doctor._id}/${dateString}`
+                );
                 const appointmentsPerDay = {};
                 const nextDayAppointmentsPerDay = {};
                 response.data.appointments.forEach(appointment => {
-                    const appointmentDate = moment(appointment.appointmentDate).format('MM/DD/YYYY');
+                    const appointmentDate = moment(appointment.appointmentDate).format(
+                        "MM/DD/YYYY"
+                    );
                     if (!appointmentsPerDay[appointmentDate]) {
                         appointmentsPerDay[appointmentDate] = 1;
                     } else {
@@ -32,60 +38,78 @@ function App() {
                     }
                 });
                 response.data.nextDayAppointments.forEach(appointment => {
-                    const appointmentDate = moment(appointment.appointmentDate).format('MM/DD/YYYY');
+                    const appointmentDate = moment(appointment.appointmentDate).format(
+                        "MM/DD/YYYY"
+                    );
                     if (!nextDayAppointmentsPerDay[appointmentDate]) {
                         nextDayAppointmentsPerDay[appointmentDate] = 1;
                     } else {
                         nextDayAppointmentsPerDay[appointmentDate]++;
                     }
                 });
+
                 const categories = Object.keys(appointmentsPerDay);
                 const appointmentsData = Object.values(appointmentsPerDay);
-                const nextDayAppointmentsData = Object.values(nextDayAppointmentsPerDay);
+                const nextDayAppointmentsData = Object.values(
+                    nextDayAppointmentsPerDay
+                );
                 setChartOptions({
                     chart: {
-                        type: 'column'
+                        type: "column",
+                        height: 300,
+                        width: 300,
+                        backgroundColor: dark ? "#000" : "#fff",
+                        color: dark ? "#fff" : "#000",
+
                     },
                     title: {
-                        text: 'Appointments per day'
+                        text: "Appointments per day",
+
+
                     },
                     xAxis: {
-                        categories: categories
+                        categories,
+
+
+
                     },
                     yAxis: {
                         title: {
-                            text: 'Number of appointments'
-                        }
+                            text: "Number of Appointments",
+
+                        },
                     },
                     series: [
                         {
-                            name: 'Appointments',
+                            name: "Appointments",
                             data: appointmentsData,
                             dataLabels: {
                                 enabled: true,
-                                format: '{point.y}'
-                            }
+                                format: "{point.y}",
+
+
+                            },
                         },
                         {
-                            name: 'Next Day Appointments',
+                            name: "Next Day Appointments",
                             data: nextDayAppointmentsData,
                             dataLabels: {
                                 enabled: true,
-                                format: '{point.y}'
-                            }
-                        }
+                                format: "{point.y}",
+                            },
+                        },
                     ],
                     colors: ["#00C49F", "#FFBB28", "#FF8042"],
-
                 });
+                setLoading(false);
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
-        }
+
+        };
         getAppointmentsData();
     }, [Doctor, dateString]);
-
-
 
     useEffect(() => {
         setLoading(true);
@@ -100,7 +124,9 @@ function App() {
                 console.log(data.appointments);
                 setLoading(false);
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err)
+
+            );
     }, []);
 
     // group appointments by date
@@ -145,8 +171,8 @@ function App() {
     const options = {
         chart: {
             type: "line",
-            height: 400,
-            width: 700,
+            height: 300,
+
             backgroundColor: dark ? "#000" : "#fff",
             color: dark ? "#fff" : "#000",
         },
@@ -160,13 +186,13 @@ function App() {
             {
                 title: {
                     text: "Appointments",
-            },
+                },
             },
             {
-            title: {
+                title: {
                     text: "Average Appointment Time (hours)",
-            },
-            opposite: true,
+                },
+                opposite: true,
             },
         ],
         plotOptions: {
@@ -196,62 +222,6 @@ function App() {
         colors: ["#ff0000", "#00ff00"],
     };
 
-    // const options0 = {
-    //     chart: {
-    //         type: "column",
-    //         height: 400,
-    //         width: 400,
-
-    //         style: {
-    //             color: dark ? "white" : "black",
-    //             backgroundColor: dark ? "#000" : "white",
-    //         },
-    //     },
-    //     title: {
-    //         text: "Appointments and next day appointments",
-    //         style: {
-    //             color: dark ? "white" : "black",
-    //         },
-    //     },
-    //     xAxis: {
-    //         categories: chartData0.map(({ date }) => date),
-    //     },
-    //     yAxis: [
-    //         {
-    //             title: {
-    //                 text: "Number of appointments",
-    //                 categories: chartData0.map(({ appointments }) => appointments),
-    //             },
-    //         },
-    //         {
-    //             title: {
-    //                 text: "Number of next day appointments",
-    //             },
-    //             opposite: true,
-    //         },
-    //     ],
-    //     series: [
-    //         {
-    //             name: "Appointments",
-    //             data: chartData0.map(({ appointments }) => appointments),
-
-    //             yAxis: 0,
-    //         },
-    //         {
-    //             name: "Next day appointments",
-    //             data: chartData0.map(({ nextDay }) => nextDay),
-
-    //             yAxis: 1,
-    //         },
-    //     ],
-    //     plotOptions: {
-    //         column: {
-    //             stacking: "normal",
-    //         },
-    //     },
-    //     colors: ["#00C49F", "#FFBB28", "#FF8042"],
-    // };
-
     return (
         <div
             style={{
@@ -259,18 +229,49 @@ function App() {
                 color: dark ? "white" : "black",
             }}
             className="
-            grid
-            grid-cols-2
-          gap-14
-            p-4
-            mx-16
-         
-            
+
+            grid grid-cols-2
+
+            mt-10
+w-full
+      mx-5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             "
         >
-            <HighchartsReact highcharts={Highcharts} options={options} />
+            <div
+                className="col-span-2
+            
 
-            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+            "
+            >
+                {
+                    loading ?
+                        <div className="
+
+                        ">
+                            <div className="progress"></div>
+                        </div>
+                        : <HighchartsReact highcharts={Highcharts} options={options} />
+
+                }
+
+            </div>
+
+
+
         </div>
     );
 }

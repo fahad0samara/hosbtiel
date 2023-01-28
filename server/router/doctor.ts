@@ -255,34 +255,83 @@ router.get("/appointments/:id/:date", async (req, res) => {
   }
 });
 
+router.get("/all-patients/:id", extractToken, checkDoctor, async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
+    const limit = parseInt(req.query.limit as string);
+
+    const skip = (page - 1) * limit;
+
+    // Get all patients that the doctor saw
+    const patients = await Appointment.find({
+      doctor: doctorId,
+    })
+      .populate("patient")
+      .sort({createdAt: -1})
+      .skip(skip)
+      .limit(limit);
+
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({message: "No patients found"});
+    }
+
+    // Send the patients to the client
+    res.json({
+      patients: patients,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: Math.ceil(patients.length / limit),
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({error: error.message});
+  }
+});
+
+router.get("/all-patients/:id/:date", async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+    const appointmentDate = new Date(req.params.date);
+
+    // Get all patients that the doctor has seen on the current day
+    const patients = await Appointment.find({
+      doctor: doctorId,
+      appointmentDate: appointmentDate,
+    })
+      .populate("patient")
+      .sort({createdAt: -1});
+
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({message: "No patients found"});
+    }
+
+    // Send the patients to the client
+    res.json({
+      patients,
+    });
+  } catch (error) {
+    console.log("====================================");
+    console.log("error", error);
+    console.log("====================================");
+    console.log(error.message);
+    res.status(500).json({error: error.message});
+  }
+});
 
 
 
 
 
-// router.get("/doctors/:id/patients", extractToken, checkDoctor, async (req, res) => {
-//   try {
-//     // Find the doctor by their ID
-//     const doctor = await Doctor.findById(req.params.id);
 
-//     // Check if the doctor exists
-//     if (!doctor) {
-//       return res.status(404).json({
-//         error: "Doctor not found",
-//       });
 
-//     }
 
-//     // Find all the patients that have been assigned to the doctor
-//     const patients = await Patient.find({ doctor: doctor._id });
-
-//     // Send the patients to the client
-//     res.json(patients);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-
-//   }
-// });
 
 
 

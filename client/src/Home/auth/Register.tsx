@@ -25,33 +25,14 @@ const Register = () => {
           password,
         }
       );
-      setLoading(true);
-      if (response.data.success) {
-        const logIN = await axios.post("http://localhost:3000/user/loginUser", {
-          email,
-          password,
-        });
-        // save the user id for the next register
-        localStorage.setItem("id", logIN.data.user._id);
-        console.log(
-          "🚀 ~ file: RegisterAdmin.tsx ~ line 48 ~ HandelLogin ~ logIN",
-          logIN.data.user._id
-        );
-        
-        
-
-        
-
-        localStorage.setItem("token", logIN.data.token);
-        setProfile(logIN.data.user);
-        setLoading(false);
-        setlogPatient(true);
-        navigate("/RegisterPatient");
-        console.log(
-          "🚀 ~ file: RegisterAdmin.tsx ~ line 48 ~ HandelLogin ~ logIN",
-          logIN
-        );
-      }
+      setLoading(false);
+      navigate("/RegisterPatient");
+      console.log("====================================");
+      console.log(
+        "🚀 ~ file: RegisterAdmin.tsx ~ line 48 ~ HandelLogin ~ response",
+        response
+      );
+     console.log("====================================");
     } catch (error) {   
 
       console.log('====================================');
@@ -64,7 +45,7 @@ const Register = () => {
 
 
       setLoading(false);
-      setError(error.response.data.message);
+      setError(error.response);
 
     }
 

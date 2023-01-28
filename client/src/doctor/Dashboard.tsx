@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import "./Loder.css";
 
 import Chart from "./Chart";
+import { patient } from '../types';
+import Patient from "./Patient";
 const Dashboard = () => {
   const { Doctor, dark } = useLogIN();
 
@@ -193,8 +195,13 @@ const Dashboard = () => {
       };
       getNextAppointment();
 
-      // Refresh next appointment every 60 seconds
-      const intervalId = setInterval(getNextAppointment, 60000);
+      // Refresh next appointment every 30 min
+      const intervalId = setInterval(() => {
+        getNextAppointment();
+      }, 1800000);
+
+
+
       return () => clearInterval(intervalId);
     }
   }, [Doctor, date]);
@@ -444,6 +451,11 @@ const Dashboard = () => {
             )}
           </div>
           <Chart />
+          <Patient
+
+          />
+
+
         </div>
       </div>
   );

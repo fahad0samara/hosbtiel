@@ -275,10 +275,6 @@ router.post("/register-patient", async (req, res) => {
   const Userfind = await User.findById(req.body.user);
   if (!Userfind) return res.status(400).send("User not found");
 
-  // check if the User the role is patient
-  if (Userfind.role !== "patient")
-    return res.status(400).send("User not patient");
-
   // check if the patient is already in the database
   const userExist = await Patient.findOne({
     user: req.body.user,
