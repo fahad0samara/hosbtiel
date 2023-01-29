@@ -280,13 +280,14 @@ router.get("/all-patients/:id", extractToken, checkDoctor, async (req, res) => {
       return res.status(404).json({message: "No patients found"});
     }
 
-    // Send the patients to the client
+    const count = await Appointment.countDocuments({doctor: doctorId});
+    const totalPages = Math.ceil(count / limit);
     res.json({
       patients: patients,
       pagination: {
         page: page,
         limit: limit,
-        totalPages: Math.ceil(patients.length / limit),
+        totalPages: totalPages,
       },
     });
   } catch (error) {

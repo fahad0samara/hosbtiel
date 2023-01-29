@@ -29,6 +29,10 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
     default: "pending",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
