@@ -34,21 +34,10 @@ const Patient = () => {
       })
 
       .then(res => {
-        // Sort the patients array by date in ascending order
-        const sortedPatients = res.data.patients.sort(
-          (a: patient, b: patient) => {
-            return (
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-            );
-          }
-        );
-
-        // Get the last patient in the array
-        const lastPatient = sortedPatients[sortedPatients.length - 1];
-
-        // Set the last patient in the state
-        setLastPatient(lastPatient);
-
+        setLastPatient(res.data.patients);
+        console.log("====================================");
+        console.log("res.data.patients", res.data.patients);
+        console.log("====================================");
         setPagination({
           ...pagination,
           totalPages: res.data.pagination.totalPages,
@@ -148,7 +137,7 @@ const Patient = () => {
             <div className="line"></div>
           </div>
         ) : (
-          <table className="min-w-max table-auto ">
+          <table className="min-w-max w-full table-auto ">
             <thead
               className={
                 dark ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"

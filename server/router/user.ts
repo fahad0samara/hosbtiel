@@ -395,22 +395,55 @@ router.post("/appointment", async (req, res) => {
     const appointmentDate = req.body.appointmentDate;
     const appointmentTime = req.body.appointmentTime;
 
+    // Check if the patient has already made an appointment today
+    const latestAppointment = await Appointment.findOne({
+      patient: patientId,
+      appointmentDate: appointmentDate,
+    }).sort({appointmentTime: -1});
+    if (latestAppointment) {
+      // Compare the current time with the latest appointment time
+      //@ts-ignore
+      const diff = appointmentTime - latestAppointment.appointmentTime;
+      const hours = diff / 1000 / 60 / 60;
+      if (hours < 1.5) {
+        return res.status(400).json({
+          error:
+            "Patient can only make one appointment per day and one appointment every hour and a half",
+        });
+      }
+    }
 
-
-
-    
+    // Check if the patient already has an appointment for the same day
+    const existing = await Appointment.findOne({
+      patient: patientId,
+      appointmentDate: appointmentDate,
+      doctor: doctorId,
+    });
+    if (existing) {
+      return res.status(400).json({
+        error: "You already have an appointment for this date with this doctor",
+      });
+    }
 
     // Check if the doctor is available at the desired date and time
     const existingAppointment = await Appointment.findOne({
       doctor: doctorId,
       appointmentDate: appointmentDate,
       appointmentTime: appointmentTime,
-
     });
     if (existingAppointment) {
       // If the doctor is not available, return an error message
       return res.status(400).json({
         error: "This doctor is not available at the desired date and time",
+      });
+    }
+    // Check if the appointment date is in the past
+    const today = new Date();
+    const appointmentDateObj = new Date(appointmentDate);
+    if (appointmentDateObj < today) {
+      return res.status(400).json({
+        error:
+          "Cannot register for an appointment in the past. Please choose a valid date.",
       });
     }
 
@@ -432,47 +465,32 @@ router.post("/appointment", async (req, res) => {
     });
     await Doctor.findByIdAndUpdate(doctorId, {
       appointmentCount: appointmentCount,
-
     });
 
-    console.log('====================================');
+    console.log("====================================");
     console.log(appointmentCount);
-    console.log('====================================');
- await Doctor.findByIdAndUpdate(doctorId, {
-   pushSubscription: req.body.pushSubscription,
- });
-//  // Send push notification to doctor
-// const subscription = doctor.pushSubscription;
-// if (!subscription || !subscription.endpoint) {
-//   return res.status(400).json({error: "Invalid or missing push subscription"});
-// }
-//  const payload = JSON.stringify({
-//    title: "New Appointment",
-//    body: "You have a new appointment scheduled",
-//    icon: "path/to/icon.png",
-//  });
-//  webpush.sendNotification(subscription, payload);
-    
+    console.log("====================================");
+    await Doctor.findByIdAndUpdate(doctorId, {
+      pushSubscription: req.body.pushSubscription,
+    });
+    //  // Send push notification to doctor
+    // const subscription = doctor.pushSubscription;
+    // if (!subscription || !subscription.endpoint) {
+    //   return res.status(400).json({error: "Invalid or missing push subscription"});
+    // }
+    //  const payload = JSON.stringify({
+    //    title: "New Appointment",
+    //    body: "You have a new appointment scheduled",
+    //    icon: "path/to/icon.png",
+    //  });
+    //  webpush.sendNotification(subscription, payload);
 
-
-
-
-
-    
-
-
-
-
-
-
-// Return success message to the patient
+    // Return success message to the patient
     res.json({
       message: "Appointment request sent successfully",
       success: true,
       appointmentCount,
       appointment,
-
-     
     });
   } catch (error) {
     console.log(error.message);

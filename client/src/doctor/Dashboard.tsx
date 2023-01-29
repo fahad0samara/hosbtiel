@@ -94,10 +94,7 @@ const Dashboard = () => {
           const response = await axios.get(
             `http://localhost:3000/doctor/appointments/${Doctor._id}/${dateString}`
           );
-          console.log(
-            "🚀 ~ file: Dashboard.tsx ~ line 6 ~ Dashboard ~ response",
-            response.data
-          );
+
           setAppointments(response.data.appointments);
           setAppointmentsCount(response.data.appointmentCount);
           setAppointmentsCountTomorrow(response.data.nextDayAppointments);
