@@ -12,13 +12,29 @@ import "./Loder.css";
 import Chart from "./Chart";
 import { patient } from '../types';
 import Patient from "./Patient";
+
+interface Appointment {
+  _id: string;
+  doctor: string;
+  patient: {};
+  appointmentDate: number;
+  appointmentTime: string;
+}
+
+interface AppointmentsResponse {
+  appointments: Array<Appointment>;
+  appointmentCount: number;
+  nextDayAppointments: Array<Appointment>;
+}
 const Dashboard = () => {
-  const { Doctor, dark } = useLogIN();
+  const {Doctor, dark} = useLogIN();
 
-  const [nextAppointment, setNextAppointment] = useState({});
-  const [appointments, setAppointments] = useState([]);
+  const [nextAppointment, setNextAppointment] = useState<
+    Appointment | undefined
+  >(undefined);
+  const [appointments, setAppointments] = useState<Array<Appointment>>([]);
 
-  const [appointmentsCount, setAppointmentsCount] = useState(0);
+  const [appointmentsCount, setAppointmentsCount] = useState<number>(0);
 
   const [appointmentsCountTomorrow, setAppointmentsCountTomorrow] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -58,6 +74,7 @@ const Dashboard = () => {
   const [phrase, setPhrase] = useState(phrases0[0]);
   const [loading, setLoading] = useState(true);
   const intervalIdRef = useRef(null);
+  /* Using the useEffect hook to set an interval that will change the phrase every 36000 milliseconds. */
   useEffect(() => {
     const interval = setInterval(() => {
       setPhrase(phrases0[phraseIndex]);
@@ -83,8 +100,9 @@ const Dashboard = () => {
     }
   }, []);
 
-  const [date, setDate] = useState(moment().toDate());
-  const dateString = moment(date).format("YYYY-MM-DD");
+  const date = moment().format("YYYY-MM-DD HH:mm:ss");
+  const [selectedDate, setSelectedDate] = useState(moment().toDate());
+  const dateString = moment(selectedDate).format("YYYY-MM-DD");
 
   useEffect(() => {
     if (Doctor) {
@@ -142,7 +160,6 @@ const Dashboard = () => {
           );
           setNextAppointment(nextAppointment);
 
-          setNextAppointment(sortedAppointments[0]);
           setLoading(false);
 
           // If there is no next appointment for today, find the first appointment for tomorrow
@@ -168,6 +185,8 @@ const Dashboard = () => {
                 return appointmentDate > currentDate;
               }
             );
+            setLoading(false);
+            // Sort appointments by date
             const sortedAppointments = filteredAppointments.sort((a, b) => {
               const aDate = new Date(a.appointmentDate);
               aDate.setHours(a.appointmentTime.split(":")[0]);
@@ -197,17 +216,19 @@ const Dashboard = () => {
         getNextAppointment();
       }, 1800000);
 
-
-
       return () => clearInterval(intervalId);
     }
-  }, [Doctor, date]);
+  }, [Doctor, dateString]);
 
   const intervalFunction = () => {
     if (nextAppointment && nextAppointment.appointmentTime) {
       const appointmentDate = new Date(nextAppointment.appointmentDate);
-      appointmentDate.setHours(nextAppointment.appointmentTime.split(":")[0]);
-      appointmentDate.setMinutes(nextAppointment.appointmentTime.split(":")[1]);
+      appointmentDate.setHours(
+        parseInt(nextAppointment.appointmentTime.split(":")[0], 10)
+      );
+      appointmentDate.setMinutes(
+        parseInt(nextAppointment.appointmentTime.split(":")[1], 10)
+      );
       setTimeLeft(appointmentDate.getTime() - new Date().getTime());
     }
   };
@@ -228,6 +249,28 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, [nextAppointment]);
 
+  // useEffect(() => {
+  //   let intervalId: number | undefined;
+  //   if (nextAppointment && nextAppointment.appointmentTime) {
+  //     setLoading(true);
+  //     const appointmentDate = new Date(nextAppointment.appointmentDate);
+  //     appointmentDate.setHours(
+  //       parseInt(nextAppointment.appointmentTime.split(":")[0], 10)
+  //     );
+  //     appointmentDate.setMinutes(
+  //       parseInt(nextAppointment.appointmentTime.split(":")[1], 10)
+  //     );
+  //     setTimeLeft(appointmentDate.getTime() - new Date().getTime());
+  //     setLoading(false);
+  //     // Refresh time left every second
+  //     intervalId = setInterval(() => {
+  //       setTimeLeft(appointmentDate.getTime() - new Date().getTime());
+  //     }, 1000);
+  //   }
+
+  //   return () => clearInterval(intervalId);
+  // }, [nextAppointment]);
+
   const hours = Math.floor(timeLeft / (1000 * 60 * 60));
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
@@ -239,222 +282,217 @@ const Dashboard = () => {
       style={{
         backgroundColor: dark ? "#000" : "#fff",
         color: dark ? "#fff" : "#000",
-        }}
+      }}
     >
-        <div className="p-5 mx-20">
-          <div className="flex flex-col my-3">
+      <div className="p-5 mx-20">
+        <div className="flex flex-col my-3">
           <h1 className="text-2xl font-bold">
             {message} ,
-              <span className="text-cyan-300 font-bold ml-1">
+            <span className="text-cyan-300 font-bold ml-1">
               Dr.{Doctor && Doctor.name.firstName}
             </span>
           </h1>
-            <h1 className="text-lg text-gray-400">
-              {phrase},
-              <span className="text-cyan-300 font-bold mx-1">
-                {appointmentsCount}
+          <h1 className="text-lg text-gray-400">
+            {phrase},
+            <span className="text-cyan-300 font-bold mx-1">
+              {appointmentsCount}
             </span>
             appointments today
           </h1>
         </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div
-              className="col-span-2
+            className="col-span-2
             duration-300 hover:rotate-0
           rotate-1 transform
           mt-4 
                "
-            >
-              <MyCalendar />
-            </div>
+          >
+            <MyCalendar />
+          </div>
 
-            {nextAppointment ? (
-              <div className=" shadow-2xl mt-4 col-span-1  ml-14 h-96  w-80 bg-cyan-300  rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0">
+          {nextAppointment ? (
+            <div className=" shadow-2xl mt-4 col-span-1  ml-14 h-96  w-80 bg-cyan-300  rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0">
               <div className="flex justify-end">
-                  <div
-                    style={{
-                      backgroundColor: dark ? "#fff" : "#000",
-                      color: dark ? "#fff" : "#000",
-                    }}
-                    className="h-4 w-4 rounded-full "></div>
+                <div
+                  style={{
+                    backgroundColor: dark ? "#fff" : "#000",
+                    color: dark ? "#fff" : "#000",
+                  }}
+                  className="h-4 w-4 rounded-full "
+                ></div>
               </div>
 
-                <div>
-                  <h1 className="text-xl font-bold text-center ">
-                    Next Appointment
-                  </h1>
-                  <div className="border-b-2 border-white my-2  mx-10  text-center  px-4 "></div>
+              <div>
+                <h1 className="text-xl font-bold text-center ">
+                  Next Appointment
+                </h1>
+                <div className="border-b-2 border-white my-2  mx-10  text-center  px-4 "></div>
                 {nextAppointment ? (
-                    <div className="flex flex-col mx-2 space-y-3">
-                      <div className="space-x-2 flex">
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          Date:
-                        </h1>
-                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                  <div className="flex flex-col mx-2 space-y-3">
+                    <div className="space-x-2 flex">
+                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        Date:
+                      </h1>
+                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
                         {moment(nextAppointment.appointmentDate).format(
                           "MMMM Do YYYY"
-                          )}
-                        </h1>
-                      </div>
-                      <div
+                        )}
+                      </h1>
+                    </div>
+                    <div
                       className="
                     flex"
-                      >
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          {" "}
-                          Time:
-                        </h1>
-                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                          {nextAppointment.appointmentTime}
-                        </h1>
-                      </div>
+                    >
+                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        {" "}
+                        Time:
+                      </h1>
+                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                        {nextAppointment.appointmentTime}
+                      </h1>
+                    </div>
 
-                      <div
+                    <div
                       className="
                     flex
                     "
                     >
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          Patient Name:
-                        </h1>
-                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        Patient Name:
+                      </h1>
+                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
                         {
                           // first name and lastname
                         }
                         {nextAppointment.patient
                           ? nextAppointment.patient.name.firstName
-                            : "No patient"}{" "}
+                          : "No patient"}{" "}
                         {nextAppointment.patient
                           ? nextAppointment.patient.name.LastName
-                            : "No patient"}
-                        </h1>
-                      </div>
+                          : "No patient"}
+                      </h1>
+                    </div>
 
-                      <div
-                        className="flex
+                    <div
+                      className="flex
                     
                     "
-                      >
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          Symptoms:
-                        </h1>
-                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                          {nextAppointment.symptoms}
-                        </h1>
-                      </div>
+                    >
+                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        Symptoms:
+                      </h1>
+                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1"></h1>
+                    </div>
 
-                      <div
-                        className="flex
+                    <div
+                      className="flex
                    
                     "
-                      >
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          Allergies:
-                        </h1>
-                        {nextAppointment.patient ? (
-                          nextAppointment.patient.allergyList.filter(
-                            allergy =>
-                              allergy.allergy !== "" && allergy.allergy !== null
-                          ).length > 0 ? (
-                            nextAppointment.patient ? (
-                              nextAppointment.patient.allergyList
-                                .filter(
-                                  allergy =>
-                                    allergy.allergy !== "" &&
-                                    allergy.allergy !== null
-                                )
-                                .map(allergy => {
-                                  return (
-                                    <div key={allergy.allergy}>
-                                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                                        {allergy.allergy}{" "}
-                                      </h1>
-                                    </div>
-                                  );
-                                })
-                            ) : null
-                          ) : (
-                            <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                              No Allergies
-                            </h1>
-                          )
-                        ) : null}
-                      </div>
-
-                      {
-                        //loding
-                      }
-                      {timeLeft > 0 ? (
-                        <div className=" flex space-x-2">
-                          <h1 className="text-lg font-semibold ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                            Time left :
+                    >
+                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        Allergies:
+                      </h1>
+                      {nextAppointment.patient ? (
+                        nextAppointment.patient.allergyList.filter(
+                          allergy =>
+                            allergy.allergy !== "" && allergy.allergy !== null
+                        ).length > 0 ? (
+                          nextAppointment.patient ? (
+                            nextAppointment.patient.allergyList
+                              .filter(
+                                allergy =>
+                                  allergy.allergy !== "" &&
+                                  allergy.allergy !== null
+                              )
+                              .map(allergy => {
+                                return (
+                                  <div key={allergy.allergy}>
+                                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                                      {allergy.allergy}{" "}
+                                    </h1>
+                                  </div>
+                                );
+                              })
+                          ) : null
+                        ) : (
+                          <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                            No Allergies
                           </h1>
-                          {timeLeft < 0 ? (
-                            <p className="text-lg  ml-1 bg-amber-400 rounded-full w-auto shadow-xl text-center px-1">
+                        )
+                      ) : null}
+                    </div>
+
+                    {
+                      //loding
+                    }
+                    {timeLeft > 0 ? (
+                      <div className=" flex space-x-2">
+                        <h1 className="text-lg font-semibold ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                          Time left :
+                        </h1>
+                        {timeLeft < 0 ? (
+                          <p className="text-lg  ml-1 bg-amber-400 rounded-full w-auto shadow-xl text-center px-1">
                             {nextAppointment.patient
                               ? nextAppointment.patient.name.firstName
                               : "No patient"}
-                            </p>
-                          ) : null}
-                          <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                            {timeLeft < 0
-                              ? null
-                              : `${hours}h ${minutes}m ${seconds}s`}
-                          </h1>
-                        </div>
-                      ) : (
-                        <p
-                          className="
+                          </p>
+                        ) : null}
+                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                          {timeLeft < 0
+                            ? null
+                            : `${hours}h ${minutes}m ${seconds}s`}
+                        </h1>
+                      </div>
+                    ) : (
+                      <p
+                        className="
                       font-semibold 
                       ml-1
                       
                       "
-                          >
-                          Appointment has started
-                        </p>
-                      )}
+                      >
+                        Appointment has started
+                      </p>
+                    )}
 
-                      {nextAppointment.patient ? (
-                        <div className="flex justify-center">
-                          <Link
-                            //"/ViewPatient/:id"
-                            to={`/ViewPatient/${nextAppointment.patient._id}`}
-                            className="
+                    {nextAppointment.patient ? (
+                      <div className="flex justify-center">
+                        <Link
+                          //"/ViewPatient/:id"
+                          to={`/ViewPatient/${nextAppointment.patient._id}`}
+                          className="
                       
                           border-b-white
                           border-b-2
                            text-white  py-2 px-4 "
-                          >
-                            View Patient
-                          </Link>
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : (
-                    <p
-                      className="
+                        >
+                          View Patient
+                        </Link>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  <p
+                    className="
                   font-semibold 
                   ml-1
                   text-center
                   "
-                    >
-                      No appointments today
-                    </p>
-                  )}
-                </div>
+                  >
+                    No appointments today
+                  </p>
+                )}
               </div>
-            ) : (
-              <div className="progress"></div>
-            )}
-          </div>
-          <Chart />
-          <Patient
-
-          />
-
-
+            </div>
+          ) : (
+            <div className="progress">llllllllllllllll</div>
+          )}
         </div>
+        <Chart />
+        <Patient />
       </div>
+    </div>
   );
 };
 

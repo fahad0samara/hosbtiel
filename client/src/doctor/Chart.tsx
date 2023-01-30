@@ -114,19 +114,17 @@ function App() {
     useEffect(() => {
         setLoading(true);
         fetch(`http://localhost:3000/doctor/appointments/${Doctor._id}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         })
-            .then(res => res.json())
-            .then(data => {
-                setData(data.appointments);
-                console.log(data.appointments);
-                setLoading(false);
-            })
-            .catch(err => console.log(err)
-
-            );
+          .then(res => res.json())
+          .then(data => {
+            setData(data.appointments);
+            console.log(data.appointments);
+            setLoading(false);
+          })
+          .catch(err => console.log(err, "eror from chat"));
     }, []);
 
     // group appointments by date

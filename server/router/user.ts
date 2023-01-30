@@ -437,15 +437,15 @@ router.post("/appointment", async (req, res) => {
         error: "This doctor is not available at the desired date and time",
       });
     }
-    // Check if the appointment date is in the past
-    const today = new Date();
-    const appointmentDateObj = new Date(appointmentDate);
-    if (appointmentDateObj < today) {
-      return res.status(400).json({
-        error:
-          "Cannot register for an appointment in the past. Please choose a valid date.",
-      });
-    }
+    // // Check if the appointment date is in the past
+    // const today = new Date();
+    // const appointmentDateObj = new Date(appointmentDate);
+    // if (appointmentDateObj < today) {
+    //   return res.status(400).json({
+    //     error:
+    //       "Cannot register for an appointment in the past. Please choose a valid date.",
+    //   });
+    // }
 
     // If the doctor is available, create a new appointment document
     const appointment = new Appointment({

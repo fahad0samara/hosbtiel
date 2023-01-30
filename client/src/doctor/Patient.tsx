@@ -35,16 +35,13 @@ const Patient = () => {
 
       .then(res => {
         setLastPatient(res.data.patients);
-        console.log("====================================");
-        console.log("res.data.patients", res.data.patients);
-        console.log("====================================");
+
         setPagination({
           ...pagination,
           totalPages: res.data.pagination.totalPages,
           page: pagination.page,
         });
-        console.log("====================================", res.data);
-        console.log(res.data.pagination.totalPages);
+
         setLoading(false);
       })
       .catch(err => {
