@@ -149,36 +149,25 @@ router.get("/doctors/:id/working-hours"
   }
 );
 
-router.get("/appointments/:id",extractToken, checkDoctor, async (req, res) => {
-
+router.get("/appointments/:id", extractToken, checkDoctor, async (req, res) => {
   try {
     const doctorId = req.params.id;
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
 
-    const appointments = await Appointment.find({ doctor: doctorId })
+    const appointments = await Appointment.find({doctor: doctorId})
       .populate("patient")
-    
+
       .populate("doctor")
       .skip(skip)
       .limit(limit);
-    
 
-
-
-    if (!appointments || appointments.length === 0) {
-      res.status(404).json({message: "No appointments found for this doctor"});
-    } else {
-      const count = await Appointment.countDocuments({doctor: doctorId});
-      res.json({
-        appointments: appointments,
-        total: count,
-      });
-    }
+    res.json({
+      appointments: appointments,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({error: error.message});
-      
   }
 });
 
@@ -186,23 +175,13 @@ router.get("/appointments/:id/:date", async (req, res) => {
   try {
     const doctorId = req.params.id;
     const appointmentDate = new Date(req.params.date);
-    
 
     // Get the appointments for the current day
     const appointments = await Appointment.find({
       doctor: doctorId,
       appointmentDate: appointmentDate,
     }).populate("patient");
-    console.log(
-      "appointments",
-      appointments
-
-    );
-    
-
-
-
-
+    console.log("appointments", appointments);
 
     // Get the appointment count for the current day
     const appointmentCount = await Appointment.countDocuments({
@@ -215,8 +194,6 @@ router.get("/appointments/:id/:date", async (req, res) => {
       appointmentCount: appointmentCount,
     });
 
-   
-
     // Get the next day's appointments
     const nextDayAppointments = await Appointment.find({
       doctor: doctorId,
@@ -228,20 +205,7 @@ router.get("/appointments/:id/:date", async (req, res) => {
           )
         ),
       },
-
     }).populate("patient");
-
-
-
-
-
-
-
-
-
-
-
-    
 
     // Return the appointments for the current day and the next day
     res.json({
@@ -276,10 +240,6 @@ router.get("/all-patients/:id", extractToken, checkDoctor, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    if (!patients || patients.length === 0) {
-      return res.status(404).json({message: "No patients found"});
-    }
-
     const count = await Appointment.countDocuments({doctor: doctorId});
     const totalPages = Math.ceil(count / limit);
     res.json({
@@ -308,10 +268,6 @@ router.get("/all-patients/:id/:date", async (req, res) => {
     })
       .populate("patient")
       .sort({createdAt: -1});
-
-    if (!patients || patients.length === 0) {
-      return res.status(404).json({message: "No patients found"});
-    }
 
     // Send the patients to the client
     res.json({

@@ -57,11 +57,15 @@ const MyCalendar = () => {
       end: new Date("2023-01-22T15:30:00"),
       title: "Coffee Break",
     },
+    {
+      start: new Date("2023-03-22T15:00:00"),
+      end: new Date("2023-04-22T15:30:00"),
+      title: " Break",
+    },
   ]);
   const localizer = momentLocalizer(moment);
 
   useEffect(() => {
-    // Fetch appointments
     const getAppointments = async () => {
       setLoading(true);
       try {
@@ -73,14 +77,22 @@ const MyCalendar = () => {
             },
           }
         );
-        console.log("====================================");
-        console.log(
-          "🚀 ~ file: Calendar.tsx ~ line 85 ~ getAppointments ~ response",
-          response.data
-        );
-        console.log("====================================");
-
         const appointments = response.data.appointments;
+        console.log("====================================");
+        console.log("appointments", appointments);
+        console.log("====================================");
+        if (!appointments || appointments.length === 0) {
+          console.log("====================================");
+          console.log(
+            "No appointments for this doctor",
+            Doctor._id,
+            Doctor.name.firstName
+          );
+          console.log("====================================");
+          setEvents([...workingHoursEvents, ...holidays, ...breaks]);
+          setLoading(false);
+          return;
+        }
         const appointmentEvents = appointments.map(appointment => {
           return {
             start: moment(
@@ -95,28 +107,18 @@ const MyCalendar = () => {
               .toDate(),
             title: `Appointment with ${appointment.patient.name.firstName} ${appointment.patient.name.LastName}`,
             notes: appointment.notes,
-
             symptoms: appointment.symptoms,
           };
         });
 
-        setEvents([
-          ...workingHoursEvents,
-          ...appointmentEvents,
-          ...holidays,
-          ...breaks,
-        ]);
+        setEvents([...appointmentEvents, ...holidays, ...breaks]);
         setLoading(false);
       } catch (error) {
-        console.log(
-          "Error while fetching appointments:theis from amcalnde",
-          error
-        );
+        console.error(error);
         setLoading(false);
       }
     };
 
-    setEvents([...workingHoursEvents, ...holidays, ...breaks]);
     getAppointments();
   }, []);
 
@@ -130,107 +132,42 @@ const MyCalendar = () => {
           </div>
         ) : (
           <Calendar
-            localizer={localizer}
+            step={60}
+            style={{
+              height: "65vh",
+            }}
+            showMultiDayTimes
+            defaultDate={new Date()}
+            defaultView={Views.WEEK}
             events={events}
+            localizer={localizer}
+            titleAccessor="title"
             startAccessor="start"
             endAccessor="end"
-            components={{
-              toolbar: ({view, onView, date, onNavigate, label}) => {
-                const viewNames = Object.keys(Views).map(k => Views[k]);
-
-                return (
-                  <div className="rbc-toolbar">
-                    <span className="rbc-btn-group">
-                      <button
-                        type="button"
-                        onClick={() => onNavigate("PREV")}
-                        className="rbc-btn rbc-btn-primary"
-                      >
-                        <i className="fas fa-angle-left">
-                          <GrLinkPrevious />
-                        </i>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onNavigate("TODAY")}
-                        className="rbc-btn rbc-btn-primary"
-                      >
-                        Today
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onNavigate("NEXT")}
-                        className="rbc-btn rbc-btn-primary"
-                      >
-                        <GrLinkNext />
-                      </button>
-                    </span>
-
-                    <span className="rbc-toolbar-label">{label}</span>
-
-                    <span className="rbc-btn-group">
-                      {viewNames.map(name => (
-                        <button
-                          type="button"
-                          key={name}
-                          className={`rbc-btn rbc-btn-primary ${
-                            view === name ? "rbc-active" : ""
-                          }`}
-                          onClick={() => onView(name)}
-                        >
-                          {name}
-                        </button>
-                      ))}
-                    </span>
-                  </div>
-                );
-              },
-            }}
-            style={{
-              height: 330,
-              width: 750,
-
-              backgroundColor: dark ? "#000" : "white",
-              color: dark ? "white" : "black",
-            }}
             timeslots={6}
             eventPropGetter={(event: any) => {
               let className = "";
 
-              if (
-                event.title.includes("Appointment") &&
-                event.title.includes("Pending")
-              ) {
-                className = `bg-yellow-400`;
-              }
-
-              if (
-                event.title.includes("Appointment") &&
-                event.title.includes("Accepted")
-              ) {
-                className = `bg-green-400`;
-              }
-
-              if (
-                event.title.includes("Appointment") &&
-                event.title.includes("Rejected")
-              ) {
-                className = `bg-red-400`;
-              }
-
               if (event.title.includes("Appointment")) {
-                className = `  bg-cyan-400 border-l-4
-       border-l-black
+                className = `bg-red-400 border-l-4
+        border-l-black
         border-r-4
         border-r-black`;
               }
+
+              //hiden if there no event
 
               if (event.symptoms === "fever") {
                 className = `bg-yellow-400`;
               }
 
               if (event.symptoms === "cough") {
-                className = `bg-red-400`;
+                className = `bg-green-400
+                my-3
+                mx-2
+              
+
+                `;
               }
 
               if (event.symptoms === "headache") {
@@ -262,6 +199,11 @@ const MyCalendar = () => {
               };
             }}
             popup
+            messages={{
+              date: "Date",
+              time: "Time",
+              event: "Event",
+            }}
           />
         )
       }

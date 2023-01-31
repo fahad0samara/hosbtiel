@@ -146,6 +146,8 @@ const Dashboard = () => {
             return aDate.getTime() - bDate.getTime();
           });
 
+          setLoading(false);
+
           const nextAppointment = response.data.appointments.find(
             appointment => {
               const appointmentDate = new Date(appointment.appointmentDate);
@@ -158,6 +160,7 @@ const Dashboard = () => {
               return appointmentDate > currentDate;
             }
           );
+
           setNextAppointment(nextAppointment);
 
           setLoading(false);
@@ -173,6 +176,7 @@ const Dashboard = () => {
                 .add(1, "day")
                 .format("YYYY-MM-DD")}`
             );
+
             const filteredAppointments = response.data.appointments.filter(
               appointment => {
                 const appointmentDate = new Date(appointment.appointmentDate);
@@ -233,43 +237,43 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    let intervalId: number | undefined;
-    if (nextAppointment && nextAppointment.appointmentTime) {
-      setLoading(true);
-      const appointmentDate = new Date(nextAppointment.appointmentDate);
-      appointmentDate.setHours(nextAppointment.appointmentTime.split(":")[0]);
-      appointmentDate.setMinutes(nextAppointment.appointmentTime.split(":")[1]);
-      setTimeLeft(appointmentDate.getTime() - new Date().getTime());
-      setLoading(false);
-      // Refresh time left every second
-      intervalId = setInterval(intervalFunction, 1000);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [nextAppointment]);
-
   // useEffect(() => {
   //   let intervalId: number | undefined;
   //   if (nextAppointment && nextAppointment.appointmentTime) {
   //     setLoading(true);
   //     const appointmentDate = new Date(nextAppointment.appointmentDate);
-  //     appointmentDate.setHours(
-  //       parseInt(nextAppointment.appointmentTime.split(":")[0], 10)
-  //     );
-  //     appointmentDate.setMinutes(
-  //       parseInt(nextAppointment.appointmentTime.split(":")[1], 10)
-  //     );
+  //     appointmentDate.setHours(nextAppointment.appointmentTime.split(":")[0]);
+  //     appointmentDate.setMinutes(nextAppointment.appointmentTime.split(":")[1]);
   //     setTimeLeft(appointmentDate.getTime() - new Date().getTime());
   //     setLoading(false);
   //     // Refresh time left every second
-  //     intervalId = setInterval(() => {
-  //       setTimeLeft(appointmentDate.getTime() - new Date().getTime());
-  //     }, 1000);
+  //     intervalId = setInterval(intervalFunction, 1000);
   //   }
 
   //   return () => clearInterval(intervalId);
   // }, [nextAppointment]);
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+    if (nextAppointment && nextAppointment.appointmentTime) {
+      setLoading(true);
+      const appointmentDate = new Date(nextAppointment.appointmentDate);
+      appointmentDate.setHours(
+        parseInt(nextAppointment.appointmentTime.split(":")[0], 10)
+      );
+      appointmentDate.setMinutes(
+        parseInt(nextAppointment.appointmentTime.split(":")[1], 10)
+      );
+      setTimeLeft(appointmentDate.getTime() - new Date().getTime());
+      setLoading(false);
+      // Refresh time left every second
+      intervalId = setInterval(() => {
+        setTimeLeft(appointmentDate.getTime() - new Date().getTime());
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [nextAppointment]);
 
   const hours = Math.floor(timeLeft / (1000 * 60 * 60));
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -311,183 +315,179 @@ const Dashboard = () => {
             <MyCalendar />
           </div>
 
-          {nextAppointment ? (
-            <div className=" shadow-2xl mt-4 col-span-1  ml-14 h-96  w-80 bg-cyan-300  rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0">
-              <div className="flex justify-end">
-                <div
-                  style={{
-                    backgroundColor: dark ? "#fff" : "#000",
-                    color: dark ? "#fff" : "#000",
-                  }}
-                  className="h-4 w-4 rounded-full "
-                ></div>
-              </div>
-
-              <div>
-                <h1 className="text-xl font-bold text-center ">
-                  Next Appointment
-                </h1>
-                <div className="border-b-2 border-white my-2  mx-10  text-center  px-4 "></div>
-                {nextAppointment ? (
-                  <div className="flex flex-col mx-2 space-y-3">
-                    <div className="space-x-2 flex">
-                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                        Date:
-                      </h1>
-                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                        {moment(nextAppointment.appointmentDate).format(
-                          "MMMM Do YYYY"
-                        )}
-                      </h1>
-                    </div>
-                    <div
-                      className="
+          <div className=" shadow-2xl mt-4 col-span-1  ml-14 h-96  w-80 bg-cyan-300  rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0">
+            <div>
+              <h1 className="text-xl font-bold text-center ">
+                Next Appointment
+              </h1>
+              <div className="border-b-2 border-white my-2  mx-10  text-center  px-4 "></div>
+              {nextAppointment ? (
+                <div className="flex flex-col mx-2 space-y-3">
+                  <div className="space-x-2 flex">
+                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                      Date:
+                    </h1>
+                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                      {moment(nextAppointment.appointmentDate).format(
+                        "MMMM Do YYYY"
+                      )}
+                    </h1>
+                  </div>
+                  <div
+                    className="
                     flex"
-                    >
-                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                        {" "}
-                        Time:
-                      </h1>
-                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                        {nextAppointment.appointmentTime}
-                      </h1>
-                    </div>
+                  >
+                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                      {" "}
+                      Time:
+                    </h1>
+                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                      {nextAppointment.appointmentTime}
+                    </h1>
+                  </div>
 
-                    <div
-                      className="
+                  <div
+                    className="
                     flex
                     "
-                    >
-                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                        Patient Name:
-                      </h1>
-                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                        {
-                          // first name and lastname
-                        }
-                        {nextAppointment.patient
-                          ? nextAppointment.patient.name.firstName
-                          : "No patient"}{" "}
-                        {nextAppointment.patient
-                          ? nextAppointment.patient.name.LastName
-                          : "No patient"}
-                      </h1>
-                    </div>
+                  >
+                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                      Patient Name:
+                    </h1>
+                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                      {
+                        // first name and lastname
+                      }
+                      {nextAppointment.patient
+                        ? nextAppointment.patient.name.firstName
+                        : "No patient"}{" "}
+                      {nextAppointment.patient
+                        ? nextAppointment.patient.name.LastName
+                        : "No patient"}
+                    </h1>
+                  </div>
 
-                    <div
-                      className="flex
+                  <div
+                    className="flex
                     
                     "
-                    >
-                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                        Symptoms:
-                      </h1>
-                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1"></h1>
-                    </div>
+                  >
+                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                      Symptoms:
+                    </h1>
+                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1"></h1>
+                  </div>
 
-                    <div
-                      className="flex
+                  <div
+                    className="flex
                    
                     "
-                    >
-                      <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                        Allergies:
-                      </h1>
-                      {nextAppointment.patient ? (
-                        nextAppointment.patient.allergyList.filter(
-                          allergy =>
-                            allergy.allergy !== "" && allergy.allergy !== null
-                        ).length > 0 ? (
-                          nextAppointment.patient ? (
-                            nextAppointment.patient.allergyList
-                              .filter(
-                                allergy =>
-                                  allergy.allergy !== "" &&
-                                  allergy.allergy !== null
-                              )
-                              .map(allergy => {
-                                return (
-                                  <div key={allergy.allergy}>
-                                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                                      {allergy.allergy}{" "}
-                                    </h1>
-                                  </div>
-                                );
-                              })
-                          ) : null
-                        ) : (
-                          <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                            No Allergies
-                          </h1>
-                        )
-                      ) : null}
-                    </div>
+                  >
+                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                      Allergies:
+                    </h1>
+                    {nextAppointment.patient ? (
+                      nextAppointment.patient.allergyList.filter(
+                        allergy =>
+                          allergy.allergy !== "" && allergy.allergy !== null
+                      ).length > 0 ? (
+                        nextAppointment.patient ? (
+                          nextAppointment.patient.allergyList
+                            .filter(
+                              allergy =>
+                                allergy.allergy !== "" &&
+                                allergy.allergy !== null
+                            )
+                            .map(allergy => {
+                              return (
+                                <div key={allergy.allergy}>
+                                  <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                                    {allergy.allergy}{" "}
+                                  </h1>
+                                </div>
+                              );
+                            })
+                        ) : null
+                      ) : (
+                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                          No Allergies
+                        </h1>
+                      )
+                    ) : null}
+                  </div>
 
-                    {
-                      //loding
-                    }
-                    {timeLeft > 0 ? (
-                      <div className=" flex space-x-2">
-                        <h1 className="text-lg font-semibold ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          Time left :
-                        </h1>
-                        {timeLeft < 0 ? (
-                          <p className="text-lg  ml-1 bg-amber-400 rounded-full w-auto shadow-xl text-center px-1">
-                            {nextAppointment.patient
-                              ? nextAppointment.patient.name.firstName
-                              : "No patient"}
-                          </p>
-                        ) : null}
-                        <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                          {timeLeft < 0
-                            ? null
-                            : `${hours}h ${minutes}m ${seconds}s`}
-                        </h1>
-                      </div>
-                    ) : (
-                      <p
-                        className="
+                  {
+                    //loding
+                  }
+                  {timeLeft > 0 ? (
+                    <div className=" flex space-x-2">
+                      <h1 className="text-lg font-semibold ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
+                        Time left :
+                      </h1>
+                      {timeLeft < 0 ? (
+                        <p className="text-lg  ml-1 bg-amber-400 rounded-full w-auto shadow-xl text-center px-1">
+                          {nextAppointment.patient
+                            ? nextAppointment.patient.name.firstName
+                            : "No patient"}
+                        </p>
+                      ) : null}
+                      <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
+                        {timeLeft < 0
+                          ? null
+                          : `${hours}h ${minutes}m ${seconds}s`}
+                      </h1>
+                    </div>
+                  ) : (
+                    <p
+                      className="
                       font-semibold 
                       ml-1
                       
                       "
-                      >
-                        Appointment has started
-                      </p>
-                    )}
+                    >
+                      Appointment has started
+                    </p>
+                  )}
 
-                    {nextAppointment.patient ? (
-                      <div className="flex justify-center">
-                        <Link
-                          //"/ViewPatient/:id"
-                          to={`/ViewPatient/${nextAppointment.patient._id}`}
-                          className="
+                  {nextAppointment.patient ? (
+                    <div className="flex justify-center">
+                      <Link
+                        //"/ViewPatient/:id"
+                        to={`/ViewPatient/${nextAppointment.patient._id}`}
+                        className="
                       
                           border-b-white
                           border-b-2
                            text-white  py-2 px-4 "
-                        >
-                          View Patient
-                        </Link>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : (
-                  <p
+                      >
+                        View Patient
+                      </Link>
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div
+                  className="
+                  flex
+                  flex-col
+                  justify-center
+                  items-center
+                  "
+                >
+                  <h1
                     className="
                   font-semibold 
                   ml-1
                   text-center
                   "
                   >
-                    No appointments today
-                  </p>
-                )}
-              </div>
+                    You don't have
+                  </h1>
+                  <h2>an appointment today</h2>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="progress">llllllllllllllll</div>
-          )}
+          </div>
         </div>
         <Chart />
         <Patient />
