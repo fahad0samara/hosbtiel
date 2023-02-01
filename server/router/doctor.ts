@@ -284,49 +284,6 @@ router.get("/all-patients/:id/:date", async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-  
-
-
-
-
-    
-    
-
- 
-
-
-
-
-
 router.post("/update-availability", async (req, res) => {
   try {
     // Find the doctor by their ID
@@ -339,7 +296,7 @@ router.post("/update-availability", async (req, res) => {
       });
     }
     // Update the doctor's working hours and availability
-  
+
     doctor.availableDays = req.body.availableDays;
     doctor.availableTime = req.body.availableTime;
 
@@ -352,35 +309,6 @@ router.post("/update-availability", async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
-
-
-
-
-
-// PUT route for updating the doctor's working hours
-// router.put("/working-hours/:id", async (req, res) => {
-//   try {
-//     // Find the doctor by their ID
-//     const doctor = await Doctor.findById(req.params.id);
-
-//     // Check if the doctor exists
-//     if (!doctor) {
-//       return res.status(404).json({
-//         error: "Doctor not found",
-//       });
-//     }
-
-
-//     // Update the doctor's 
-
-
-//     await doctor.save();
-
-//     res.json({message: "Working hours updated successfully"});
-//   } catch (err) {
-//     res.status(500).json({error: err.message});
-//   }
-// });
 
 router.post("/Prescription", async (req, res) => {
   // validate the data before we make a doctor
@@ -405,9 +333,15 @@ router.post("/Prescription", async (req, res) => {
     });
 
     const result = await prescription.save();
-    res.status(201).send(result);
+    res.status(201).send({
+      message: "Prescription created successfully",
+      result,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).send({
+      message: "Error creating prescription",
+      error,
+    });
   }
 });
 
@@ -470,50 +404,39 @@ router.get("/prescription/:id", async (req, res) => {
   }
 });
 
-router.get("/prescription/:id", (req, res) => {
-  Prescription.findById(req.params.id)
-    .populate("patient")
-    .populate({
-      path: "doctor",
-      populate: {
-        path: "user",
-      },
-    })
+router.get("/patients", async (req, res) => {
+  // Retrieve the doctorId from the query parameter
+  const doctorId = req.query.doctorId;
 
-    .exec((err, prescription) => {
-      if (err) {
-        return res.status(500).json({error: err});
-      }
-      if (!prescription) {
-        return res.status(404).json({message: "Prescription not found"});
-      }
-      res.json({
-        message: "Prescription retrieved successfully",
+  // Find the patients that have the specified doctorId
+  const patients = await Patient.find({doctor: doctorId});
 
-        data: prescription,
-      });
-    });
+  // Return the filtered patients in the response
+  res.send(patients);
 });
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const prescriptions = await Prescription.find().populate("doctor");
-//     res.json(
-//       prescriptions.map(prescription => {
-//         return {
-//           _id: prescription._id,
-//           patient: prescription.patient,
-//           medication: prescription.medication,
-//           notes: prescription.notes,
-//           date: prescription.date,
-//           doctor: `${prescription.doctor.name.firstName} ${prescription.doctor.name.lastName}`,
-//         };
-//       })
-//     );
-//   } catch (error) {
-//     res.status(500).json({message: error.message});
-//   }
-// });
+
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
 
 module.exports = router;
 

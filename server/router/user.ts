@@ -157,9 +157,6 @@ router.get("/getDoctor/:id", async (req, res) => {
       return res.status(404).json({
         error: "Doctor not found",
       });
-
-      // Send the doctor's information to the client
-      res.json(doctor);
     }
 
     // Send the doctor's information to the client
@@ -179,9 +176,6 @@ router.get("/getAdmin/:id", async (req, res) => {
       return res.status(404).json({
         error: "Admin not found",
       });
-
-      // Send the admin's information to the client
-      res.json(admin);
     }
 
     // Send the admin's information to the client
@@ -201,10 +195,8 @@ router.get("/getPatient", async (req, res) => {
       return res.status(404).json({
         error: "Patient not found",
       });
-
-      // Send the patient's information to the client
-      res.json(patient);
     }
+
 
     // Send the patient's information to the client
     res.json(patient);

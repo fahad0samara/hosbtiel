@@ -35,6 +35,8 @@ const {id} = useParams();
           navigate("/doctor/MyCalendar");
         } else if (selected === "doctor") {
           navigate(`/doctor/doctor/${id}`);
+        } else if (selected === "Prescription") {
+          navigate(`/doctor/Prescription`);
         }
       }}
       className="
@@ -113,6 +115,30 @@ const {id} = useParams();
           </NavText>
         </NavItem>
         <NavItem eventKey="doctor">
+          <NavIcon>
+            <RiDashboardFill
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            DoctorProfile
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="Prescription">
           <NavIcon>
             <RiDashboardFill
               style={{
