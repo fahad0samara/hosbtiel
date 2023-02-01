@@ -304,6 +304,7 @@ const Dashboard = () => {
             appointments today
           </h1>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div
             className="col-span-2
@@ -489,6 +490,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
         <Chart />
         <Patient />
       </div>

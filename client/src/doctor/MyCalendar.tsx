@@ -134,11 +134,12 @@ const MyCalendar = () => {
           <Calendar
             step={60}
             style={{
-              height: "65vh",
+              height: "60vh",
+              width: 600,
+              margin: "0 auto",
             }}
             showMultiDayTimes
             defaultDate={new Date()}
-            defaultView={Views.WEEK}
             events={events}
             localizer={localizer}
             titleAccessor="title"

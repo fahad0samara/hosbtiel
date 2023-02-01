@@ -5,7 +5,7 @@ import { useLogIN } from "../../ContextLog";
 import axios from "axios";
 import moment from "moment-timezone";
 import { RiLoader2Fill } from "react-icons/ri";
-import Calendar from "react-calendar";
+
 import "react-calendar/dist/Calendar.css";
 function App() {
   const [data, setData] = useState([]);
@@ -56,12 +56,14 @@ function App() {
         );
         setChartOptions({
           chart: {
-            type: "pie",
-            height: 300,
-            width: 300,
+            type: "bar",
+            height: 250,
+            width: 250,
+
             backgroundColor: dark ? "#000" : "#fff",
             color: dark ? "#fff" : "#000",
           },
+
           title: {
             text: "Appointments per day",
           },
@@ -100,7 +102,7 @@ function App() {
       }
     };
     getAppointmentsData();
-  }, [Doctor, dateString]);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -160,33 +162,7 @@ function App() {
   const options = {
     chart: {
       type: "column",
-    },
-    title: {
-      text: "Visit Time",
-    },
-    xAxis: {
-      type: "category",
-      title: {
-        text: "Patient Name",
-      },
-    },
-    yAxis: {
-      type: "datetime",
-      title: {
-        text: "Appointment Time",
-      },
-    },
-    series: [
-      {
-        name: "Appointment Time",
-        data: chartData,
-      },
-    ],
-  };
 
-  const options = {
-    chart: {
-      type: "column",
       height: 300,
 
       backgroundColor: dark ? "#000" : "#fff",
@@ -215,8 +191,8 @@ function App() {
       series: {
         marker: {
           enabled: true,
-          symbol: "circle",
-          radius: 3,
+
+          radius: 4,
         },
       },
     },
@@ -244,35 +220,9 @@ function App() {
         backgroundColor: dark ? "#000" : "white",
         color: dark ? "white" : "black",
       }}
-      className="
-
-            grid grid-cols-2
-
-            mt-10
-w-full
-      mx-5
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            "
+      className="grid grid-cols-3 mt-10 w-full mx-5"
     >
-      <div
-        className="col-span-2
-            
-
-            "
-      >
+      <div className="col-span-1 ">
         {
           // if there no appointments
           data.length === 0 && !loading ? (
@@ -293,12 +243,12 @@ w-full
                   options={chartOptions}
                 />
               </div>
-              <div className="flex justify-center">
-                <HighchartsReact highcharts={Highcharts} options={options} />
-              </div>
             </div>
           )
         }
+      </div>
+      <div className="col-span-2">
+        <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
     </div>
   );
