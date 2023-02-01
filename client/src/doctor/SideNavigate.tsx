@@ -11,13 +11,15 @@ import SideNav, {
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import {RiDashboardFill} from "react-icons/ri";
 import {useLogIN} from "../../ContextLog";
+import {FaFilePrescription} from "react-icons/fa";
+import {CgProfile} from "react-icons/cg";
+import {BsCalendarDate} from "react-icons/bs";
 
 const SideNavigate = (_props: any) => {
   const {Profile, setProfile, setLoading, dark, setdark} = useLogIN();
   const navigate = useNavigate();
-const {id} = useParams();
+  const {id} = useParams();
 
-  
   return (
     <SideNav
       /*  . */
@@ -92,7 +94,7 @@ const {id} = useParams();
         </NavItem>
         <NavItem eventKey="MyCalendar">
           <NavIcon>
-            <RiDashboardFill
+            <BsCalendarDate
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -111,12 +113,37 @@ const {id} = useParams();
               marginTop: "1rem",
             }}
           >
-            about
+            MyCalendar
+          </NavText>
+        </NavItem>
+
+        <NavItem eventKey="Prescription">
+          <NavIcon>
+            <FaFilePrescription
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            Prescription
           </NavText>
         </NavItem>
         <NavItem eventKey="doctor">
           <NavIcon>
-            <RiDashboardFill
+            <CgProfile
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -135,31 +162,7 @@ const {id} = useParams();
               marginTop: "1rem",
             }}
           >
-            DoctorProfile
-          </NavText>
-        </NavItem>
-        <NavItem eventKey="Prescription">
-          <NavIcon>
-            <RiDashboardFill
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            DoctorProfile
+            Profile
           </NavText>
         </NavItem>
       </SideNav.Nav>
