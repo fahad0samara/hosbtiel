@@ -307,65 +307,6 @@ router.post("/register-patient", async (req, res) => {
   }
 });
 
-// router.post("/appointment", async (req, res) => {
-//   try {
-//     // Check if the patient exists patient:Patient._id,
-//     const patient = await Patient.findById(req.body.patient);
-//     if (!patient) {
-//       return res.status(404).json({
-//         error: "Patient not found",
-//       });
-//     }
-
-//     // Check if the doctor exists
-//     const doctor = await Doctor.findById(req.body.doctorId);
-//     if (!doctor) {
-//       return res.status(404).json({
-//         error: "Doctor not found",
-//       });
-//     }
-
-//     // Extract the patient's ID, doctor's ID, appointment date, and appointment time from the request body
-//     const patientId = req.body.patient;
-//     const doctorId = req.body.doctorId;
-//     const appointmentDate = req.body.appointmentDate;
-//     const appointmentTime = req.body.appointmentTime;
-
-//     // Check if the doctor is available at the desired date and time
-//     const existingAppointment = await Appointment.findOne({
-//       doctor: doctorId,
-//       appointmentDate: appointmentDate,
-//       appointmentTime: appointmentTime,
-//     });
-
-//     if (existingAppointment) {
-//       // If the doctor is not available, return an error message
-//       return res.status(400).json({
-//         error: "This doctor is not available at the desired date and time",
-//       });
-//     }
-
-//     // If the doctor is available, create a new appointment document
-//     const appointment = new Appointment({
-//       doctor: doctorId,
-//       patient: patientId,
-//       appointmentDate: appointmentDate,
-//       appointmentTime: appointmentTime,
-//       symptoms: req.body.symptoms,
-//     });
-//     await appointment.save();
-
-//     // Return success message to the patient
-//     res.json({
-//       message: "Appointment request sent successfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       error: "Server error",
-//     });
-//   }
-// });
 
 router.post("/appointment", async (req, res) => {
   try {

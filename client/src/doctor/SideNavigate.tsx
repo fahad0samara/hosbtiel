@@ -39,6 +39,8 @@ const SideNavigate = (_props: any) => {
           navigate(`/doctor/doctor/${id}`);
         } else if (selected === "Prescription") {
           navigate(`/doctor/Prescription`);
+        } else if (selected === "PrescriptionTable") {
+          navigate(`/doctor/PrescriptionTable`);
         }
       }}
       className="
@@ -142,6 +144,30 @@ const SideNavigate = (_props: any) => {
           </NavText>
         </NavItem>
         <NavItem eventKey="doctor">
+          <NavIcon>
+            <CgProfile
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            Profile
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="PrescriptionTable">
           <NavIcon>
             <CgProfile
               style={{

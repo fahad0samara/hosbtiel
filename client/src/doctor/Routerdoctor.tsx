@@ -7,7 +7,8 @@ import SideNav from "./SideNavigate";
 import DoctorProfile from "./DoctorProfile";
 import MyCalendar from "./MyCalendar";
 import ViewPatient from "../admin/List/ViewPatient";
-import Prescription from "./Prescription";
+import Prescription from "./Prescription/Prescription";
+import PrescriptionTable from "./Prescription/PrescriptionTable";
 
 const Routerdoctor = () => {
   return (
@@ -20,6 +21,7 @@ const Routerdoctor = () => {
 
         <Route path="/doctor/:id" element={<DoctorProfile />} />
         <Route path="Prescription" element={<Prescription />} />
+        <Route path="PrescriptionTable" element={<PrescriptionTable />} />
         <Route path="/ViewPatient/:id" element={<ViewPatient />} />
       </Routes>
     </div>

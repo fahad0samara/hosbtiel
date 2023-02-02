@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {useLogIN} from "../../ContextLog";
+import {useLogIN} from "../../../ContextLog";
+import PrescriptionTable from "./PrescriptionTable";
 
 const Prescription = () => {
   const {Doctor, dark} = useLogIN();
@@ -29,7 +30,6 @@ const Prescription = () => {
         );
         setPatients(response.data);
         setLoading(false);
-        console.log("response", response.data);
       } catch (error) {
         setLoading(false);
 
@@ -60,11 +60,6 @@ const Prescription = () => {
         }
       );
       setLoading(false);
-
-      console.log("response", response.data);
-      console.log("====================================");
-
-      console.log("response", response.data);
     } catch (error) {
       //@ts-ignore
 
