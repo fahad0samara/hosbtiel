@@ -365,11 +365,11 @@ router.get("/Prescription/:id", async (req, res) => {
   try {
     // Find the prescription by its ID and populate the doctor and patient fields
     const doctorId = req.params.id;
-    const prescription = await Prescription.findOne({
+    const prescription = await Prescription.find({
       doctor: doctorId,
     })
       .populate("patient")
-      .populate("doctor")
+
       .exec();
     // If the prescription is not found, return a 404 response
     if (!prescription) {
@@ -379,7 +379,9 @@ router.get("/Prescription/:id", async (req, res) => {
     }
 
     // Return the prescription in the response
-    res.json(prescription);
+    res.json({
+      prescription,
+    });
   } catch (error) {
     // If there is an error, send a response with a status of 500 and the error message
     res.status(500).json({message: error.message});

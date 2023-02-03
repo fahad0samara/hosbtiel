@@ -1,95 +1,105 @@
-import React, {useState, useEffect} from "react";
-import axios from "axios";
-
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 import {useLogIN} from "../../../ContextLog";
-import {useTable, usePagination} from "react-table";
-function PrescriptionTable() {
-  const {Doctor, dark} = useLogIN();
 
-  const [Prescription, setPrescription] = useState();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+const Prescription = () => {
+  const {Doctor, dark} = useLogIN();
+  const [prescriptions, setPrescriptions] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    const fetchPrescription = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(
+        const response = await fetch(
           `http://localhost:3000/doctor/Prescription/${Doctor._id}`
         );
+        const data = await response.json();
+        setPrescriptions(data.prescription);
         console.log("====================================");
-        console.log("res.data in PrescriptionTable.tsx", res.data);
+        console.log(
+          "🚀 ~ file: PrescriptionTable.tsx ~ line 18 ~ fetchData ~ data",
+          data.prescription
+        );
         console.log("====================================");
-        setPrescription(res.data);
-
-        setLoading(false);
       } catch (error) {
-        console.log("====================================");
-        console.log("error in PrescriptionTable.tsx", error);
-        console.log("====================================");
-        setError(true);
-        setLoading(false);
+        console.error(error.message);
       }
     };
-    fetchPrescription();
-  }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
+    fetchData();
+  }, [Doctor._id]);
+
+  if (loading) {
+    return <p className="text-center font-medium text-gray-600">Loading...</p>;
+  }
+  if (error) {
+    return (
+      <p className="text-center font-medium text-red-600">
+        Error: {error.message}
+      </p>
+    );
+  }
 
   return (
-    <div>
-      <h1>Prescription</h1>
-      <table className="table-auto">
-        <thead>
+    <div
+      className={`${dark ? "bg-gray-800" : "bg-gray-100"} 
+        max-w-4xl
+       h-full p-4 rounded-md  ml-20 shadow-md`}
+    >
+      <h1 className="text-2xl font-medium text-gray-600">Prescription</h1>
+
+      <table
+        className={`${
+          dark ? "bg-gray-800" : "bg-gray-100"
+        } w-full mt-4 text-sm text-gray-600`}
+      >
+        <thead className="bg-gray-200">
           <tr>
-            <th className="px-4 py-2">Doctor Name</th>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Dosage</th>
-            <th className="px-4 py-2">Duration</th>
-            <th className="px-4 py-2">Instruction</th>
-            <th className="px-4 py-2">Medication</th>
-            <th className="px-4 py-2">Notes</th>
-            <th className="px-4 py-2">Refills</th>
-            <th className="px-4 py-2">Download</th>
+            <th className="py-2 px-4 font-medium text-gray-700">
+              Patient Name
+            </th>
+            <th className="py-2 px-4 font-medium text-gray-700">Patient Age</th>
+            <th className="py-2 px-4 font-medium text-gray-700">
+              Patient Gender
+            </th>
+
+            <th className="py-2 px-4 font-medium text-gray-700">
+              Patient Address
+            </th>
+            <th className="py-2 px-4 font-medium text-gray-700">
+              Patient Phone
+            </th>
+            <th className="py-2 px-4 font-medium text-gray-700">
+              Patient Email
+            </th>
           </tr>
         </thead>
         <tbody>
-          {Prescription
-            ? Object.values(Prescription).map(prescription => (
-                <tr key={prescription._id}>
-                  <td className="border px-4 py-2">
-                    {prescription.patient.firstName}
-                  </td>
-                  <td className="border px-4 py-2">
-                    {new Date(prescription.date).toLocaleDateString("en-US", {
-                      month: "2-digit",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="border px-4 py-2">{prescription.dosage}</td>
-                  <td className="border px-4 py-2">{prescription.duration}</td>
-                  <td className="border px-4 py-2">{prescription.frequency}</td>
-                  <td className="border px-4 py-2">
-                    {prescription.medication}
-                  </td>
-                  <td className="border px-4 py-2">{prescription.notes}</td>
-                  <td className="border px-4 py-2">{prescription.refills}</td>
-                  <td className="border px-4 py-2">
-                    <a
-                      href={`http://localhost:3000/doctor/Prescription/${prescription._id}/download`}
-                    >
-                      Download
-                    </a>
-                  </td>
+          {
+            // check if the data is loaded
+            prescriptions ? (
+              prescriptions.map((prescription: any) => (
+                <tr
+                  key={prescription._id}
+                  className="hover:bg-gray-100 border-b border-gray-200 py-10"
+                >
+                  <td className="py-2 px-4">{prescription.frequency}</td>
+                  <td className="py-2 px-4">{prescription.duration}</td>
                 </tr>
               ))
-            : null}
+            ) : (
+              <tr>
+                <td className="py-2 px-4">No data</td>
+              </tr>
+            )
+
+            // if the data is not loaded
+          }
         </tbody>
       </table>
     </div>
   );
-}
+};
 
-export default PrescriptionTable;
+export default Prescription;

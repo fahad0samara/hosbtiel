@@ -209,6 +209,7 @@ const Prescription = () => {
                     id="date"
                     type="date"
                     className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
+                    onChange={e => setDate(e.target.value)}
                   />
                 </div>
                 <div>
