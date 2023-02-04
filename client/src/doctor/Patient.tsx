@@ -142,8 +142,8 @@ const Patient = () => {
             >
               <tr className=" uppercase text-sm leading-normal">
                 <th className=" text-left">healthIDNumber</th>
-                <th className=" ">name</th>
-                <th className=" ">BloodGroup</th>
+                <th className=" text-left">name</th>
+                <th className=" text-left">BloodGroup</th>
 
                 <th className=" text-center">mobile</th>
                 <th className=" text-center">Date</th>
