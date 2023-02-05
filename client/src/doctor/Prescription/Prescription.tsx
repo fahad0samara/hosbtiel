@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useLogIN} from "../../../ContextLog";
 import PrescriptionTable from "./PrescriptionTable";
+import Loder from "../../tools/Loder";
 
 const Prescription = () => {
   const {Doctor, dark} = useLogIN();
@@ -76,6 +77,13 @@ const Prescription = () => {
       setLoading(false);
     }
   };
+  if (loading) {
+    return (
+      <div>
+        <Loder />
+      </div>
+    );
+  }
 
   return (
     <div

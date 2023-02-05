@@ -12,28 +12,33 @@ const Loder = () => {
 
       dark,
       setdark,
-    } = useLogIN()
-  return (
-    <Player
-      autoplay
-      loop
-      src={animationData} 
-      style={{ 
-        height: "100px",
-        width: "100px",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        
- 
-        
-        
-      }}
-      
-   
-    />
-  );
+    } = useLogIN();
+    return (
+      <div
+        className="w-full overflow-hidden
+        rounded-lg shadow-xs p-4
+        h-screen
+        "
+        style={{
+          backgroundColor: dark ? "#000" : "#fff",
+          color: dark ? "#fff" : "#000",
+        }}
+      >
+        <Player
+          autoplay
+          loop
+          src={animationData}
+          style={{
+            height: "100px",
+            width: "100px",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      </div>
+    );
 };
 
 export default Loder;

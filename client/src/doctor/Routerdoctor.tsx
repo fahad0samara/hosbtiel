@@ -9,6 +9,7 @@ import MyCalendar from "./MyCalendar";
 import ViewPatient from "../admin/List/ViewPatient";
 import Prescription from "./Prescription/Prescription";
 import PrescriptionTable from "./Prescription/PrescriptionTable";
+import ListTable from "./PatientsList/ListTable";
 
 const Routerdoctor = () => {
   return (
@@ -21,6 +22,7 @@ const Routerdoctor = () => {
 
         <Route path="/doctor/:id" element={<DoctorProfile />} />
         <Route path="Prescription" element={<Prescription />} />
+        <Route path="ListTable" element={<ListTable />} />
         <Route path="PrescriptionTable" element={<PrescriptionTable />} />
         <Route path="/ViewPatient/:id" element={<ViewPatient />} />
       </Routes>

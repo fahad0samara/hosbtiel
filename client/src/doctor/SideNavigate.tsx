@@ -9,11 +9,17 @@ import SideNav, {
 } from "@trendmicro/react-sidenav";
 
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import {RiDashboardFill} from "react-icons/ri";
+import {RiDashboardFill, RiLogoutBoxRLine} from "react-icons/ri";
 import {useLogIN} from "../../ContextLog";
 import {FaFilePrescription} from "react-icons/fa";
-import {CgProfile} from "react-icons/cg";
+import {CgProfile, CgUserList} from "react-icons/cg";
 import {BsCalendarDate} from "react-icons/bs";
+import {BiLogOut} from "react-icons/bi";
+import {FaUserMd} from "react-icons/fa";
+import {FaUser} from "react-icons/fa";
+import {FaUserNurse} from "react-icons/fa";
+import {FaUserInjured} from "react-icons/fa";
+import {TbCheckupList} from "react-icons/tb";
 
 const SideNavigate = (_props: any) => {
   const {Profile, setProfile, setLoading, dark, setdark} = useLogIN();
@@ -41,6 +47,8 @@ const SideNavigate = (_props: any) => {
           navigate(`/doctor/Prescription`);
         } else if (selected === "PrescriptionTable") {
           navigate(`/doctor/PrescriptionTable`);
+        } else if (selected === "ListTable") {
+          navigate(`/doctor/ListTable`);
         }
       }}
       className="
@@ -143,6 +151,54 @@ const SideNavigate = (_props: any) => {
             Prescription
           </NavText>
         </NavItem>
+        <NavItem eventKey="PrescriptionTable">
+          <NavIcon>
+            <TbCheckupList
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            PrescriptionList
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="ListTable">
+          <NavIcon>
+            <CgUserList
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            PatientsList
+          </NavText>
+        </NavItem>
         <NavItem eventKey="doctor">
           <NavIcon>
             <CgProfile
@@ -167,9 +223,10 @@ const SideNavigate = (_props: any) => {
             Profile
           </NavText>
         </NavItem>
-        <NavItem eventKey="PrescriptionTable">
+
+        <NavItem eventKey="logout">
           <NavIcon>
-            <CgProfile
+            <RiLogoutBoxRLine
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -188,7 +245,7 @@ const SideNavigate = (_props: any) => {
               marginTop: "1rem",
             }}
           >
-            Profile
+            Logout
           </NavText>
         </NavItem>
       </SideNav.Nav>

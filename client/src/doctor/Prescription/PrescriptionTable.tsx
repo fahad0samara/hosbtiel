@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useLogIN} from "../../../ContextLog";
+import img from "../../assets/Medical.png";
+import Loder from "../../tools/Loder";
 
 const Prescription = () => {
   const {Doctor, dark} = useLogIN();
   const [prescriptions, setPrescriptions] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
-  console.log(
-    "🚀 ~ file: PrescriptionTable.tsx ~ line 8 ~ Prescription ~ Doctor",
-    Doctor
-  );
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -21,6 +19,7 @@ const Prescription = () => {
         );
         const data = await response.json();
         setPrescriptions(data.prescription);
+        setLoading(false);
         console.log("====================================");
         console.log(
           "🚀 ~ file: PrescriptionTable.tsx ~ line 18 ~ fetchData ~ data",
@@ -28,6 +27,9 @@ const Prescription = () => {
         );
         console.log("====================================");
       } catch (error) {
+        setError(error);
+        setLoading(false);
+
         console.error(error.message);
       }
     };
@@ -36,7 +38,11 @@ const Prescription = () => {
   }, [Doctor._id]);
 
   if (loading) {
-    return <p className="text-center font-medium text-gray-600">Loading...</p>;
+    return (
+      <div>
+        <Loder />
+      </div>
+    );
   }
   if (error) {
     return (
@@ -77,8 +83,8 @@ const Prescription = () => {
         >
           <h1 className=" text-2xl font-bold py-4 ">Prescription list</h1>
           {
-            // check if the data is loaded
-            prescriptions ? (
+            /* Checking if the data is loaded and if it is loaded it will display the table. */
+            prescriptions && prescriptions.length > 0 ? (
               <h1
                 className="text-2xl text-cyan-300
               font-medium ml-3"
@@ -87,10 +93,7 @@ const Prescription = () => {
                 {prescriptions.length}{" "}
               </h1>
             ) : (
-              <h1 className="text-2xl text-cyan-300 font-medium py-4 ml-20">
-                {" "}
-                you don't have any prescriptions yet
-              </h1>
+              <h1 className="text-2xl text-cyan-300 font-medium  ml-2"> 0 </h1>
             )
           }
         </div>
@@ -113,37 +116,45 @@ const Prescription = () => {
         <h1 className=" text-xl   ml-20"></h1>
       </div>
 
-      <div
-        className="relative overflow-x-auto shadow-md sm:rounded-lg 
+      {
+        /* Checking if the data is loaded and if it is loaded it will display the table. */
+        prescriptions && prescriptions.length > 0 ? (
+          <div
+            className="relative overflow-x-auto shadow-md sm:rounded-lg 
       mx-20
      
        p-5"
-      >
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="bg-gray-200">
-            <tr className=" uppercase text-sm leading-normal">
-              <th className="py-2 px-4 font-medium text-gray-700">
-                Patient Name
-              </th>
-              <th className="py-2 px-4 font-medium text-gray-700">
-                Date of Prescription
-              </th>
+          >
+            <table className="w-full text-sm text-left  ">
+              <thead className="bg-gray-200">
+                <tr className=" uppercase text-sm leading-normal">
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    Patient Name
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    Date of Prescription
+                  </th>
 
-              <th className="py-2 px-4 font-medium text-gray-700">
-                medication
-              </th>
-              <th className="py-2 px-4 font-medium text-gray-700">dosage</th>
-              <th className="py-2 px-4 font-medium text-gray-700">frequency</th>
-              <th className="py-2 px-4 font-medium text-gray-700">duration</th>
-              <th className="py-2 px-4 font-medium text-gray-700">notes</th>
-              <th className="py-2 px-4 font-medium text-gray-700">refills</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              // check if the data is loaded
-              prescriptions ? (
-                prescriptions.map((prescription: any) => (
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    medication
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    dosage
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    frequency
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    duration
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-700">notes</th>
+                  <th className="py-2 px-4 font-medium text-gray-700">
+                    refills
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {prescriptions.map((prescription: any) => (
                   <tr
                     key={prescription._id}
                     className="hover:bg-gray-100 border-b border-gray-200 py-10"
@@ -166,18 +177,35 @@ const Prescription = () => {
                     <td className="py-2 px-4">{prescription.notes}</td>
                     <td className="py-2 px-4">{prescription.refills}</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="py-2 px-4">No data</td>
-                </tr>
-              )
-
-              // if the data is not loaded
-            }
-          </tbody>
-        </table>
-      </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div
+            className="flex 
+        flex-col
+        items-center
+        justify-center
+        h-full
+        text-gray-400
+        
+        
+          "
+          >
+            No prescriptions yet
+            <img
+              src={img}
+              alt="no prescriptions"
+              className="
+          mt-4
+          h-3/4
+        
+            "
+            />
+          </div>
+        )
+      }
     </div>
   );
 };
