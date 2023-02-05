@@ -6,7 +6,6 @@ import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
 import {Link} from "react-router-dom";
 import {FiEdit2, FiEye} from "react-icons/fi";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
-
 import {useLogIN} from "../../../ContextLog";
 
 const ListTable = () => {
@@ -24,7 +23,7 @@ const ListTable = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:3000/doctor/all-patients/${Doctor._id}`, {
+      .get(`http://localhost:3000/doctor/all-appointments/${Doctor._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -36,6 +35,10 @@ const ListTable = () => {
 
       .then(res => {
         setLastPatient(res.data.patients);
+        console.info(
+          "🚀 ~ file: ListTable.tsx ~ line 38 ~ .then ~ res.data.patients",
+          res.data
+        );
 
         setPagination({
           ...pagination,
@@ -117,9 +120,66 @@ const ListTable = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-xl my-4 text-cyan-300 font-bold">Last Patients</h1>
-      <div className="">
+    <div
+      style={{
+        backgroundColor: dark ? "#000" : "#fff",
+        color: dark ? "#fff" : "#000",
+      }}
+      className="p-6
+      h-screen
+
+    
+      "
+    >
+      <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
+        <div
+          className="text-xl  font-medium  flex 
+      items-center
+      ml-20
+      
+        "
+        >
+          <h1 className=" text-2xl font-bold ">Patient list</h1>
+          {
+            /* Checking if the data is loaded and if it is loaded it will display the table. */
+            lastPatient && lastPatient.length > 0 ? (
+              <h1
+                className="text-2xl text-cyan-300
+              font-medium ml-3"
+              >
+                {" "}
+                {lastPatient.length}{" "}
+              </h1>
+            ) : (
+              <h1 className="text-2xl text-cyan-300 font-medium  ml-2"> 0 </h1>
+            )
+          }
+        </div>
+
+        <div className="text-xl flex  font-medium ">
+          <h1>last All patients that you have since </h1>{" "}
+          <h1>
+            {" "}
+            <span className="text-cyan-300 font-medium ml-2">
+              {Doctor.user.createdAt
+                .slice(0, 10)
+                .split("-")
+                .reverse()
+                .join("-")}
+            </span>
+          </h1>
+        </div>
+      </div>
+
+      <div
+        style={{
+          backgroundColor: dark ? "#000" : "#fff",
+          color: dark ? "#fff" : "#000",
+        }}
+        className="
+      
+        "
+      >
         {loading ? (
           <div
             className=" 
@@ -127,29 +187,37 @@ const ListTable = () => {
               justify-center
               items-center
               h-screen
-       
-
-
-                        "
+              w-full"
           >
             <div className="line"></div>
           </div>
         ) : (
-          <table className="min-w-max w-full table-auto ">
+          <table
+            className="
+            max-w-5xl
+            w-full
+             
+
+            mx-auto
+            text-left rounded-lg overflow-hidden table-auto"
+          >
             <thead
               className={
-                dark ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+                dark ? "bg-cyan-400 text-gray-200" : "bg-cyan-400 text-gray-800"
               }
             >
               <tr className=" uppercase text-sm leading-normal">
                 <th className=" text-left">healthIDNumber</th>
-                <th className=" text-left">name</th>
+                <th className=" text-center">name</th>
+                <th className=" text-center">Email</th>
+
                 <th className=" text-left">BloodGroup</th>
 
                 <th className=" text-center">mobile</th>
-                <th className=" text-center">Date</th>
-                <th className=" text-center">ViSiT Time</th>
-                <th className=" text-center">Age</th>
+                <th className=" text-center">age</th>
+
+                <th className=" text-center">weight</th>
+                <th className=" text-center">height</th>
 
                 <th className=" text-center">Actions</th>
               </tr>
@@ -159,7 +227,7 @@ const ListTable = () => {
               lastPatient && lastPatient.length === 0 ? (
                 <tbody className="text-sm font-light">
                   <tr className="text-center">
-                    <td colSpan="8">
+                    <td colSpan={9}>
                       <p className="text-red-500 text-center text-2xl">
                         No Patients
                       </p>
@@ -178,7 +246,7 @@ const ListTable = () => {
                       >
                         <td className="  ">
                           <span className="font-medium text-center ml-8">
-                            {patients.patient.healthIDNumber}
+                            {patients.healthIDNumber}
                           </span>
                         </td>
                         <td className=" text-left whitespace-nowrap">
@@ -214,26 +282,31 @@ const ListTable = () => {
                               </svg>
                             </div>
                             <span className="font-medium">
-                              {patients.patient.name.firstName}
-                              {patients.patient.name.LastName}
+                              {patients.name.firstName}
+                              {patients.name.LastName}
                             </span>
                           </div>
                         </td>
                         <td className=" ">
                           <div className="mr-6 text-center">
-                            {patients.patient.bloodGroup}
+                            {patients.user.email}
+                          </div>
+                        </td>
+                        <td className=" ">
+                          <div className="mr-6 text-center">
+                            {patients.bloodGroup}
                           </div>
                         </td>
                         <td className=" ">
                           <div className="flex items-center text-center">
                             <div className="mr-2"></div>
-                            <span>{patients.patient.mobile}</span>
+                            <span>{patients.mobile}</span>
                           </div>
                         </td>
                         <td className="  text-center">
                           <div className="flex items-center justify-center">
                             <span>
-                              {patients.appointmentDate
+                              {patients.date
                                 .toString()
                                 .substring(0, 10)
                                 .split("-")
@@ -242,21 +315,15 @@ const ListTable = () => {
                             </span>
                           </div>
                         </td>
+
                         <td className="  text-center">
                           <div className="flex items-center justify-center">
-                            <span>{patients.appointmentTime}</span>
+                            <span>{patients.weight}</span>
                           </div>
                         </td>
                         <td className="  text-center">
                           <div className="flex items-center justify-center">
-                            <span>
-                              {patients.patient.date
-                                .toString()
-                                .substring(0, 10)
-                                .split("-")
-                                .reverse()
-                                .join("-")}
-                            </span>
+                            <span>{patients.height}</span>
                           </div>
                         </td>
 

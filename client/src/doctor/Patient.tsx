@@ -23,7 +23,7 @@ const Patient = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:3000/doctor/all-patients/${Doctor._id}`, {
+      .get(`http://localhost:3000/doctor/all-appointments/${Doctor._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

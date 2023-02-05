@@ -219,42 +219,47 @@ router.get("/appointments/:id/:date", async (req, res) => {
   }
 });
 
-router.get("/all-patients/:id", extractToken, checkDoctor, async (req, res) => {
-  try {
-    const doctorId = req.params.id;
+router.get(
+  "/all-appointments/:id",
+  extractToken,
+  checkDoctor,
+  async (req, res) => {
+    try {
+      const doctorId = req.params.id;
 
-    // Get the page number from the query string
-    const page = parseInt(req.query.page as string);
+      // Get the page number from the query string
+      const page = parseInt(req.query.page as string);
 
-    // Get the limit from the query string
-    const limit = parseInt(req.query.limit as string);
+      // Get the limit from the query string
+      const limit = parseInt(req.query.limit as string);
 
-    const skip = (page - 1) * limit;
+      const skip = (page - 1) * limit;
 
-    // Get all patients that the doctor saw
-    const patients = await Appointment.find({
-      doctor: doctorId,
-    })
-      .populate("patient")
-      .sort({createdAt: -1})
-      .skip(skip)
-      .limit(limit);
+      // Get all patients that the doctor saw
+      const patients = await Appointment.find({
+        doctor: doctorId,
+      })
+        .populate("patient")
+        .sort({createdAt: -1})
+        .skip(skip)
+        .limit(limit);
 
-    const count = await Appointment.countDocuments({doctor: doctorId});
-    const totalPages = Math.ceil(count / limit);
-    res.json({
-      patients: patients,
-      pagination: {
-        page: page,
-        limit: limit,
-        totalPages: totalPages,
-      },
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({error: error.message});
+      const count = await Appointment.countDocuments({doctor: doctorId});
+      const totalPages = Math.ceil(count / limit);
+      res.json({
+        patients: patients,
+        pagination: {
+          page: page,
+          limit: limit,
+          totalPages: totalPages,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({error: error.message});
+    }
   }
-});
+);
 
 router.get("/all-patients/:id/:date", async (req, res) => {
   try {
@@ -281,8 +286,6 @@ router.get("/all-patients/:id/:date", async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
-
-
 
 router.post("/update-availability", async (req, res) => {
   try {
@@ -389,15 +392,58 @@ router.get("/Prescription/:id", async (req, res) => {
 });
 
 router.get("/patients", async (req, res) => {
-  // Retrieve the doctorId from the query parameter
-  const doctorId = req.query.doctorId;
+  try {
+    // Retrieve the doctorId, page, and limit from the query parameters
 
-  // Find the patients that have the specified doctorId
-  const patients = await Patient.find({doctor: doctorId});
+    const doctorId = req.query.doctorId;
+    const page = parseInt(req.query.page as string);
+    const limit = parseInt(req.query.limit as string);
 
-  // Return the filtered patients in the response
-  res.send(patients);
+    // Calculate the skip value
+
+    const skip = (page - 1) * limit;
+    // Get all patients that the doctor saw
+    const patients = await Appointment.find({
+      doctor: doctorId,
+    })
+      .populate("patient")
+      .populate("user")
+      .sort({createdAt: -1})
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    // Count the number of patients that have the specified doctorId
+    const count = await Patient.countDocuments({doctor: doctorId});
+    const totalPages = Math.ceil(count / limit);
+
+    // Send the patients to the client
+    res.json({
+      patients,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({error: error.message});
+  }
 });
+
+// with the specified doctor
+
+
+
+
+
+
+
+
+
+
+
 
 
 export default router
