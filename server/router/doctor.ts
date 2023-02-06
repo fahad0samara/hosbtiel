@@ -391,35 +391,47 @@ router.get("/Prescription/:id", async (req, res) => {
   }
 });
 
-router.get("/patients", async (req, res) => {
-  try {
-    // Retrieve the doctorId, page, and limit from the query parameters
 
-    const doctorId = req.query.doctorId;
+
+router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+
+    // Get the page number from the query string
     const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
     const limit = parseInt(req.query.limit as string);
 
-    // Calculate the skip value
-
     const skip = (page - 1) * limit;
+
     // Get all patients that the doctor saw
     const patients = await Appointment.find({
       doctor: doctorId,
     })
       .populate("patient")
-      .populate("user")
+
       .sort({createdAt: -1})
       .skip(skip)
-      .limit(limit)
-      .exec();
+      .limit(limit);
+    // Remove duplicate patients
+    const uniquePatients = patients.filter(
+      (patient, index, self) =>
+        index ===
+        self.findIndex(
+          t => t.patient._id.toString() === patient.patient._id.toString()
+        )
+    );
 
-    // Count the number of patients that have the specified doctorId
-    const count = await Patient.countDocuments({doctor: doctorId});
+    // Extract only the patient data
+    const extractedPatients = uniquePatients.map(patient => patient.patient);
+
+    // Get the total number of patients that the doctor saw
+
+    const count = await Appointment.countDocuments({doctor: doctorId});
     const totalPages = Math.ceil(count / limit);
-
-    // Send the patients to the client
     res.json({
-      patients,
+      patients: extractedPatients,
       pagination: {
         page: page,
         limit: limit,
@@ -431,8 +443,6 @@ router.get("/patients", async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
-
-// with the specified doctor
 
 
 

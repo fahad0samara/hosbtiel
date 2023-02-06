@@ -7,7 +7,8 @@ import {Link} from "react-router-dom";
 import {FiEdit2, FiEye} from "react-icons/fi";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
 import {useLogIN} from "../../../ContextLog";
-
+import img from "../../assets/List.png";
+import Loder from "../../tools/Loder";
 const ListTable = () => {
   const [lastPatient, setLastPatient] = useState();
   const [error, setError] = useState(null);
@@ -23,7 +24,7 @@ const ListTable = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:3000/doctor/all-appointments/${Doctor._id}`, {
+      .get(`http://localhost:3000/doctor/all-patient/${Doctor._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -37,7 +38,7 @@ const ListTable = () => {
         setLastPatient(res.data.patients);
         console.info(
           "🚀 ~ file: ListTable.tsx ~ line 38 ~ .then ~ res.data.patients",
-          res.data
+          res.data.patients
         );
 
         setPagination({
@@ -118,7 +119,13 @@ const ListTable = () => {
       </p>
     );
   }
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <Loder />
+      </div>
+    );
+  }
   return (
     <div
       style={{
@@ -127,6 +134,7 @@ const ListTable = () => {
       }}
       className="p-6
       h-screen
+      ml-11
 
     
       "
@@ -156,11 +164,11 @@ const ListTable = () => {
           }
         </div>
 
-        <div className="text-xl flex  font-medium ">
-          <h1>last All patients that you have since </h1>{" "}
+        <div className="md:text-xl text-center  text-lg grid grid-cols-1 md:grid-cols-2  font-medium  ml-4">
+          <h1>All patients that you have since </h1>{" "}
           <h1>
             {" "}
-            <span className="text-cyan-300 font-medium ml-2">
+            <span className="text-cyan-300 font-medium  ">
               {Doctor.user.createdAt
                 .slice(0, 10)
                 .split("-")
@@ -171,241 +179,267 @@ const ListTable = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          backgroundColor: dark ? "#000" : "#fff",
-          color: dark ? "#fff" : "#000",
-        }}
-        className="
+      {
+        /* Checking if the data is loaded and if it is loaded it will display the table. */
+        lastPatient && lastPatient.length > 0 ? (
+          <div
+            style={{
+              backgroundColor: dark ? "#000" : "#fff",
+              color: dark ? "#fff" : "#000",
+            }}
+            className="
       
         "
-      >
-        {loading ? (
-          <div
-            className=" 
+          >
+            {loading ? (
+              <div
+                className=" 
               flex
               justify-center
               items-center
               h-screen
               w-full"
-          >
-            <div className="line"></div>
-          </div>
-        ) : (
-          <table
-            className="
+              >
+                <div className="line"></div>
+              </div>
+            ) : (
+              <table
+                className="
             max-w-5xl
             w-full
              
 
             mx-auto
             text-left rounded-lg overflow-hidden table-auto"
-          >
-            <thead
-              className={
-                dark ? "bg-cyan-400 text-gray-200" : "bg-cyan-400 text-gray-800"
-              }
-            >
-              <tr className=" uppercase text-sm leading-normal">
-                <th className=" text-left">healthIDNumber</th>
-                <th className=" text-center">name</th>
-                <th className=" text-center">Email</th>
+              >
+                <thead
+                  className={
+                    dark
+                      ? "bg-cyan-400 text-gray-200"
+                      : "bg-cyan-400 text-gray-800"
+                  }
+                >
+                  <tr className=" uppercase text-sm leading-normal">
+                    <th className=" text-left">healthIDNumber</th>
+                    <th className=" text-center">name</th>
+                    <th className=" text-center">city</th>
 
-                <th className=" text-left">BloodGroup</th>
+                    <th className=" text-left">BloodGroup</th>
 
-                <th className=" text-center">mobile</th>
-                <th className=" text-center">age</th>
+                    <th className=" text-center">mobile</th>
+                    <th className=" text-center">age</th>
 
-                <th className=" text-center">weight</th>
-                <th className=" text-center">height</th>
+                    <th className=" text-center">weight</th>
+                    <th className=" text-center">height</th>
 
-                <th className=" text-center">Actions</th>
-              </tr>
-            </thead>
-            {
-              //if there no pation
-              lastPatient && lastPatient.length === 0 ? (
-                <tbody className="text-sm font-light">
-                  <tr className="text-center">
-                    <td colSpan={9}>
-                      <p className="text-red-500 text-center text-2xl">
-                        No Patients
-                      </p>
-                    </td>
+                    <th className=" text-center">Actions</th>
                   </tr>
-                </tbody>
-              ) : (
-                lastPatient &&
-                lastPatient.map(patients => {
-                  return (
-                    <tbody key={patients._id} className={" text-sm font-light"}>
-                      <tr
-                        className={
-                          "border-b border-gray-200 hover:bg-gray-100 hover:text-black"
-                        }
-                      >
-                        <td className="  ">
-                          <span className="font-medium text-center ml-8">
-                            {patients.healthIDNumber}
-                          </span>
-                        </td>
-                        <td className=" text-left whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="mr-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                x="0px"
-                                y="0px"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 48 48"
-                                style={{fill: "#000000"}}
-                              >
-                                <path
-                                  fill="#80deea"
-                                  d="M24,34C11.1,34,1,29.6,1,24c0-5.6,10.1-10,23-10c12.9,0,23,4.4,23,10C47,29.6,36.9,34,24,34z M24,16	c-12.6,0-21,4.1-21,8c0,3.9,8.4,8,21,8s21-4.1,21-8C45,20.1,36.6,16,24,16z"
-                                ></path>
-                                <path
-                                  fill="#80deea"
-                                  d="M15.1,44.6c-1,0-1.8-0.2-2.6-0.7C7.6,41.1,8.9,30.2,15.3,19l0,0c3-5.2,6.7-9.6,10.3-12.4c3.9-3,7.4-3.9,9.8-2.5	c2.5,1.4,3.4,4.9,2.8,9.8c-0.6,4.6-2.6,10-5.6,15.2c-3,5.2-6.7,9.6-10.3,12.4C19.7,43.5,17.2,44.6,15.1,44.6z M32.9,5.4	c-1.6,0-3.7,0.9-6,2.7c-3.4,2.7-6.9,6.9-9.8,11.9l0,0c-6.3,10.9-6.9,20.3-3.6,22.2c1.7,1,4.5,0.1,7.6-2.3c3.4-2.7,6.9-6.9,9.8-11.9	c2.9-5,4.8-10.1,5.4-14.4c0.5-4-0.1-6.8-1.8-7.8C34,5.6,33.5,5.4,32.9,5.4z"
-                                ></path>
-                                <path
-                                  fill="#80deea"
-                                  d="M33,44.6c-5,0-12.2-6.1-17.6-15.6C8.9,17.8,7.6,6.9,12.5,4.1l0,0C17.4,1.3,26.2,7.8,32.7,19	c3,5.2,5,10.6,5.6,15.2c0.7,4.9-0.3,8.3-2.8,9.8C34.7,44.4,33.9,44.6,33,44.6z M13.5,5.8c-3.3,1.9-2.7,11.3,3.6,22.2	c6.3,10.9,14.1,16.1,17.4,14.2c1.7-1,2.3-3.8,1.8-7.8c-0.6-4.3-2.5-9.4-5.4-14.4C24.6,9.1,16.8,3.9,13.5,5.8L13.5,5.8z"
-                                ></path>
-                                <circle
-                                  cx="24"
-                                  cy="24"
-                                  r="4"
-                                  fill="#80deea"
-                                ></circle>
-                              </svg>
-                            </div>
-                            <span className="font-medium">
-                              {patients.name.firstName}
-                              {patients.name.LastName}
-                            </span>
-                          </div>
-                        </td>
-                        <td className=" ">
-                          <div className="mr-6 text-center">
-                            {patients.user.email}
-                          </div>
-                        </td>
-                        <td className=" ">
-                          <div className="mr-6 text-center">
-                            {patients.bloodGroup}
-                          </div>
-                        </td>
-                        <td className=" ">
-                          <div className="flex items-center text-center">
-                            <div className="mr-2"></div>
-                            <span>{patients.mobile}</span>
-                          </div>
-                        </td>
-                        <td className="  text-center">
-                          <div className="flex items-center justify-center">
-                            <span>
-                              {patients.date
-                                .toString()
-                                .substring(0, 10)
-                                .split("-")
-                                .reverse()
-                                .join("-")}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td className="  text-center">
-                          <div className="flex items-center justify-center">
-                            <span>{patients.weight}</span>
-                          </div>
-                        </td>
-                        <td className="  text-center">
-                          <div className="flex items-center justify-center">
-                            <span>{patients.height}</span>
-                          </div>
-                        </td>
-
-                        <td className="  text-center">
-                          <div className="flex item-center justify-center mt-3 ">
-                            <div
-                              className={
-                                "w-4 mr-2  transform hover:text-purple-500 hover:scale-110"
-                              }
-                            >
-                              <Link
-                                //
-                                to={`/admin/ViewPatient/${patients._id}`}
-                                className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
-                              >
-                                <FiEye />
-                              </Link>
-                            </div>
-
-                            <Link
-                              to={`/admin/Edit/${patients._id}`}
-                              className={
-                                "w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
-                              }
-                            >
-                              <FiEdit2 />
-                            </Link>
-                          </div>
+                </thead>
+                {
+                  //if there no pation
+                  lastPatient && lastPatient.length === 0 ? (
+                    <tbody className="text-sm font-light">
+                      <tr className="text-center">
+                        <td colSpan={9}>
+                          <p className="text-red-500 text-center text-2xl">
+                            No Patients
+                          </p>
                         </td>
                       </tr>
                     </tbody>
-                  );
-                })
-              )
-            }
-          </table>
-        )}
+                  ) : (
+                    lastPatient &&
+                    lastPatient.map(patients => {
+                      return (
+                        <tbody
+                          key={patients._id}
+                          className={" text-sm font-light"}
+                        >
+                          <tr
+                            className={
+                              "border-b border-gray-200 hover:bg-gray-100 hover:text-black"
+                            }
+                          >
+                            <td className="  ">
+                              <span className="font-medium text-center ml-8">
+                                {patients.healthIDNumber}
+                              </span>
+                            </td>
+                            <td className=" text-left whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="mr-2">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    x="0px"
+                                    y="0px"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 48 48"
+                                    style={{fill: "#000000"}}
+                                  >
+                                    <path
+                                      fill="#80deea"
+                                      d="M24,34C11.1,34,1,29.6,1,24c0-5.6,10.1-10,23-10c12.9,0,23,4.4,23,10C47,29.6,36.9,34,24,34z M24,16	c-12.6,0-21,4.1-21,8c0,3.9,8.4,8,21,8s21-4.1,21-8C45,20.1,36.6,16,24,16z"
+                                    ></path>
+                                    <path
+                                      fill="#80deea"
+                                      d="M15.1,44.6c-1,0-1.8-0.2-2.6-0.7C7.6,41.1,8.9,30.2,15.3,19l0,0c3-5.2,6.7-9.6,10.3-12.4c3.9-3,7.4-3.9,9.8-2.5	c2.5,1.4,3.4,4.9,2.8,9.8c-0.6,4.6-2.6,10-5.6,15.2c-3,5.2-6.7,9.6-10.3,12.4C19.7,43.5,17.2,44.6,15.1,44.6z M32.9,5.4	c-1.6,0-3.7,0.9-6,2.7c-3.4,2.7-6.9,6.9-9.8,11.9l0,0c-6.3,10.9-6.9,20.3-3.6,22.2c1.7,1,4.5,0.1,7.6-2.3c3.4-2.7,6.9-6.9,9.8-11.9	c2.9-5,4.8-10.1,5.4-14.4c0.5-4-0.1-6.8-1.8-7.8C34,5.6,33.5,5.4,32.9,5.4z"
+                                    ></path>
+                                    <path
+                                      fill="#80deea"
+                                      d="M33,44.6c-5,0-12.2-6.1-17.6-15.6C8.9,17.8,7.6,6.9,12.5,4.1l0,0C17.4,1.3,26.2,7.8,32.7,19	c3,5.2,5,10.6,5.6,15.2c0.7,4.9-0.3,8.3-2.8,9.8C34.7,44.4,33.9,44.6,33,44.6z M13.5,5.8c-3.3,1.9-2.7,11.3,3.6,22.2	c6.3,10.9,14.1,16.1,17.4,14.2c1.7-1,2.3-3.8,1.8-7.8c-0.6-4.3-2.5-9.4-5.4-14.4C24.6,9.1,16.8,3.9,13.5,5.8L13.5,5.8z"
+                                    ></path>
+                                    <circle
+                                      cx="24"
+                                      cy="24"
+                                      r="4"
+                                      fill="#80deea"
+                                    ></circle>
+                                  </svg>
+                                </div>
+                                <span className="font-medium">
+                                  {patients.name.firstName}
+                                  {patients.name.LastName}
+                                </span>
+                              </div>
+                            </td>
+                            <td className=" ">
+                              <div className="mr-6 text-center">
+                                {patients.address.city}
+                              </div>
+                            </td>
+                            <td className=" ">
+                              <div className="mr-6 text-center">
+                                {patients.bloodGroup}
+                              </div>
+                            </td>
+                            <td className=" ">
+                              <div className="flex items-center text-center">
+                                <div className="mr-2"></div>
+                                <span>{patients.mobile}</span>
+                              </div>
+                            </td>
+                            <td className="  text-center">
+                              <div className="flex items-center justify-center">
+                                <span>
+                                  {patients.date
+                                    .toString()
+                                    .substring(0, 10)
+                                    .split("-")
+                                    .reverse()
+                                    .join("-")}
+                                </span>
+                              </div>
+                            </td>
 
-        <div
-          className="
-          flex
-          justify-center
-          items-center
-          mt-4
-          mb-4
-          space-x-4
+                            <td className="  text-center">
+                              <div className="flex items-center justify-center">
+                                <span>{patients.weight}</span>
+                              </div>
+                            </td>
+                            <td className="  text-center">
+                              <div className="flex items-center justify-center">
+                                <span>{patients.height}</span>
+                              </div>
+                            </td>
 
-               
+                            <td className="  text-center">
+                              <div className="flex item-center justify-center mt-3 ">
+                                <div
+                                  className={
+                                    "w-4 mr-2  transform hover:text-purple-500 hover:scale-110"
+                                  }
+                                >
+                                  <Link
+                                    //
+                                    to={`/admin/ViewPatient/${patients._id}`}
+                                    className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
+                                  >
+                                    <FiEye />
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      );
+                    })
+                  )
+                }
+              </table>
+            )}
 
-              
-                            
-              "
-        >
-          <div className="   rounded-full text-center py-2">
-            <BsArrowLeftCircleFill
-              className={
-                currentPage === 1
-                  ? "text-gray-300 text-xl cursor-not-allowed"
-                  : "text-cyan-300 text-xl cursor-pointer "
-              }
-              onClick={handlePrevClick}
+            <div className="flex justify-center items-center mt-4 mb-4 space-x-4">
+              <div className="   rounded-full text-center py-2">
+                <BsArrowLeftCircleFill
+                  className={
+                    currentPage === 1
+                      ? "text-gray-300 text-xl cursor-not-allowed"
+                      : "text-cyan-300 text-xl cursor-pointer "
+                  }
+                  onClick={handlePrevClick}
+                />
+              </div>
+
+              <div>
+                <span className="text-gray-500 text-xl">
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
+
+              <div className="   rounded-full text-center py-2">
+                <BsArrowRightCircleFill
+                  className={
+                    currentPage === totalPages
+                      ? "text-gray-300 text-xl cursor-not-allowed"
+                      : "text-cyan-300 text-xl cursor-pointer "
+                  }
+                  onClick={handleNextClick}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="flex flex-col
+    items-center
+    justify-center
+    h-96
+    w-full
+    mt-20
+    text-center
+    text-gray-500
+
+
+          "
+          >
+            <h1
+              className="text-2xl
+    font-bold
+    text-gray-500
+    mb-4
+    text-center
+    ml-11
+    "
+            >
+              you don't have any patients yet
+            </h1>
+            <img
+              src={img}
+              alt="no prescriptions"
+              className="
+    w-4/12
+    h-4/12
+     
+
+     
+   
+        
+            "
             />
           </div>
-
-          <div>
-            <span className="text-gray-500 text-xl">
-              Page {currentPage} of {totalPages}
-            </span>
-          </div>
-
-          <div className="   rounded-full text-center py-2">
-            <BsArrowRightCircleFill
-              className={
-                currentPage === totalPages
-                  ? "text-gray-300 text-xl cursor-not-allowed"
-                  : "text-cyan-300 text-xl cursor-pointer "
-              }
-              onClick={handleNextClick}
-            />
-          </div>
-        </div>
-      </div>
+        )
+      }
     </div>
   );
 };

@@ -199,7 +199,12 @@ const Prescription = () => {
               alt="no prescriptions"
               className="
           mt-4
-          h-3/4
+          md:h-3/4
+         
+          w-4/12
+    h-4/12
+  
+      
         
             "
             />
