@@ -84,6 +84,37 @@ router.get("/doctors/:id", extractToken, checkDoctor, async (req, res) => {
 
 router.post(
   "/doctors/:id/working-hours",
+
+  async (req, res) => {
+    try {
+      // Find the doctor by their ID
+      const doctor = await Doctor.findById(req.params.id);
+
+      // Check if the doctor exists
+      if (!doctor) {
+        return res.status(404).json({
+          error: "Doctor not found",
+        });
+      }
+
+      // Update the doctor's availableDaysAndHours
+      doctor.availableDaysAndHours = req.body.availableDaysAndHours;
+
+      // Save the doctor's information
+      await doctor.save();
+
+      // Send a success message to the client
+      res.json({
+        message: "Working hours and available days added successfully",
+      });
+    } catch (err) {
+      res.status(500).json({error: err.message});
+    }
+  }
+);
+
+router.get(
+  "/doctors/:id/working-hours",
   extractToken,
   checkDoctor,
   async (req, res) => {
@@ -98,50 +129,9 @@ router.post(
         });
       }
 
-      // Update the doctor's available days and working hours
-      doctor.availableDays = req.body.availableDays;
-      doctor.availableTime = {
-        start: req.body.startTime,
-        end: req.body.endTime,
-      };
-
-      // Save the updated doctor
-      await doctor.save();
-
-    
-
-      // Send a success message to the client
-      res.json({
-        message: "Working hours and available days added successfully",
-      });
-    } catch (err) {
-      res.status(500).json({error: err.message});
-    }
-  }
-);
-
-router.get("/doctors/:id/working-hours"
-  , extractToken, checkDoctor, async (req, res) => {
-    try {
-      // Find the doctor by their ID
-      const doctor = await Doctor.findById(req.params.id);
-
-      // Check if the doctor exists
-      if (!doctor) {
-        return res.status(404).json({
-          error: "Doctor not found",
-        });
-      }
-
-
-
       // Send the doctor's available days and working hours to the client
       res.json({
-        availableDays: doctor.availableDays,
-        workingHours: doctor.availableTime && {
-          start: doctor.availableTime.start,
-          end: doctor.availableTime.end,
-        },
+        availableDaysAndHours: doctor.availableDaysAndHours,
       });
     } catch (err) {
       res.status(500).json({error: err.message});
@@ -287,31 +277,35 @@ router.get("/all-patients/:id/:date", async (req, res) => {
   }
 });
 
-router.post("/update-availability", async (req, res) => {
-  try {
-    // Find the doctor by their ID
-    const doctor = await Doctor.findById(req.body.doctorId);
+router.post(
+  "/update-availability",
 
-    // Check if the doctor exists
-    if (!doctor) {
-      return res.status(404).json({
-        error: "Doctor not found",
+  async (req, res) => {
+    try {
+      // Find the doctor by their ID
+      const doctor = await Doctor.findById(req.body.doctorId);
+
+      // Check if the doctor exists
+      if (!doctor) {
+        return res.status(404).json({
+          error: "Doctor not found",
+        });
+      }
+      // Update the doctor's working hours and availability
+      doctor.availableDaysAndHours = req.body.availableDaysAndHours;
+
+      // Save the updated doctor to the database
+      await doctor.save();
+
+      // Send a success message to the client
+      res.json({
+        message: "Working hours and availability updated successfully",
       });
+    } catch (error) {
+      res.status(500).json({error: error.message});
     }
-    // Update the doctor's working hours and availability
-
-    doctor.availableDays = req.body.availableDays;
-    doctor.availableTime = req.body.availableTime;
-
-    // Save the updated doctor to the database
-    await doctor.save();
-
-    // Send a success message to the client
-    res.json({message: "Working hours and availability updated successfully"});
-  } catch (error) {
-    res.status(500).json({error: error.message});
   }
-});
+);
 
 router.post("/Prescription", async (req, res) => {
   // validate the data before we make a doctor
@@ -391,8 +385,6 @@ router.get("/Prescription/:id", async (req, res) => {
   }
 });
 
-
-
 router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
   try {
     const doctorId = req.params.id;
@@ -443,17 +435,6 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 export default router

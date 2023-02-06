@@ -9,6 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Calendar.css";
 import { useLogIN } from "../../ContextLog";
 import { BsHourglassTop } from "react-icons/bs";
+import WorkingHours from "./Ediet";
 
 const MyCalendar = () => {
   const {Doctor, dark} = useLogIN();
@@ -208,6 +209,7 @@ const MyCalendar = () => {
           />
         )
       }
+      <WorkingHours />
     </>
   );
 };

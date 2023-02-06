@@ -9,6 +9,23 @@ const doctorSchema = new mongoose.Schema({
     ref: "User", // <-- Add this line
     required: true,
   },
+  availableDaysAndHours: [
+    {
+      day: {
+        type: String,
+        required: true,
+      },
+      startTime: {
+        type: String,
+        required: true,
+      },
+      endTime: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+
   name: {
     firstName: {
       type: String,
@@ -32,20 +49,7 @@ const doctorSchema = new mongoose.Schema({
     required: true,
   },
 
-  availableDays: {
-    type: [String],
-    default: [],
-  },
-  availableTime: {
-    start: {
-      type: String,
-      default: "",
-    },
-    end: {
-      type: String,
-      default: "",
-    },
-  },
+
   appointmentCount: {type: Number, default: 0},
 
   pushSubscription: {

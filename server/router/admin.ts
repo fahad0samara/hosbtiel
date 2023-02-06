@@ -338,22 +338,21 @@ router.post("/register-dr", async (req, res) => {
   });
   if (userExist) return res.status(400).send("User already exists");
 
-  // create  ID id for user start from 10
-  const id = await Doctor.find().countDocuments();
-  const id1 = id + 10;
-  const id2 = id1.toString();
-  const id3 = "D" + id2;
+  // // create  ID id for user start from 10
+  // const id = await Doctor.find().countDocuments();
+  // const id1 = id + 10;
+  // const id2 = id1.toString();
+  // const id3 = "D" + id2;
 
   const doctor = new Doctor({
     user: req.body.user,
     name: req.body.name,
-    id: id3,
+
     height: req.body.height,
     weight: req.body.weight,
     Gender: req.body.Gender,
     Hospital: req.body.Hospital,
-    availableDays: req.body.availableDays,
-    availableTime: req.body.availableTime,
+    availableDaysAndHours: req.body.availableDaysAndHours,
     pushSubscription: req.body.pushSubscription,
     HospitalAddress: req.body.HospitalAddress,
     date: req.body.date,
