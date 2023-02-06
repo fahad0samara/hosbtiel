@@ -10,7 +10,7 @@ import SideNav, {
 
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import {RiDashboardFill, RiLogoutBoxRLine} from "react-icons/ri";
-import {useLogIN} from "../../ContextLog";
+import {useLogIN} from "../../../ContextLog";
 import {FaFilePrescription} from "react-icons/fa";
 import {CgProfile, CgUserList} from "react-icons/cg";
 import {BsCalendarDate} from "react-icons/bs";

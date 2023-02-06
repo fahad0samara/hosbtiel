@@ -8,7 +8,7 @@ import RouterAdmin from "./admin/RouterAdmin";
 import Register from "./Home/auth/Register";
 import Login from "./Home/auth/Login";
 import RegisterPatient from "./patient/auth/RegisterPatient";
-import Routerdoctor from "./doctor/Routerdoctor";
+import Routerdoctor from "./doctor/router/Routerdoctor";
 
 const Router = () => {
   const { logPatient, logAdmin,

@@ -1,15 +1,13 @@
+import {Routes, Route, useParams} from "react-router-dom";
 
-import { Routes, Route, useParams } from "react-router-dom";
-
-
-import Dashboard from "./Dashboard";
+import Dashboard from "../DashBord/Dashboard";
 import SideNav from "./SideNavigate";
-import DoctorProfile from "./DoctorProfile";
-import MyCalendar from "./MyCalendar";
-import ViewPatient from "../admin/List/ViewPatient";
-import Prescription from "./Prescription/Prescription";
-import PrescriptionTable from "./Prescription/PrescriptionTable";
-import ListTable from "./PatientsList/ListTable";
+import DoctorProfile from "../Profile/DoctorProfile";
+import MyCalendar from "../MyCalendar";
+import ViewPatient from "../../admin/List/ViewPatient";
+import Prescription from "../Prescription/Prescription";
+import PrescriptionTable from "../Prescription/PrescriptionTable";
+import ListTable from "../PatientsList/ListTable";
 
 const Routerdoctor = () => {
   return (

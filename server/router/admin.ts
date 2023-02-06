@@ -8,19 +8,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../model/User";
 import Prescription from "../model/prescription";
-import pdfMake from 'pdfmake/build/pdfmake.js';
-import pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-
-
-
-
-
-
-
-
-
 
 // registerAdmin
 
@@ -52,7 +42,6 @@ router.get(
   "/patient/:id/prescriptions/:prescriptionId/download",
   checkAdmin,
   async (req, res) => {
-       
     try {
       // Find the prescription by ID
       const prescription = await Prescription.findById(
@@ -61,7 +50,7 @@ router.get(
         .populate("patient")
         .populate("doctor");
       if (!prescription) return res.status(404).send("Prescription not found.");
-  
+
       // Create a new PDF document
       const getHeader = (currPage: any, totalPage: any) => [
         {
@@ -87,8 +76,6 @@ router.get(
           alignment: "left",
           margin: [10, 10, 10, 10],
         },
-     
-       
       ];
 
       const docDefinition = {
@@ -101,8 +88,6 @@ router.get(
         header: getHeader,
         footer: getFooter,
         content: [
-       
-
           {
             text: `Medication: ${prescription.medication}`,
             alignment: "left",
@@ -159,78 +144,6 @@ router.get(
   }
 );
 
-// router.get("/patient/:id/prescriptions/:prescriptionId/download", checkAdmin, async (req, res) => {
-//     try {
-//         // Find the prescription by ID
-//         const prescription = await Prescription.findById(req.params.prescriptionId)
-//             .populate("patient")
-//             .populate("doctor");
-//         if (!prescription) return res.status(404).send("Prescription not found.");
-
-//         // Create a new PDF document
-//         var docDefinition = {
-//             content: [
-//                 { text: 'Prescription ID: ' + prescription._id, style: 'header' },
-//                 { text: 'Patient: ' + prescription.patient, style: 'subheader' },
-//                 { text: 'Doctor: ' + prescription.doctor, style: 'subheader' },
-//                 { text: 'Medication: ' + prescription.medication, style: 'subheader' },
-//                 { text: 'Dosage: ' + prescription.dosage, style: 'subheader' },
-//                 { text: 'Frequency: ' + prescription.frequency, style: 'subheader' },
-//                 { text: 'Duration: ' + prescription.duration, style: 'subheader' },
-//                 { text: 'Date: ' + prescription.date, style: 'subheader' },
-//                 { text: 'Notes: ' + prescription.notes, style: 'subheader' },
-//                 { text: 'Refills: ' + prescription.refills, style: 'subheader' }
-//             ],
-//             styles: {
-//                 header: {
-//                     fontSize: 18,
-//                     bold: true
-//                 },
-//                 subheader: {
-//                   fontSize: 18,
-//                   bold: false
-//               }
-//           }
-//       };
-
-//       // Create a PDF from the document definition
-//       const pdfDoc = pdfMake.createPdf(docDefinition);
-
-//       // Send the PDF as a response
-//       pdfDoc.getBase64((data) => {
-//         res.writeHead(200,
-//           {
-//             'Content-Type': 'application/pdf',
-//             'Content-Disposition': 'attachment;filename="prescription.pdf"'
-//           });
-//         const download = Buffer.from(
-//           //@ts-ignore
-//           data.toString('utf-8'), 'base64');
-//         res.end(download);
-
-
-    
-  
-
-
-    
-        
-        
-      
-     
-//       });
-//     } catch (error) {
-
-
-//   }
-// });
-
-  
-    
-
-
-
-
 // Get a list of all admin
 router.get("/admins", checkAdmin, (req, res) => {
   User.find({role: "admin"})
@@ -278,7 +191,8 @@ router.delete("/doctor/:id", checkAdmin, (req, res) => {
 
 // Get a list of all patients
 router.get("/patient", checkAdmin, (req, res) => {
-  Patient.find().populate("user")
+  Patient.find()
+    .populate("user")
     .then(patients => res.json(patients))
     .catch(err => res.status(400).json(err));
 });
@@ -293,9 +207,8 @@ router.delete("/patient/:id", checkAdmin, (req, res) => {
 // Get a patient by id
 router.get("/patient/:id", checkAdmin, async (req, res) => {
   try {
-    const patient = await Patient.findById(req.params.id)
-      .populate("user")
-  
+    const patient = await Patient.findById(req.params.id).populate("user");
+
     if (!patient) return res.status(404).send("Patient not found");
     res.json(patient);
   } catch (error) {
@@ -327,253 +240,28 @@ router.get("/patient/:id/prescriptions", checkAdmin, async (req, res) => {
         frequency: prescription.frequency,
         duration: prescription.duration,
         refills: prescription.refills,
-      
-
       };
     });
     res.json(prescriptionsArray);
-      
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-
-
-// router.get(
-//    "/patient/:id/prescriptions/:prescriptionId/download",
-//    checkAdmin,
-//    async (req, res) => {
-//      try {
-//        // Find the prescription by ID
-//        const prescription = await Prescription.findById(
-//          req.params.prescriptionId
-//        )
-//          .populate("patient")
-//          .populate("doctor");
-//        if (!prescription)
-//          return res.status(404).send("Prescription not found.");
-
-//        // Create a new PDF document
-//    const doc = new pdfkit();
-//    doc.pipe(res);
-
-//    const table = {
-//      headers: [
-//        "Prescription ID",
-//        "Patient",
-//        "Doctor",
-//        "Medication",
-//        "Dosage",
-//        "Frequency",
-//      ],
-//      rows: [
-//        [
-//          prescription._id,
-//          prescription.patient,
-//          prescription.doctor,
-//          prescription.medication,
-//          prescription.dosage,
-//          prescription.frequency,
-//        ],
-//      ],
-//    };
-
-//    doc
-//      .fontSize(18)
-//      .text("Prescription", {align: "center"})
-//      .moveDown()
-//      .fontSize(12)
-
-//      .text(
-//        //@ts-ignore
-//        `Patient: ${prescription.patient.name.firstName} ${prescription.patient.name.lastName}`,
-//        {align: "left"}
-//      )
-//      .moveDown()
-//      .text(
-//        //@ts-ignore
-//        `Doctor: ${prescription.doctor.name.firstName} ${prescription.doctor.name.lastName}`,
-//        {align: "left"}
-//      )
-//      .moveDown()
-//      .text(`Medication: ${prescription.medication}`, {align: "left"})
-//      .moveDown()
-//      .text(`Dosage: ${prescription.dosage}`, {align: "left"})
-//      .moveDown()
-//      .text(`Frequency: ${prescription.frequency}`, {align: "left"})
-//      .moveDown()
-//      .text(`Duration: ${prescription.duration}`, {align: "left"})
-//      .moveDown()
-//      .text(`Refills: ${prescription.refills}`, {align: "left"})
-//      .moveDown()
-//      .text(`Notes: ${prescription.notes}`, {
-//        align: "left",
-//      })
-//      .moveDown();
-
-//    res.setHeader("Content-type", "application/pdf");
-//    res.setHeader(
-//      "Content-disposition",
-//      "attachment; filename=Prescription.pdf"
-//    );
-//    doc.end()
-//      } catch (error) {
-//        res.status(500).send({
-//          message: "Error downloading prescription",
-//          error: error.message,
-//        });
-//      }
-
-//   }
-// );
-
-
-  // router.get(
-  //   "/patient/:id/prescriptions/:prescriptionId/download",
-  //   async (req, res) => {
-  //     console.log(
-  //       "req.params.id",
-  //       req.params.id,
-  //       "req.params.prescriptionId",
-  //       req.params.prescriptionId
-
-  //     );
-      
-
-     
-  //        try {
-  //          const prescription = await Prescription.findById(req.params.prescriptionId)
-  //            .populate("patient")
-  //            .populate("doctor");
-  //          if (!prescription)
-  //            return res.status(404).send("Prescription not found.");
-           
-
-  //       // Create a new PDF document
-  //       const pdfDoc = await pdfLib.PDFDocument.create();
-
-  //       // Add a page to the document
-  //       const page = pdfDoc.addPage();
-
-  //       // Draw prescription details on the page
-  //       page.drawText(`Prescription ID: ${prescription._id}`, { x: 50, y: 750 });
-  //       page.drawText(`Patient: ${prescription.patient}`, { x: 50, y: 700 });
-  //       page.drawText(`Doctor: ${prescription.doctor}`, { x: 50, y: 650 });
-  //       page.drawText(`Medication: ${prescription.medication}`, { x: 50, y: 600 });
-  //       page.drawText(`Dosage: ${prescription.dosage}`, { x: 50, y: 550 });
-  //       page.drawText(`Frequency: ${prescription.frequency}`, { x: 50, y: 500 });
-  //       page.drawText(`Duration: ${prescription.duration}`, { x: 50, y: 450 });
-  //       page.drawText(`Date: ${prescription.date}`, { x: 50, y: 400 });
-  //       page.drawText(`Notes: ${prescription.notes}`, { x: 50, y: 350 });
-  //          page.drawText(`Refills: ${prescription.refills}`, { x: 50, y: 300 });
-           
-  //           // Serialize the PDFDocument to bytes (a Uint8Array)
-  //          const pdfBytes = await pdfDoc.save();
-           
-  //           // Send the response
-  //          res.set("Content-Type", "application/pdf");
-  //          res.set("Content-Disposition", "attachment; filename=Prescription.pdf");
-           
-
-
-
-       
-       
-           
-           
-           
-  
-
-
-
-
-    
-           
-           
-  //          res.send(pdfBytes);
-           
-  //          console.log("pdfBytes", pdfBytes);
-           
-  
-       
-  //     } catch (error)
- 
-    
-  //     {
-  //       console.log("error", error);
-  //       console.log("error.message", error.message);
-        
-  //       res.status(500).send({
-  //         message: "Error downloading prescription",
-  //         error: error.message  
-          
-  //       });
-  //     }
-  //   }
-  // );
-
-
-
-module.exports = router;
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-          
- 
-    
-
-
-
-
-
-
-
-
 // Update a patient's information
 router.put("/patient/:id", checkAdmin, async (req, res) => {
   try {
-    const patient
-      = await
-        Patient.findByIdAndUpdate(req
-          .params
-          .
-          id
-          , req
-            .body
-          , { new: true });
-    if (!patient) return res.status(404).send("Patient not found"); 
+    const patient = await Patient.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!patient) return res.status(404).send("Patient not found");
     res.json(patient);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-
-
-
-
-
-
-
-
- 
-  
-
-
+module.exports = router;
 
 router.post("/update", async (req, res) => {
   try {
@@ -641,7 +329,8 @@ router.post("/register-dr", async (req, res) => {
   if (!Userfind) return res.status(400).send("User not1 found");
 
   // check if the User the role is doctor
-  if (Userfind.role !== "doctor") return res.status(400).send("User not doctor");
+  if (Userfind.role !== "doctor")
+    return res.status(400).send("User not doctor");
 
   // check if the doctor is already in the database
   const userExist = await Doctor.findOne({
@@ -649,14 +338,23 @@ router.post("/register-dr", async (req, res) => {
   });
   if (userExist) return res.status(400).send("User already exists");
 
+  // create  ID id for user start from 10
+  const id = await Doctor.find().countDocuments();
+  const id1 = id + 10;
+  const id2 = id1.toString();
+  const id3 = "D" + id2;
+
   const doctor = new Doctor({
     user: req.body.user,
     name: req.body.name,
+    id: id3,
+    height: req.body.height,
+    weight: req.body.weight,
+    Gender: req.body.Gender,
     Hospital: req.body.Hospital,
     availableDays: req.body.availableDays,
     availableTime: req.body.availableTime,
     pushSubscription: req.body.pushSubscription,
-
     HospitalAddress: req.body.HospitalAddress,
     date: req.body.date,
     phoneNumber: req.body.phoneNumber,
@@ -680,64 +378,49 @@ router.post("/register-patient", async (req, res) => {
   // if (error) return res.status(400).send(error.details[0].message);
 
   // check if the User is already in the database
-  const Userfind = await User.findById
-    (req.body.user);
+  const Userfind = await User.findById(req.body.user);
   if (!Userfind) return res.status(400).send("User not found");
 
   // check if the User the role is patient
-  if (Userfind.role !== "patient") return res.status(400).send("User not patient");
+  if (Userfind.role !== "patient")
+    return res.status(400).send("User not patient");
 
   // check if the patient is already in the database
   const userExist = await Patient.findOne({
     user: req.body.user,
   });
   if (userExist) return res.status(400).send("User already exists");
-      // create  healthID id for user start from 10
-    const healthID = await Patient.find().countDocuments();
-    const healthIDNumber = healthID + 10;
+  // create  healthID id for user start from 10
+  const healthID = await Patient.find().countDocuments();
+  const healthIDNumber = healthID + 10;
 
-
-    // hash passwords
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  // hash passwords
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
   const patient = new Patient({
     user: req.body.user,
-     prescriptions: req.body.prescriptions,
-      healthIDNumber: healthIDNumber,
-      name: req.body.name,
-      password: hashedPassword,
-      mobile: req.body.mobile,
-      email: req.body.email,
-      relation: req.body.relation,
-      address: req.body.address,
-      date: req.body.date,
-      medicationList: req.body.medicationList,
-      diseaseList: req.body.diseaseList,
-      allergyList: req.body.allergyList,
-      bloodGroup: req.body.bloodGroup,
+    prescriptions: req.body.prescriptions,
+    healthIDNumber: healthIDNumber,
+    name: req.body.name,
+    password: hashedPassword,
+    mobile: req.body.mobile,
+    email: req.body.email,
+    relation: req.body.relation,
+    address: req.body.address,
+    date: req.body.date,
+    medicationList: req.body.medicationList,
+    diseaseList: req.body.diseaseList,
+    allergyList: req.body.allergyList,
+    bloodGroup: req.body.bloodGroup,
     contactPerson: req.body.contactPerson,
- 
   });
   try {
     const newPatient = await patient.save();
     res.status(201).json(newPatient);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({message: err.message});
   }
 });
-
-
-
-
-
-  
-
-
-
-
-
-
-
 
 export default router;

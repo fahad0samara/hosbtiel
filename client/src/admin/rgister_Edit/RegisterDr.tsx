@@ -41,12 +41,15 @@ const RegisterDr = () => {
       ZipCode: "",
       Country: "",
     },
-   
+
     specialty: "",
     degree: "",
     experience: "",
     date: "",
     bloodGroup: "",
+    Gender: "",
+    weight: "",
+    height: "",
   });
   const [error, setError] = useState("");
 
@@ -88,8 +91,8 @@ const RegisterDr = () => {
       name,
       email,
       password,
-      role, 
-    
+      role,
+
       user,
       Hospital,
       HospitalAddress,
@@ -99,8 +102,10 @@ const RegisterDr = () => {
       degree,
       specialty,
       experience,
+      Gender,
+      weight,
+      height,
     } = formData;
-
 
     if (step === 1) {
       setLoading(true);
@@ -124,14 +129,16 @@ const RegisterDr = () => {
         const res = await axios.post(
           "http://localhost:3000/admin/register-user",
           {
-            name, email, password,
+            name,
+            email,
+            password,
             role,
           }
         );
 
         setStep(2);
         setFormData({...formData, user: res.data.user._id});
-      // cheek who is register and redicet to the 
+        // cheek who is register and redicet to the
         if (role === "admin") {
           Navigate("/admin/doctorList");
         }
@@ -142,12 +149,10 @@ const RegisterDr = () => {
           Navigate("/admin/Rg_patient");
         }
         setLoading(false);
-
-
       } catch (error) {
         //@ts-ignore
         console.log("Error: ", error.response.data);
-           //@ts-ignore
+        //@ts-ignore
         setError(error.response.data);
         setTimeout(() => setError(""), 2000);
         setLoading(false);
@@ -185,22 +190,21 @@ const RegisterDr = () => {
           degree: degree,
           specialty: specialty,
           experience: experience,
+          Gender: Gender,
+          weight: weight,
+          height: height,
         });
         setStep(3);
         setLoading(false);
-        console.log('====================================');
-        console.log(
-          "user",
-          user,
-        );
-        console.log('====================================');
-   
+        console.log("====================================");
+        console.log("user", user);
+        console.log("====================================");
+
         // Navigate to the appropriate route based on the user's role
-      
       } catch (error) {
-           //@ts-ignore
+        //@ts-ignore
         console.log("Error: ", error.response.data);
-           //@ts-ignore
+        //@ts-ignore
         setError(error.response.data);
         setTimeout(() => setError(""), 2000);
         setLoading(false);
@@ -332,15 +336,6 @@ const RegisterDr = () => {
                     value="admin"
                     checked={formData.role === "admin"}
                     onChange={handleChange("role")}
-                    
-                 
-
-                        
-                     
-                      
-
-
-                    
                   />
                   <span className="ml-2">Admin</span>
                 </label>
@@ -419,14 +414,19 @@ const RegisterDr = () => {
                 ) : (
                   <form
                     className="
-                      w-full  max-w-2xl
-                mx-28 shadow-md rounded px-8 pt-6 pb-8 mb-4 
+                      w-full  max-w-3xl
+                      shadow-cyan-300
+                md:mx-28 shadow-md rounded px-8 pt-6 pb-8 mb-4 
                 "
                   >
                     <h1 className="text-3xl font-bold text-center pt-4 mb-5">
                       Register
                     </h1>
-                    <div className=" grid grid-cols-4 gap-6 ">
+                    <div
+                      className=" grid lg:grid-cols-4
+                        md:grid-cols-3
+                     gap-6 "
+                    >
                       <label
                         className="block font-bold text-lg mb-2"
                         htmlFor="name"
@@ -478,36 +478,110 @@ const RegisterDr = () => {
                         }
                       />
                     </div>
-
-                    <div
-                      className="
-                        flex items-center  my-5 gap-4
-      
-
-                    "
-                    >
-                      <label
-                        className="
-                        font-bold text-lg "
-                        htmlFor="phone"
-                      >
-                        Phone
-                      </label>
-                      <input
-                        className="appearance-none bg-transparent mr-16  border-b-2 border-cyan-400   leading-tight focus:outline-none"
-                        type="text"
-                        name="phone"
-                        required
-                        id="phone"
-                        value={formData.phoneNumber}
-                        onChange={e =>
-                          setFormData({
-                            ...formData,
-                            phoneNumber: e.target.value,
-                          })
-                        }
-                      />
+                    <div className="grid grid-cols-2 gap-28">
+                      <div className="flex items-center  my-5 gap-4">
+                        <label className="font-bold text-lg " htmlFor="phone">
+                          Phone
+                        </label>
+                        <input
+                          className="appearance-none bg-transparent mr-16  border-b-2 border-cyan-400   leading-tight focus:outline-none"
+                          type="text"
+                          name="phone"
+                          required
+                          id="phone"
+                          value={formData.phoneNumber}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              phoneNumber: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex items-center  my-5 gap-4">
+                        <label className="font-bold text-lg " htmlFor="gender">
+                          Gender
+                        </label>
+                        <select
+                          style={{
+                            backgroundColor: dark ? "#000" : "white",
+                            color: dark ? "white" : "black",
+                          }}
+                          required
+                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                          name="gender"
+                          id="gender"
+                          value={formData.Gender}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              Gender: e.target.value,
+                            })
+                          }
+                        >
+                          <option
+                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                            value=""
+                          >
+                            Select
+                          </option>
+                          <option
+                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                            value="male"
+                          >
+                            male
+                          </option>
+                          <option
+                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                            value="female"
+                          >
+                            female
+                          </option>
+                        </select>
+                      </div>
                     </div>
+
+                    <div className="grid grid-cols-2 gap-28">
+                      <div className="flex items-center  my-5 gap-4">
+                        <label className="font-bold text-lg " htmlFor="weight">
+                          Weight
+                        </label>
+                        <input
+                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                          type="text"
+                          name="weight"
+                          id="weight"
+                          value={formData.weight}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              weight: e.target.value,
+                            })
+                          }
+                        />
+                        kg
+                      </div>
+                      <div className="flex items-center  my-5 gap-4">
+                        <label className="font-bold text-lg " htmlFor="height">
+                          Height
+                        </label>
+                        <input
+                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                          type="text"
+                          name="height"
+                          id="height"
+                          value={formData.height}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              height: e.target.value,
+                            })
+                          }
+                        />
+                        cm
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-28">
                       <div className="mb-4">
                         <label
@@ -548,17 +622,17 @@ const RegisterDr = () => {
                       <div className="mb-4">
                         <label
                           className="block font-bold text-lg mb-2"
-                          htmlFor=" date"
+                          htmlFor=" age"
                         >
-                          date
+                          age
                         </label>
 
                         <input
                           className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
                           required
                           type="date"
-                          name="date"
-                          id="date"
+                          name="age"
+                          id="age"
                           value={formData.date.split("T")[0]}
                           onChange={e =>
                             setFormData({...formData, date: e.target.value})

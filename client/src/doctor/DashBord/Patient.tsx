@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import {useLogIN} from "../../ContextLog";
+import {useLogIN} from "../../../ContextLog";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
-import Loder from "../tools/Loder";
+import Loder from "../../tools/Loder";
 import {Link} from "react-router-dom";
 import {FiEdit2, FiEye} from "react-icons/fi";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
-import {patient} from "../types";
+import {patient} from "../../types";
 
 const Patient = () => {
   const [lastPatient, setLastPatient] = useState();

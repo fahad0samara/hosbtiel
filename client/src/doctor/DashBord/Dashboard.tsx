@@ -1,16 +1,16 @@
 import axios from "axios";
 
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import moment from "moment-timezone";
-import MyCalendar from "./MyCalendar";
-import { useLogIN } from "../../ContextLog";
-import Loder from "../tools/Loder";
-import { Link } from "react-router-dom";
+import MyCalendar from "../MyCalendar";
+import {useLogIN} from "../../../ContextLog";
+import Loder from "../../tools/Loder";
+import {Link} from "react-router-dom";
 
-import "./Loder.css";
+import "../Loder.css";
 
-import Chart from "./Chart";
-import { patient } from '../types';
+import Chart from "../Chart";
+import {patient} from "../../types";
 import Patient from "./Patient";
 
 interface Appointment {
