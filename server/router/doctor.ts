@@ -98,14 +98,15 @@ router.post(
       }
 
       // Update the doctor's availableDaysAndHours
+
       doctor.availableDaysAndHours = req.body.availableDaysAndHours;
 
       // Save the doctor's information
       await doctor.save();
 
-      // Send a success message to the client
+      // Send the doctor's available days and working hours to the client
       res.json({
-        message: "Working hours and available days added successfully",
+        availableDaysAndHours: doctor.availableDaysAndHours,
       });
     } catch (err) {
       res.status(500).json({error: err.message});
@@ -156,8 +157,11 @@ router.get("/appointments/:id", extractToken, checkDoctor, async (req, res) => {
       appointments: appointments,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({error: error.message});
+    console.log("====================================");
+    console.log("🚀 ~ file: doctor.ts ~ line 152 ~ router.get ~ error", error);
+    console.log("====================================");
+    console.log(error);
+    res.status(500).json({error});
   }
 });
 

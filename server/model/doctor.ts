@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // <-- Add this line
@@ -48,7 +45,6 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
 
   appointmentCount: {type: Number, default: 0},
 

@@ -3,7 +3,7 @@ import {Routes, Route, useParams} from "react-router-dom";
 import Dashboard from "../DashBord/Dashboard";
 import SideNav from "./SideNavigate";
 import DoctorProfile from "../Profile/DoctorProfile";
-import MyCalendar from "../MyCalendar";
+import MyCalendar from "../Calendar/MyCalendar";
 import ViewPatient from "../../admin/List/ViewPatient";
 import Prescription from "../Prescription/Prescription";
 import PrescriptionTable from "../Prescription/PrescriptionTable";

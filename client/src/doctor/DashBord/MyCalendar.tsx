@@ -1,38 +1,39 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Calendar, momentLocalizer, Views } from "react-big-calendar";
-import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
+import React, {useState, useEffect, useCallback} from "react";
+import {Calendar, momentLocalizer, Views} from "react-big-calendar";
+import {GrLinkNext, GrLinkPrevious} from "react-icons/gr";
 
 import moment from "moment-timezone";
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import "./Calendar.css";
-import { useLogIN } from "../../ContextLog";
-import { BsHourglassTop } from "react-icons/bs";
-import WorkingHours from "./Ediet";
+import "../Calendar/Calendar.css";
+import {useLogIN} from "../../../ContextLog";
+import {BsHourglassTop} from "react-icons/bs";
 
 const MyCalendar = () => {
   const {Doctor, dark} = useLogIN();
-  if (!Doctor || !Doctor.availableDays) return null;
+  if (!Doctor || !Doctor.availableDaysAndHours) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="progress"></div>
+      </div>
+    );
+  }
   //map the Doctor.availableTime
-  const workingHoursEvents =
-    Doctor.availableDays.length > 0
-      ? Doctor.availableDays.map(day => {
-          return {
-            start: moment(
-              `${day} ${Doctor.availableTime.start}`,
-              "dddd HH:mm"
-            ).toDate(),
-            end: moment(
-              `${day} ${Doctor.availableTime.end}`,
-              "dddd HH:mm"
-            ).toDate(),
-            day: Doctor.availableDays.indexOf(day) + 1,
-            title: `
-            ${Doctor.availableTime.start} - ${Doctor.availableTime.end}`,
-          };
-        })
-      : [];
+  const workingHoursEvents = Doctor.availableDaysAndHours.map(dayAndHour => {
+    return {
+      start: moment(
+        `${dayAndHour.day} ${dayAndHour.startTime}`,
+        "dddd HH:mm A"
+      ).toDate(),
+      end: moment(
+        `${dayAndHour.day} ${dayAndHour.endTime}`,
+        "dddd HH:mm A"
+      ).toDate(),
+      day: dayAndHour.dayIndex,
+      title: `${dayAndHour.startTime} - ${dayAndHour.endTime}`,
+    };
+  });
 
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<
@@ -64,7 +65,6 @@ const MyCalendar = () => {
       title: " Break",
     },
   ]);
-  const localizer = momentLocalizer(moment);
 
   useEffect(() => {
     const getAppointments = async () => {
@@ -122,7 +122,7 @@ const MyCalendar = () => {
 
     getAppointments();
   }, []);
-
+  const localizer = momentLocalizer(moment);
   return (
     <>
       {
@@ -209,7 +209,6 @@ const MyCalendar = () => {
           />
         )
       }
-      <WorkingHours />
     </>
   );
 };
