@@ -6,7 +6,6 @@ import moment from "moment-timezone";
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import "./Calendar.css";
 import {useLogIN} from "../../../ContextLog";
 import {BsHourglassTop} from "react-icons/bs";
 import WorkingHours from "./WorkingHours";
@@ -125,93 +124,63 @@ const MyCalendar = () => {
   }, []);
   const localizer = momentLocalizer(moment);
   return (
-    <>
-      {
-        // loding
-        loading ? (
-          <div className="flex justify-center items-center h-screen">
-            <div className="progress"></div>
+    <div
+      className={`${dark ? "bg-black" : "bg-gray-100"} flex flex-col h-screen`}
+    >
+      <div className="flex justify-between items-center ml-28">
+        <div className="flex items-center justify-center my-7 mx-7">
+          <h1 className="text-2xl font-bold">Calendar</h1>
+          <div className="flex items-center ml-4">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+              <p>Working Hours</p>
+            </div>
+            <div className="flex items-center ml-4">
+              <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+              <p>Holidays</p>
+            </div>
+            <div className="flex items-center ml-4">
+              <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+              <p>Breaks</p>
+            </div>
           </div>
-        ) : (
-          <Calendar
-            step={60}
-            style={{
-              height: "60vh",
-              width: 600,
-              margin: "0 auto",
-            }}
-            showMultiDayTimes
-            defaultDate={new Date()}
-            events={events}
-            localizer={localizer}
-            titleAccessor="title"
-            startAccessor="start"
-            endAccessor="end"
-            timeslots={6}
-            eventPropGetter={(event: any) => {
-              let className = "";
+        </div>
+      </div>
 
-              if (event.title.includes("Appointment")) {
-                className = `bg-red-400 border-l-4
-        border-l-black
-        border-r-4
-        border-r-black`;
-              }
-
-              //hiden if there no event
-
-              if (event.symptoms === "fever") {
-                className = `bg-yellow-400`;
-              }
-
-              if (event.symptoms === "cough") {
-                className = `bg-green-400
-                my-3
-                mx-2
-              
-
-                `;
-              }
-
-              if (event.symptoms === "headache") {
-                className = `bg-blue-400`;
-              }
-
-              if (event.symptoms === "stomachache") {
-                className = `bg-green-400`;
-              }
-
-              if (event.day) {
-                className = `bg-blue-400`;
-              }
-
-              if (event.title.includes("Lunch")) {
-                className = `bg-red-400`;
-              }
-
-              if (event.title.includes("Halloween")) {
-                className = `bg-purple-400`;
-              }
-
-              if (event.title.includes("Coffee")) {
-                className = `bg-yellow-400`;
-              }
-
-              return {
-                className: className,
-              };
-            }}
-            popup
-            messages={{
-              date: "Date",
-              time: "Time",
-              event: "Event",
-            }}
-          />
-        )
-      }
+      <div className="flex ">
+        {
+          // loding
+          loading ? (
+            <div className="flex justify-center items-center h-screen">
+              <div className="progress"></div>
+            </div>
+          ) : (
+            <Calendar
+              style={{
+                height: "80vh",
+                width: "80%",
+                margin: "auto",
+              }}
+              showMultiDayTimes
+              defaultDate={new Date()}
+              events={events}
+              localizer={localizer}
+              titleAccessor="title"
+              startAccessor="start"
+              endAccessor="end"
+              timeslots={6}
+              popup
+              messages={{
+                date: "Date",
+                time: "Time",
+                event: "Event",
+              }}
+            />
+          )
+        }
+      </div>
       <WorkingHours />
-    </>
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ import moment from "moment-timezone";
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import "../Calendar/Calendar.css";
+import "./Calendar.css";
 import {useLogIN} from "../../../ContextLog";
 import {BsHourglassTop} from "react-icons/bs";
 
@@ -132,81 +132,83 @@ const MyCalendar = () => {
             <div className="progress"></div>
           </div>
         ) : (
-          <Calendar
-            step={60}
-            style={{
-              height: "60vh",
-              width: 600,
-              margin: "0 auto",
-            }}
-            showMultiDayTimes
-            defaultDate={new Date()}
-            events={events}
-            localizer={localizer}
-            titleAccessor="title"
-            startAccessor="start"
-            endAccessor="end"
-            timeslots={6}
-            eventPropGetter={(event: any) => {
-              let className = "";
+          <>
+            <Calendar
+              step={60}
+              style={{
+                height: "60vh",
+                width: 600,
+                margin: "0 auto",
+              }}
+              showMultiDayTimes
+              defaultDate={new Date()}
+              events={events}
+              localizer={localizer}
+              titleAccessor="title"
+              startAccessor="start"
+              endAccessor="end"
+              timeslots={6}
+              eventPropGetter={(event: any) => {
+                let className = "";
 
-              if (event.title.includes("Appointment")) {
-                className = `bg-red-400 border-l-4
+                if (event.title.includes("Appointment")) {
+                  className = `bg-red-400 border-l-4
         border-l-black
         border-r-4
         border-r-black`;
-              }
+                }
 
-              //hiden if there no event
+                //hiden if there no event
 
-              if (event.symptoms === "fever") {
-                className = `bg-yellow-400`;
-              }
+                if (event.symptoms === "fever") {
+                  className = `bg-yellow-400`;
+                }
 
-              if (event.symptoms === "cough") {
-                className = `bg-green-400
+                if (event.symptoms === "cough") {
+                  className = `bg-green-400
                 my-3
                 mx-2
               
 
                 `;
-              }
+                }
 
-              if (event.symptoms === "headache") {
-                className = `bg-blue-400`;
-              }
+                if (event.symptoms === "headache") {
+                  className = `bg-blue-400`;
+                }
 
-              if (event.symptoms === "stomachache") {
-                className = `bg-green-400`;
-              }
+                if (event.symptoms === "stomachache") {
+                  className = `bg-green-400`;
+                }
 
-              if (event.day) {
-                className = `bg-blue-400`;
-              }
+                if (event.day) {
+                  className = `bg-blue-400`;
+                }
 
-              if (event.title.includes("Lunch")) {
-                className = `bg-red-400`;
-              }
+                if (event.title.includes("Lunch")) {
+                  className = `bg-red-400`;
+                }
 
-              if (event.title.includes("Halloween")) {
-                className = `bg-purple-400`;
-              }
+                if (event.title.includes("Halloween")) {
+                  className = `bg-purple-400`;
+                }
 
-              if (event.title.includes("Coffee")) {
-                className = `bg-yellow-400`;
-              }
+                if (event.title.includes("Coffee")) {
+                  className = `bg-yellow-400`;
+                }
 
-              return {
-                className: className,
-              };
-            }}
-            popup
-            messages={{
-              date: "Date",
-              time: "Time",
-              event: "Event",
-            }}
-          />
+                return {
+                  className: className,
+                };
+              }}
+              popup
+              messages={{
+                date: "Date",
+                time: "Time",
+                event: "Event",
+              }}
+            />
+          </>
         )
       }
     </>
