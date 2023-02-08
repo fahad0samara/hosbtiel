@@ -125,7 +125,12 @@ const MyCalendar = () => {
   const localizer = momentLocalizer(moment);
   return (
     <div
-      className={`${dark ? "bg-black" : "bg-gray-100"} flex flex-col h-screen`}
+      className={`${dark ? "bg-black" : "bg-gray-100"}
+   ${dark ? "text-white" : "text-black"}
+   
+
+      
+       flex flex-col h-screen`}
     >
       <div className="flex justify-between items-center ml-28">
         <div className="flex items-center justify-center my-7 mx-7">
@@ -179,6 +184,7 @@ const MyCalendar = () => {
           )
         }
       </div>
+
       <WorkingHours />
     </div>
   );
