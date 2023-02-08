@@ -117,53 +117,6 @@ const DoctorProfile = () => {
                     ? "0px 0px 01px 0px #cccc "
                     : "0px 0px 10px 0px  #ccc",
                 }}
-                className=" mx-4  my-3  rounded-2xl  
-                 p-4"
-              >
-                <h1 className="font-bold text-xl leading-8 my-1 text-cyan-400">
-                  {Doctor.availableDays
-                    ? Doctor.availableDays.map((item: any) => {
-                        return item + " ";
-                      })
-                    : "No Days"}
-                </h1>
-
-                <p className="text-sm  hover: leading-6">
-                  {Doctor.availableTime.start
-                    ? Doctor.availableTime.start
-                    : "No Time"}
-                  {" - "}
-                  {Doctor.availableTime.end
-                    ? Doctor.availableTime.end
-                    : "No Time"}
-                </p>
-                <ul className="   py-2 px-3 mt-3 divide-y rounded shadow-sm">
-                  <li className="flex items-center py-3">
-                    <span>Status</span>
-                    <span className="ml-auto">
-                      <span className="bg-green-500 py-1 px-2 rounded text-white text-sm">
-                        Active
-                      </span>
-                    </span>
-                  </li>
-                  <li className="flex items-center py-3">
-                    <span>Member since</span>
-                    <span className="ml-auto">
-                      {Doctor.user.createdAt
-                        .split("T")[0]
-                        .split("-")
-                        .reverse()
-                        .join("-")}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div
-                style={{
-                  boxShadow: dark
-                    ? "0px 0px 01px 0px #cccc "
-                    : "0px 0px 10px 0px  #ccc",
-                }}
                 className=" p-8 my-3 col-span-2 rounded-2xl  
                   shadow-lg  "
               >
@@ -230,6 +183,68 @@ const DoctorProfile = () => {
                 <button className="block w-full text-cyan-300 text-sm font-bold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
                   Show Full Information
                 </button>
+              </div>
+              <div
+                style={{
+                  boxShadow: dark
+                    ? "0px 0px 01px 0px #cccc "
+                    : "0px 0px 10px 0px  #ccc",
+                }}
+                className=" mx-4  my-3  rounded-2xl  
+                 p-4"
+              >
+                <div className="flex items-center space-x-2 font-bold  leading-8">
+                  <span className=" text-2xl mb-5 text-cyan-400 ">
+                    Hour and days
+                  </span>
+                </div>
+                {Doctor.availableDaysAndHours
+                  ? Doctor.availableDaysAndHours.map((item: any) => {
+                      return (
+                        <div
+                          className="
+                          flex justify-between
+                          items-center
+                          mx-3
+                          py-1
+                          px-2
+                         
+                          text-md
+                          
+                          "
+                        >
+                          <span className=" hover: leading-6">{item.day}</span>
+                          <span className="  hover: leading-6">
+                            {item.startTime}
+                          </span>
+                          <span className="text-sm  text-cyan-300">TO</span>
+                          <span className="  hover:leading-6">
+                            {item.endTime}
+                          </span>
+                        </div>
+                      );
+                    })
+                  : "No Days"}
+                <ul className="   py-2 px-3 mt-3 divide-y rounded shadow-sm">
+                  <li className="flex items-center py-3">
+                    <span>Status</span>
+                    <span className="ml-auto">
+                      <span className="bg-green-500 py-1 px-2 rounded text-white text-sm">
+                        Active
+                      </span>
+                    </span>
+                  </li>
+                  <li className="flex items-center py-3">
+                    <span>Member since</span>
+                    <span className="ml-auto">
+                      {Doctor.user.createdAt
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("-")}
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
             <div
