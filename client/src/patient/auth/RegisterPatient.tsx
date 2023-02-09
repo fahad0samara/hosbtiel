@@ -3,9 +3,28 @@ import axios from "axios";
 import {AiFillMinusCircle, AiFillPlusCircle} from "react-icons/ai";
 import {useNavigate} from "react-router-dom";
 import {useLogIN} from "../../../ContextLog";
+import jwtDecode from "jwt-decode";
+export default function RegisterPatient() {
+  const {
+    setlogPatient,
+    setProfile,
+    dark,
+    Profile,
+    setPatient,
+    setlogAdmin,
+    setlogDr,
+  } = useLogIN();
 
-export default function RegisterPatient(props: any) {
-  const {setlogPatient, dark, setProfile} = useLogIN();
+  // get the id emile pasword and put ot in the form
+  const {_id, email, password} = Profile;
+
+  console.log(
+    "🚀 ~ file: RegisterPatient.tsx ~ line 6 ~ RegisterPatient ~ Profile",
+    _id
+  );
+
+  console.log(email, password);
+
   const navigate = useNavigate();
   const [Loading, setLoading] = useState(false);
 
@@ -96,70 +115,70 @@ export default function RegisterPatient(props: any) {
   const handleRegisterPatient = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
     setLoading(true);
-    console.log(
-      name,
-      date,
-      mobile,
-
-      bloodGroup,
-      address,
-
-      diseaseList,
-      allergyList,
-      medicationList
-    );
-
-    // take the id for the user
-    const user = localStorage.getItem("id");
-    console.log(user);
 
     try {
-      const {data} = await axios.post(
+      const response0 = await axios.post(
         "http://localhost:3000/user/register-patient",
         {
+          user: _id,
           name,
           date,
           mobile,
-          user,
-
           bloodGroup,
           address,
-
           diseaseList,
           allergyList,
           medicationList,
-
           contactPerson,
           weight,
           height,
         }
       );
-      console.log(data);
-
-      localStorage.setItem("tokenPatient", data.token);
-
-      setlogPatient(true);
-
-      setProfile(data.user);
+      console.log("response0", response0);
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
 
       setLoading(false);
-      setSuccess("Patient Register Successfully");
-      setTimeout(() => {
-        navigate("/patient/dashboard");
-      }, 2000);
+      const response = await axios.post(
+        "http://localhost:3000/user/loginUser",
+        {
+          email,
+          password,
+        }
+      );
+      console.log(response.data);
+
+      localStorage.setItem("token", response.data.token);
+      const decoded = jwtDecode(response.data.token);
+      setLoading(false);
+      //success
+      if (response.data.message === "Patient created successfully") {
+        try {
+          setlogPatient(true);
+          setlogDr(false);
+          setlogAdmin(false);
+          setLoading(false);
+          setProfile(response.data.user);
+          navigate("/patient/dashboard");
+
+          // Use the user ID to query the patient collection
+          const patientResponse = await axios.get(
+            //@ts-ignore
+            `http://localhost:3000/user/getPatient/${decoded.patientId}`
+          );
+
+          console.log("patientResponse", patientResponse.data._id);
+
+          setPatient(patientResponse.data);
+        } catch (error) {
+          console.log("Error while fetching patient: ", error);
+        }
+      }
+      console.log("response", response);
     } catch (error) {
-      console.log("====================================");
-      console.log(
-        // @ts-ignore
-        error.response
-      );
-
-      console.log("====================================");
+      console.log("error", error);
       setLoading(false);
-      setError(
-        // @ts-ignore
-        error.response.data
-      );
+      setError(error.response.data.message);
     }
   };
 
@@ -583,9 +602,7 @@ export default function RegisterPatient(props: any) {
                 >
                   Address
                 </label>
-                <div
-                  className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2my-2"
-                >
+                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2my-2">
                   <input
                     type="text"
                     className="my-2 mx-2 w-64 h-10 rounded-lg px-4 focus:outline-none focus:ring-2

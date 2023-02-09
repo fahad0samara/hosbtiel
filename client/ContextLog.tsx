@@ -32,7 +32,8 @@ const LogCheck = ({children}: any) => {
   const [logAdmin, setlogAdmin] = useState(false);
   const [logDr, setlogDr] = useState(false);
   const [Patient, setPatient] = useState()
-  const [Doctor, setDoctor]=useState()
+  const [Doctor, setDoctor] = useState();
+
   
 
 

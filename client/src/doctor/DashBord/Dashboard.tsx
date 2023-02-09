@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 
 import "../Loder.css";
 
-import Chart from "../Chart";
+import Chart from "./Chart";
 import {patient} from "../../types";
 import Patient from "./Patient";
 import MyCalendar from "./MyCalendar";

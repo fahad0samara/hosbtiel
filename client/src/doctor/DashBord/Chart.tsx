@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { useLogIN } from "../../ContextLog";
+import {useLogIN} from "../../../ContextLog";
 import axios from "axios";
 import moment from "moment-timezone";
-import { RiLoader2Fill } from "react-icons/ri";
+import {RiLoader2Fill} from "react-icons/ri";
 
 import "react-calendar/dist/Calendar.css";
 function App() {
@@ -15,7 +15,7 @@ function App() {
   const [dateString, setDateString] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  if (!Doctor || !Doctor.availableDays) return null;
+
   const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {

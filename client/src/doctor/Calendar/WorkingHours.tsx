@@ -153,19 +153,35 @@ const WorkingHours = () => {
     <div
       className={`${dark ? "bg-black" : "bg-gray-100"}
       ${dark ? "text-white" : "text-black"} 
-      grid-cols-3
-      my-10
+      xl:grid-cols-3
+
+      md:grid-cols-2
+      lg:grid-cols-2
+      
+grid-cols-1
+      md:first-letter:my-10
       grid
+
 
    
       
       
        `}
     >
-      <div>
+      <div
+        className={`${dark ? "bg-black" : "bg-gray-100"}
+      ${dark ? "text-white" : "text-black"}
+      md:ml-20
+      ml-9
+      md:my-8
+      my-4
+      `}
+      >
         <h1
-          className={`${dark ? "text-white" : "text-black "} text-xl font-bold
-              text-center
+          className={`${
+            dark ? "text-white" : "text-black "
+          } md:text-xl font-bold
+              text-center 
           
             `}
         >
@@ -174,6 +190,7 @@ const WorkingHours = () => {
         <h4
           className="
         text-center
+
     
         text-gray-500
 
@@ -184,7 +201,7 @@ const WorkingHours = () => {
         </h4>
       </div>
 
-      <div className=" my-8 ml-28  ">
+      <div className=" my-8 md:ml-28 p-6 max-w-xs ">
         <form className="w-full max-w-sm" onSubmit={handleSubmit}>
           {workingHours.map((workingHour, index) => (
             <div key={index} className="flex my-3">

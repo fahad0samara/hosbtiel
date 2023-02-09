@@ -26,6 +26,14 @@ const Register = () => {
         }
       );
       setLoading(false);
+      setProfile(
+        response.data.user.role === "patient"
+          ? response.data.user
+          : response.data.user
+      );
+      
+
+      
       navigate("/RegisterPatient");
       console.log("====================================");
       console.log(
