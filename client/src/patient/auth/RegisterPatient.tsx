@@ -135,8 +135,7 @@ export default function RegisterPatient() {
         }
       );
       console.log("response0", response0);
-      localStorage.setItem("email", email);
-      localStorage.setItem("password", password);
+      setSuccess(response0.data.message);
 
       setLoading(false);
       const response = await axios.post(

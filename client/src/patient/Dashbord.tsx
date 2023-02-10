@@ -355,7 +355,9 @@ const Dashboard = (props: any) => {
             }
             <div className="mt-3">
               <p className="text-black text-xl">
-                {Patient ? (
+                {Patient &&
+                Patient.diseaseList &&
+                Patient.diseaseList.length > 0 ? (
                   Patient.diseaseList[0].disease
                 ) : (
                   <div>
@@ -364,7 +366,11 @@ const Dashboard = (props: any) => {
                 )}
               </p>
               <p className="capitalize">
-                {Patient ? Patient.diseaseList[0].description : ""}
+                {Patient &&
+                Patient.diseaseList &&
+                Patient.diseaseList.length > 0
+                  ? Patient.diseaseList[0].description
+                  : ""}
               </p>
             </div>
           </div>
@@ -390,16 +396,22 @@ const Dashboard = (props: any) => {
             }
             <div className="mt-3">
               <p className="text-black text-xl">
-                {Patient ? (
-                  Patient.allergyList[0].allergy
+                {Patient &&
+                Patient.diseaseList &&
+                Patient.diseaseList.length > 0 ? (
+                  Patient.diseaseList[0].disease
                 ) : (
                   <div>
-                    <h1>There are no allergies</h1>
+                    <h1>There are no diseases</h1>
                   </div>
                 )}
               </p>
               <p className="capitalize">
-                {Patient ? Patient.diseaseList[0].description : ""}
+                {Patient &&
+                Patient.diseaseList &&
+                Patient.diseaseList.length > 0
+                  ? Patient.diseaseList[0].description
+                  : ""}
               </p>
             </div>
           </div>
@@ -425,7 +437,9 @@ const Dashboard = (props: any) => {
             }
             <div className="mt-3">
               <p className="text-black text-xl">
-                {Patient ? (
+                {Patient &&
+                Patient.medicationList &&
+                Patient.medicationList.length > 0 ? (
                   Patient.medicationList[0].medication
                 ) : (
                   <div>
@@ -434,7 +448,11 @@ const Dashboard = (props: any) => {
                 )}
               </p>
               <p className="capitalize">
-                {Patient ? Patient.diseaseList[0].description : ""}
+                {Patient &&
+                Patient.medicationList &&
+                Patient.medicationList.length > 0
+                  ? Patient.medicationList[0].description
+                  : ""}
               </p>
             </div>
           </div>
