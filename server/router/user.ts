@@ -225,7 +225,9 @@ router.get("/getDoctor", async (req, res) => {
 });
 
 router.post("/register-user", async (req: any, res: any) => {
-  // Check if the user is an admin
+  // validate
+  const {error} = registerUserValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
   // check if the user is already in the database
   const emailFind = await User.findOne({

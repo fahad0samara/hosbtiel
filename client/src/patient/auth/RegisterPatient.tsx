@@ -887,21 +887,6 @@ export default function RegisterPatient() {
                       className="grid grid-cols-7 col-span-1 mb-3"
                     >
                       <input
-                        className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                                lg:px-4
-                          text-black
-
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-
-                  border-gray-300
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
                         type="text"
                         name="allergy"
                         value={allergy.allergy}
@@ -913,22 +898,6 @@ export default function RegisterPatient() {
                         }}
                       />
                       <input
-                        className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                          text-black
-
-                                lg:px-4
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                  mx-3
-
-                  border-gray-300
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
                         type="text"
                         name="
                         allergy
