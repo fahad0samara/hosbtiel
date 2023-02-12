@@ -2,6 +2,7 @@ import {string} from "joi";
 
 const Joi = require("joi");
 // register validation
+
 const registerValidation = (data: any) => {
   const schema = Joi.object({
     name: Joi.object({
@@ -50,9 +51,23 @@ const registerValidation = (data: any) => {
         ZipCode: Joi.number().min(1).max(999999).required(),
       },
     ],
-    diseaseList: Joi.array().items(),
-    allergyList: Joi.array().items(),
-    medicationList: Joi.array().items(),
+    allergyList: Joi.array().items(
+      Joi.object({
+        allergy: Joi.string().allow("").optional(),
+      })
+    ),
+
+    medicationList: Joi.array().items(
+      Joi.object({
+        medication: Joi.string().allow("").optional(),
+      })
+    ),
+
+    diseaseList: Joi.array().items(
+      Joi.object({
+        disease: Joi.string().allow("").optional(),
+      })
+    ),
   });
   return schema.validate(data);
 };

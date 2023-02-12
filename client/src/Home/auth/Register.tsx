@@ -47,16 +47,14 @@ const RegisterDr = () => {
     allergyList: [
       {
         allergy: "",
-        YearRound: "",
       },
     ],
     medicationList: [
       {
         medication: "",
-        YearRound: "",
       },
     ],
-    diseaseList: [{disease: "", YearRound: ""}],
+    diseaseList: [{disease: ""}],
 
     date: "",
     bloodGroup: "",
@@ -83,18 +81,19 @@ const RegisterDr = () => {
       },
     },
   });
-  const addAllergy = () => {
+
+  const addAllergy = formData => {
     const allergyList1 = [...formData.allergyList];
     allergyList1.push({allergy: "", YearRound: ""});
     setFormData({...formData, allergyList: allergyList1});
   };
 
-  const addDisease = () => {
+  const addDisease = formData => {
     const diseaseList1 = [...formData.diseaseList];
     diseaseList1.push({disease: "", YearRound: ""});
     setFormData({...formData, diseaseList: diseaseList1});
   };
-  const addMedication = () => {
+  const addMedication = formData => {
     const medicalHistory1 = [...formData.medicationList];
     medicalHistory1.push({medication: "", YearRound: ""});
     setFormData({...formData, medicationList: medicalHistory1});
@@ -145,6 +144,9 @@ const RegisterDr = () => {
       date,
       mobile,
       bloodGroup,
+      allergyList,
+      diseaseList,
+      medicationList,
 
       weight,
       height,
@@ -205,9 +207,40 @@ const RegisterDr = () => {
           !formData.address.Street ||
           !formData.address.district ||
           !formData.mobile ||
-          !formData.bloodGroup
+          !formData.bloodGroup ||
+          !formData.date ||
+          !formData.contactPerson.name.firstName ||
+          !formData.contactPerson.name.LastName ||
+          !formData.contactPerson.mobile ||
+          !formData.contactPerson.email ||
+          !formData.contactPerson.relation ||
+          !formData.contactPerson.age ||
+          !formData.contactPerson.address.building ||
+          !formData.contactPerson.address.Street ||
+          !formData.contactPerson.address.district
         ) {
-          setError("Please fill in all fields");
+          setError(
+            `
+          Please fill in ${!formData.name.firstName ? "First Name" : ""}
+          ${!formData.name.LastName ? "Last Name" : ""}
+          ${!formData.address.building ? "Building" : ""}
+          ${!formData.address.Street ? "Street" : ""}
+          ${!formData.address.district ? "District" : ""} 
+          ${!formData.mobile ? "Mobile" : ""}
+          ${!formData.bloodGroup ? "Blood Group" : ""}
+          ${!formData.date ? "Date" : ""}
+          ${!formData.contactPerson.name.firstName ? "First Name" : ""}
+          ${!formData.contactPerson.name.LastName ? "Last Name" : ""}
+          ${!formData.contactPerson.mobile ? "Mobile" : ""}
+          ${!formData.contactPerson.email ? "Email" : ""}
+          ${!formData.contactPerson.relation ? "Relation" : ""}
+          ${!formData.contactPerson.age ? "Age" : ""}
+          ${!formData.contactPerson.address.building ? "Building" : ""}
+          ${!formData.contactPerson.address.Street ? "Street" : ""}
+          ${!formData.contactPerson.address.district ? "District" : ""}
+
+            `
+          );
           setTimeout(() => setError(""), 2000);
           setLoading(false);
         }
@@ -216,62 +249,61 @@ const RegisterDr = () => {
           "http://localhost:3000/user/register-patient",
           {
             user,
-            name: name,
-            address: address,
+            name,
+            address,
             date: date,
             mobile: mobile,
             bloodGroup: bloodGroup,
-
             weight: weight,
             height: height,
             contactPerson,
+            allergyList,
+            diseaseList,
+            medicationList,
           }
         );
-        // chachk if the sucess true from the server
-        if (response0.data.success) setsuccess(true);
 
-        {
-          setsuccess(true);
+        setsuccess(true);
 
-          console.log("Patient registered successfully,", response0);
-          setLoading(false);
+        console.log("Patient registered successfully,", response0);
+        setLoading(false);
 
-          const response = await axios.post(
-            "http://localhost:3000/user/loginUser",
-            {
-              email,
-              password,
-            }
-          );
-          localStorage.setItem("token", response.data.token);
-          const decoded = jwtDecode(response.data.token);
+        const response = await axios.post(
+          "http://localhost:3000/user/loginUser",
+          {
+            email,
+            password,
+          }
+        );
+        localStorage.setItem("token", response.data.token);
+        const decoded = jwtDecode(response.data.token);
 
-          setLoading(false);
+        setLoading(false);
 
-          setlogPatient(true);
-          setlogDr(false);
-          setlogAdmin(false);
-          setLoading(false);
-          setProfile(response.data.user);
-          Navigate("/patient/dashboard");
+        setlogPatient(true);
+        setlogDr(false);
+        setlogAdmin(false);
+        setLoading(false);
+        setProfile(response.data.user);
+        Navigate("/patient/dashboard");
 
-          // Use the user ID to query the patient collection
-          const patientResponse = await axios.get(
-            //@ts-ignore
-            `http://localhost:3000/user/getPatient/${decoded.patientId}`
-          );
+        // Use the user ID to query the patient collection
+        const patientResponse = await axios.get(
+          //@ts-ignore
+          `http://localhost:3000/user/getPatient/${decoded.patientId}`
+        );
 
-          console.log("patientResponse", patientResponse.data._id);
+        console.log("patientResponse", patientResponse.data._id);
 
-          setPatient(patientResponse.data);
-        }
+        setPatient(patientResponse.data);
       } catch (error) {
-        console.log("Error while fetching patient: ", error);
+        //@ts-ignore
+        console.log("Error: ", error.response.data);
+        //@ts-ignore
+        setError(error.response.data);
+        setTimeout(() => setError(""), 4000);
+        setLoading(false);
       }
-
-      setStep(3);
-
-      setLoading(false);
     }
   };
 
@@ -425,34 +457,45 @@ const RegisterDr = () => {
               }}
               className="flex flex-col items-center justify-center min-h-screen py-2"
             >
-              {
-                //error
-                error ? (
+              <form
+                onSubmit={handleSubmit}
+                style={{
+                  backgroundColor: dark ? "#000" : "white",
+                  color: dark ? "white" : "black",
+                }}
+                className="w-full max-w-4xl mx-auto mt-10 rounded-lg shadow-lg shadow-cyan-300 overflow-hidden md:p-8 p-12"
+              >
+                <div>
                   <div
-                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                    role="alert"
+                    className="w-full max-w-xl mx-auto md:p-4
+                          p-6
+                          rounded-lg
+                          shadow-md
+                      shadow-cyan-300
+                          color-white
+                          
+                          font-bold
+                          text-center
+                          text-xl
+                      
+
+                          "
                   >
-                    <strong
-                      className="
-                  font-bold
-                  
-                  "
-                    >
-                      Error!
-                    </strong>
-                    <span className="block sm:inline">{error}</span>
-                  </div>
-                ) : (
-                  <form
-                    style={{
-                      backgroundColor: dark ? "#000" : "white",
-                      color: dark ? "white" : "black",
-                    }}
-                    className="w-full max-w-4xl mx-auto mt-10 rounded-lg shadow-lg shadow-cyan-300 overflow-hidden md:p-8 p-12"
-                  >
-                    <div>
-                      <div
+                    <div className="text-center mb-6">
+                      <h1 className="text-3xl font-bold ">Step {step} of 2</h1>
+                      <h1
                         className="
+                                text-cyan-300"
+                      >
+                        we need more information to create your account
+                      </h1>
+                      <p className="text-md font-bold  ">
+                        Please fill in this form to create an account!
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className="
                         
                             grid
                             grid-cols-1
@@ -466,12 +509,12 @@ const RegisterDr = () => {
                       
          
               "
-                      >
-                        <label className="font-bold lg:text-xl font-poppins text-center   lg:my-4  col-span-1">
-                          Name
-                        </label>
-                        <div
-                          className="
+                  >
+                    <label className="font-bold lg:text-xl font-poppins text-center   lg:my-4  col-span-1">
+                      Name
+                    </label>
+                    <div
+                      className="
                           col-span-2
                flex
               md:flex-row
@@ -482,176 +525,176 @@ const RegisterDr = () => {
 
 
                 "
-                        >
-                          <input
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="
+                    >
+                      <input
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="
                   First Name"
-                            type="text"
-                            value={formData.name.firstName}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                name: {
-                                  ...formData.name,
-                                  firstName: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            placeholder="Middle Name"
-                            type="text"
-                            value={formData.name.middleName}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                name: {
-                                  ...formData.name,
-                                  middleName: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="
+                        type="text"
+                        value={formData.name.firstName}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            name: {
+                              ...formData.name,
+                              firstName: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        placeholder="Middle Name"
+                        type="text"
+                        value={formData.name.middleName}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            name: {
+                              ...formData.name,
+                              middleName: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="
                   Last Name"
-                            type="text"
-                            value={formData.name.LastName}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                name: {
-                                  ...formData.name,
-                                  LastName: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
+                        type="text"
+                        value={formData.name.LastName}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            name: {
+                              ...formData.name,
+                              LastName: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16 gap-5 my-3 max-w-2xl">
+                    <div>
+                      <label className="font-bold lg:text-xl font-poppins lg:px-2 lg:my-1 ">
+                        Date of Birth
+                      </label>
+                      <input
+                        type="date"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        value={formData.date.split("T")[0]}
+                        onChange={e =>
+                          setFormData({...formData, date: e.target.value})
+                        }
+                      ></input>
+                    </div>
+
+                    <div>
+                      <label className="font-bold lg:text-xl  ">
+                        Mobile Number
+                      </label>
+
+                      <input
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="Mobile Number"
+                        type="number"
+                        value={formData.mobile}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            mobile: e.target.value,
+                          })
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                  <div className=" grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-3 my-5">
+                    <div className="flex md:flex-row md:items-center flex-col items-center">
+                      <label className="  lg:text-xl font-bold px-4">
+                        Blood Group
+                      </label>
+                      <div className="col-span-3 my-2  mx-2">
+                        <select
+                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                          id="blood-group"
+                          required
+                          value={formData.bloodGroup}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              bloodGroup: e.target.value,
+                            })
+                          }
+                        >
+                          <option id="select">select</option>
+                          <option id="A+">A+</option>
+                          <option id="A-">A-</option>
+                          <option id="B+">B+</option>
+                          <option id="B-">B-</option>
+                          <option id="AB+">AB+</option>
+                          <option id="AB-">AB-</option>
+                          <option id="O+">O+</option>
+                          <option id="O-">O-</option>
+                        </select>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16 gap-5 my-3 max-w-2xl">
-                        <div>
-                          <label className="font-bold lg:text-xl font-poppins lg:px-2 lg:my-1 ">
-                            Date of Birth
-                          </label>
-                          <input
-                            type="date"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            value={formData.date.split("T")[0]}
-                            onChange={e =>
-                              setFormData({...formData, date: e.target.value})
-                            }
-                          ></input>
-                        </div>
+                    </div>
+                    <div className="flex md:flex-row md:items-center flex-col items-center">
+                      <label className="font-bold lg:text-xl px-4 ">
+                        Height
+                      </label>
 
-                        <div>
-                          <label className="font-bold lg:text-xl  ">
-                            Mobile Number
-                          </label>
-
-                          <input
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="Mobile Number"
-                            type="number"
-                            value={formData.mobile}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                mobile: e.target.value,
-                              })
-                            }
-                          ></input>
-                        </div>
-                      </div>
-                      <div className=" grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-3 my-5">
-                        <div className="flex md:flex-row md:items-center flex-col items-center">
-                          <label className="  lg:text-xl font-bold px-4">
-                            Blood Group
-                          </label>
-                          <div className="col-span-3 my-2  mx-2">
-                            <select
-                              className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                              id="blood-group"
-                              required
-                              value={formData.bloodGroup}
-                              onChange={e =>
-                                setFormData({
-                                  ...formData,
-                                  bloodGroup: e.target.value,
-                                })
-                              }
-                            >
-                              <option id="select">select</option>
-                              <option id="A+">A+</option>
-                              <option id="A-">A-</option>
-                              <option id="B+">B+</option>
-                              <option id="B-">B-</option>
-                              <option id="AB+">AB+</option>
-                              <option id="AB-">AB-</option>
-                              <option id="O+">O+</option>
-                              <option id="O-">O-</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="flex md:flex-row md:items-center flex-col items-center">
-                          <label className="font-bold lg:text-xl px-4 ">
-                            Height
-                          </label>
-
-                          <input
-                            required
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            placeholder="Height"
-                            type="number"
-                            value={formData.height}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                height: e.target.value,
-                              })
-                            }
-                          ></input>
-                          <h1>{formData.height === "" ? "" : "cm"}</h1>
-                        </div>
-                        <div
-                          className="
+                      <input
+                        required
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        placeholder="Height"
+                        type="number"
+                        value={formData.height}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            height: e.target.value,
+                          })
+                        }
+                      ></input>
+                      <h1>{formData.height === "" ? "" : "cm"}</h1>
+                    </div>
+                    <div
+                      className="
                   flex
               md:flex-row
               md:items-center
               flex-col
               items-center
                 "
-                        >
-                          <label className="font-bold lg:text-xl px-4 ">
-                            Weight
-                          </label>
+                    >
+                      <label className="font-bold lg:text-xl px-4 ">
+                        Weight
+                      </label>
 
-                          <input
-                            required
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            placeholder="Weight"
-                            type="number"
-                            value={formData.weight}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                weight: e.target.value,
-                              })
-                            }
-                          ></input>
-                          <h1>{formData.weight === "" ? "" : "kg"}</h1>
-                        </div>
-                      </div>
+                      <input
+                        required
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        placeholder="Weight"
+                        type="number"
+                        value={formData.weight}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            weight: e.target.value,
+                          })
+                        }
+                      ></input>
+                      <h1>{formData.weight === "" ? "" : "kg"}</h1>
+                    </div>
+                  </div>
 
-                      <div
-                        className="
+                  <div
+                    className="
                   flex
                   my-4
                   flex-col
@@ -659,352 +702,197 @@ const RegisterDr = () => {
                   lg:items-center
                   text-center
                    "
-                      >
-                        <label className="lg:text-xl font-bold px-8">
-                          Address
-                        </label>
-                        <div
-                          className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1
+                  >
+                    <label className="lg:text-xl font-bold px-8">Address</label>
+                    <div
+                      className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1
                               md:gap-6
                               px-8
                            lg:gap-9
                            gap-7
                             
                         "
-                        >
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="building/area"
-                            value={formData.address.building}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  building: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="city"
-                            value={formData.address.city}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  city: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="Street"
-                            value={formData.address.Street}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  Street: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="District"
-                            value={formData.address.district}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  district: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="number"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="Pin-code"
-                            value={formData.address.ZipCode}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  ZipCode: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            placeholder="State"
-                            required
-                            value={formData.address.state}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                address: {
-                                  ...formData.address,
-                                  state: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
-                      </div>
+                    >
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="building/area"
+                        value={formData.address.building}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              building: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="city"
+                        value={formData.address.city}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              city: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="Street"
+                        value={formData.address.Street}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              Street: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="District"
+                        value={formData.address.district}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              district: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="number"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="Pin-code"
+                        value={formData.address.ZipCode}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              ZipCode: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        placeholder="State"
+                        required
+                        value={formData.address.state}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            address: {
+                              ...formData.address,
+                              state: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
+                  </div>
 
-                      <div
-                        className="grid lg:grid-cols-3
+                  <div
+                    className="
+                        text-red-500
+                        italic
+                        text-center
+                        text-xl
+                        font-bold
+                        font-size-lg
+                        my-6
+                    
+           
+              "
+                  >
+                    <h1>This section Allergies and diseases</h1>
+                    <h1>If you don't have anything you can ignore it</h1>
+                  </div>
+
+                  <div
+                    className="grid lg:grid-cols-3
               md:grid-cols-2"
-                      >
-                        <div className="col-span-5 ">
-                          <h1 className=" lg:text-xl  my-1 font-bold px-4 grid col-start-1 col-span-3">
-                            Do you have a permanent illness?
-                          </h1>
-                        </div>
-                        <div className="col-span-4">
-                          {formData.diseaseList.map((disease, index) => {
-                            return (
-                              <div
-                                key={index}
-                                className="grid grid-cols-7 col-span-1 mb-3"
-                              >
-                                <input
-                                  className="lg:h-10
-                               lg:w-64
-                                text-black
-                                lg:rounded-lg
-                                lg:px-4
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                  border-gray-300 
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                  type="text"
-                                  name="
+                  >
+                    <div className="col-span-5 ">
+                      <h1 className=" lg:text-xl  my-1 font-bold px-4 grid col-start-1 col-span-3">
+                        Do you have a permanent illness ?
+                      </h1>
+                    </div>
+                    <div className="col-span-4">
+                      {formData.diseaseList.map((disease, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="grid grid-cols-7 col-span-1 mb-3"
+                          >
+                            <input
+                              className="lg:h-10 lg:w-64 lg:rounded-lg lg:px-4 px-4 appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1  leading-tight  focus:outline-none  focus:ring-2 mx-3 col-span-3  lg:pl-4 h-8 pl-2"
+                              type="text"
+                              name="
 
                           Asthma
                           "
-                                  value={disease.disease}
-                                  placeholder="
+                              value={disease.disease}
+                              placeholder="
                           ex.Asthma
                           "
-                                  onChange={e => {
-                                    const values = [...formData.diseaseList];
-                                    values[index].disease = e.target.value;
-                                    setFormData({
-                                      ...formData,
-                                      diseaseList: values,
-                                    });
-                                  }}
-                                />
-                                <input
-                                  className="lg:h-10
-                                      lg:w-64
-                                lg:rounded-lg
-                                lg:px-4
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                  mx-3
-                          text-black
+                              onChange={e => {
+                                const values = [...formData.diseaseList];
+                                values[index].disease = e.target.value;
+                                setFormData({
+                                  ...formData,
+                                  diseaseList: values,
+                                });
+                              }}
+                            />
 
-                  border-gray-300 
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                  type="text"
-                                  name="YearRound"
-                                  placeholder="
-                          Severe asthma.
-                       
-                          "
-                                  value={disease.YearRound}
-                                  onChange={e => {
-                                    const values = [...formData.allergyList];
-                                    values[index].YearRound = e.target.value;
-                                    setFormData({
-                                      ...formData,
-                                      allergyList: values,
-                                    });
-                                  }}
-                                />
-
-                                <div
-                                  className="col-span-1 pl-3"
-                                  onClick={() => {
-                                    if (formData.diseaseList.length > 1) {
-                                      const values = [...formData.diseaseList];
-                                      values.splice(index, 1);
-                                      setFormData({
-                                        ...formData,
-                                        diseaseList: values,
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <AiFillMinusCircle className="text-2xl text-red-500" />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div onClick={addDisease} className="col-span-1">
-                          <AiFillPlusCircle className="text-2xl text-green-500" />
-                        </div>
-                      </div>
-                    </div>
-                    ;
-                    {
-                      //addAllergy
-                    }
-                    <div
-                      className="grid lg:grid-cols-3
-              md:grid-cols-2
-              grid-cols-1
-              gap-1
-              my-2
-              text-center
-              lg:text-start
-              "
-                    >
-                      <div className="col-span-5 ">
-                        <h1 className=" lg:text-xl  my-1 font-bold px-4 grid col-start-1 col-span-3">
-                          do you have any allergy
-                        </h1>
-                      </div>
-                      <div className="col-span-4  ">
-                        {
-                          //allergyList
-                        }
-
-                        {formData.allergyList.map((allergy, index) => {
-                          return (
                             <div
-                              key={index}
-                              className="grid grid-cols-7 col-span-1 mb-3"
+                              className="col-span-1 pl-3"
+                              onClick={() => {
+                                if (formData.diseaseList.length > 1) {
+                                  const values = [...formData.diseaseList];
+                                  values.splice(index, 1);
+                                  setFormData({
+                                    ...formData,
+                                    diseaseList: values,
+                                  });
+                                }
+                              }}
                             >
-                              <input
-                                className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                                lg:px-4
-                          text-black
-
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-
-                  border-gray-300
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                type="text"
-                                name="allergy"
-                                //allergyList
-                                placeholder=" ex. penicillin"
-                                value={allergy.allergy}
-                                onChange={e => {
-                                  const values = [...formData.allergyList];
-                                  values[index].allergy = e.target.value;
-                                  setFormData({
-                                    ...formData,
-                                    allergyList: values,
-                                  });
-                                }}
-                              />
-                              <input
-                                className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                          text-black
-
-                                lg:px-4
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                  mx-3
-
-                  border-gray-300
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                type="text"
-                                name="
-                        allergy
-
-                        "
-                                placeholder="
-                        allergy
-
-                        "
-                                value={allergy.YearRound}
-                                onChange={e => {
-                                  const values = [...formData.allergyList];
-                                  values[index].YearRound = e.target.value;
-
-                                  setFormData({
-                                    ...formData,
-                                    allergyList: values,
-                                  });
-                                }}
-                              />
-
-                              <div
-                                className="col-span-1 pl-3"
-                                onClick={() => {
-                                  if (formData.allergyList.length > 1) {
-                                    const values = [...formData.allergyList];
-                                    values.splice(index, 1);
-                                    setFormData({
-                                      ...formData,
-                                      allergyList: values,
-                                    });
-                                  }
-                                }}
-                              >
-                                <AiFillMinusCircle className="text-2xl text-red-500" />
-                              </div>
+                              <AiFillMinusCircle className="text-2xl text-red-500" />
                             </div>
-                          );
-                        })}
-                      </div>
-
-                      <div onClick={addAllergy} className="col-span-1">
-                        <AiFillPlusCircle className="text-2xl text-green-500" />
-                      </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                    ;
-                    {
-                      //addMedication
-                    }
-                    <div
-                      className="grid lg:grid-cols-3
+
+                    <div onClick={addDisease} className="col-span-1">
+                      <AiFillPlusCircle className="text-2xl text-green-500" />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="grid lg:grid-cols-3
               md:grid-cols-2
               grid-cols-1
               gap-1
@@ -1012,171 +900,208 @@ const RegisterDr = () => {
               text-center
               lg:text-start
               "
-                    >
-                      <div className="col-span-5 ">
-                        <h1 className=" lg:text-xl   font-bold px-4 grid col-start-1 col-span-3">
-                          do you have any medication
-                        </h1>
-                      </div>
-                      <div className="col-span-4  ">
-                        {formData.medicationList.map((medication, index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="grid grid-cols-7 col-span-1 mb-3"
-                            >
-                              <input
-                                className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                                lg:px-4 px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                          text-black
+                >
+                  <div className="col-span-5 ">
+                    <h1 className=" lg:text-xl  my-1 font-bold px-4 grid col-start-1 col-span-3">
+                      do you have any allergy ?
+                    </h1>
+                  </div>
+                  <div className="col-span-4  ">
+                    {formData.allergyList.map((allergy, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="grid grid-cols-7 col-span-1 mb-3"
+                        >
+                          <input
+                            className="lg:h-10 lg:w-64 lg:rounded-lg lg:px-4 px-4 appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1  leading-tight  focus:outline-none  focus:ring-2 mx-3 col-span-3  lg:pl-4 h-8 pl-2"
+                            type="text"
+                            name="allergy"
+                            //allergyList
+                            placeholder=" ex. penicillin"
+                            value={allergy.allergy}
+                            onChange={e => {
+                              const values = [...formData.allergyList];
+                              values[index].allergy = e.target.value;
+                              setFormData({
+                                ...formData,
+                                allergyList: values,
+                              });
+                            }}
+                          />
 
+                          <div
+                            className="col-span-1 pl-3"
+                            onClick={() => {
+                              if (formData.allergyList.length > 1) {
+                                const values = [...formData.allergyList];
+                                values.splice(index, 1);
+                                setFormData({
+                                  ...formData,
+                                  allergyList: values,
+                                });
+                              }
+                            }}
+                          >
+                            <AiFillMinusCircle className="text-2xl text-red-500" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
-                  border-gray-300
-                            col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                type="text"
-                                name="Drops"
-                                value={medication.medication}
-                                placeholder=" ex.
+                  <div onClick={addAllergy} className="col-span-1">
+                    <AiFillPlusCircle className="text-2xl text-green-500" />
+                  </div>
+                </div>
+
+                <div
+                  className="grid lg:grid-cols-3
+              md:grid-cols-2
+              grid-cols-1
+              gap-1
+              my-2
+              text-center
+              lg:text-start
+              "
+                >
+                  <div className="col-span-5 ">
+                    <h1 className=" lg:text-xl   font-bold px-4 grid col-start-1 col-span-3">
+                      do you have any medication ?
+                    </h1>
+                  </div>
+                  <div className="col-span-4  ">
+                    {formData.medicationList.map((medication, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="grid grid-cols-7 col-span-1 mb-3"
+                        >
+                          <input
+                            className="lg:h-10 lg:w-64 lg:rounded-lg lg:px-4 px-4 appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1  leading-tight  focus:outline-none  focus:ring-2 mx-3 col-span-3  lg:pl-4 h-8 pl-2"
+                            type="text"
+                            name="Drops"
+                            value={medication.medication}
+                            placeholder=" ex.
                         Drops
                         "
-                                onChange={e => {
-                                  const values = [...formData.medicationList];
-                                  values[index].medication = e.target.value;
-                                  setFormData({
-                                    ...formData,
-                                    medicationList: values,
-                                  });
-                                }}
-                              />
-                              <input
-                                className="lg:h-10
-                                lg:w-64
-                                lg:rounded-lg
-                                lg:px-4
-                          text-black
+                            onChange={e => {
+                              const values = [...formData.medicationList];
+                              values[index].medication = e.target.value;
+                              setFormData({
+                                ...formData,
+                                medicationList: values,
+                              });
+                            }}
+                          />
 
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-purple-600
-                  focus:border-transparent
-                  border-2
-                  mx-3 border-gray col-span-3 rounded-lg lg:pl-4 h-8 pl-2"
-                                type="text"
-                                name="medication"
-                                placeholder="medication"
-                                value={medication.YearRound}
-                                onChange={e => {
-                                  const values = [...formData.medicationList];
-                                  values[index].YearRound = e.target.value;
+                          <div
+                            className="col-span-1 pl-3"
+                            onClick={() => {
+                              if (formData.medicationList.length > 1) {
+                                const values = [...formData.medicationList];
+                                values.splice(index, 1);
+                                setFormData({
+                                  ...formData,
+                                  medicationList: values,
+                                });
+                              }
+                            }}
+                          >
+                            <AiFillMinusCircle className="text-2xl text-red-500" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
-                                  setFormData({
-                                    ...formData,
-                                    medicationList: values,
-                                  });
-                                }}
-                              />
+                  <div onClick={addMedication} className="col-span-1">
+                    <AiFillPlusCircle className="text-2xl text-green-500" />
+                  </div>
+                </div>
+                <div>
+                  <div
+                    className="flex
+                        justify-center
+                        items-center
+                        flex-col
+                        
+              "
+                  >
+                    <h1 className=" font-bold lg:text-3xl text-xl ">
+                      Emergency Contact Details
+                    </h1>
 
-                              <div
-                                className="col-span-1 pl-3"
-                                onClick={() => {
-                                  if (formData.medicationList.length > 1) {
-                                    const values = [...formData.medicationList];
-                                    values.splice(index, 1);
-                                    setFormData({
-                                      ...formData,
-                                      medicationList: values,
-                                    });
-                                  }
-                                }}
-                              >
-                                <AiFillMinusCircle className="text-2xl text-red-500" />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                    <p
+                      className="text-red-500
+                        italic
+                        text-center
+                        text-sm
+                        font-bold
+                "
+                    >
+                      We only need it if there is any problem
+                    </p>
+                  </div>
 
-                      <div onClick={addMedication} className="col-span-1">
-                        <AiFillPlusCircle className="text-2xl text-green-500" />
-                      </div>
-                    </div>
-                    ; ; ;
-                    {
-                      //addDisease
-                    }
-                    <div>
-                      <div className="flex justify-center">
-                        <h1 className=" p-4 rounded font-bold lg:text-3xl text-xl mt-2">
-                          Emergency Contact Details
-                        </h1>
-                      </div>
-
-                      <div
-                        className=" grid
+                  <div
+                    className=" grid
                           grid-cols-1
                         md:mx-9
                         p-4
                         
                        lg:grid-cols-3 lg:gap-10 md:gap-8 gap-4"
-                      >
-                        <label className="font-bold lg:text-xl lg:text-start  text-center">
-                          Name
-                        </label>
+                  >
+                    <label className="font-bold lg:text-xl lg:text-start  text-center">
+                      Name
+                    </label>
 
-                        <input
-                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                          placeholder="first name"
-                          required
-                          value={formData.contactPerson.name.firstName}
-                          onChange={e =>
-                            setFormData({
-                              ...formData,
-                              contactPerson: {
-                                ...formData.contactPerson,
-                                name: {
-                                  ...formData.contactPerson.name,
-                                  firstName: e.target.value,
-                                },
-                              },
-                            })
-                          }
-                        ></input>
-                        <input
-                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                          placeholder="last name"
-                          required
-                          value={formData.contactPerson.name.LastName}
-                          onChange={e =>
-                            setFormData({
-                              ...formData,
-                              contactPerson: {
-                                ...formData.contactPerson,
-                                name: {
-                                  ...formData.contactPerson.name,
-                                  LastName: e.target.value,
-                                },
-                              },
-                            })
-                          }
-                        ></input>
-                      </div>
-                      <div
-                        className=" flex
+                    <input
+                      className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                      placeholder="first name"
+                      required
+                      value={formData.contactPerson.name.firstName}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          contactPerson: {
+                            ...formData.contactPerson,
+                            name: {
+                              ...formData.contactPerson.name,
+                              firstName: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                    ></input>
+                    <input
+                      className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                      placeholder="last name"
+                      required
+                      value={formData.contactPerson.name.LastName}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          contactPerson: {
+                            ...formData.contactPerson,
+                            name: {
+                              ...formData.contactPerson.name,
+                              LastName: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                    ></input>
+                  </div>
+                  <div
+                    className=" flex
               md:flex-row
 
               flex-col  
               items-center"
-                      >
-                        <div
-                          className="
+                  >
+                    <div
+                      className="
 
               flex
               md:flex-row
@@ -1185,108 +1110,108 @@ const RegisterDr = () => {
               text-center
 
               "
-                        >
-                          <label className="font-bold lg:text-xl px-4 ">
-                            Phone Number
-                          </label>
-                          <input
-                            type="tel"
-                            placeholder="mobile no."
-                            required
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            value={formData.contactPerson.mobile}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  mobile: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
+                    >
+                      <label className="font-bold lg:text-xl px-4 ">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="mobile no."
+                        required
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        value={formData.contactPerson.mobile}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              mobile: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
 
-                        <div
-                          className=" grid
+                    <div
+                      className=" grid
                           grid-cols-1
                         md:mx-9
                         p-4
                         
                        lg:grid-cols-3 lg:gap-10 md:gap-8 gap-4"
-                        >
-                          <label className="  lg:text-xl font-bold px-4">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="email"
-                            value={formData.contactPerson.email}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  email: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
-                      </div>
+                    >
+                      <label className="  lg:text-xl font-bold px-4">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="email"
+                        value={formData.contactPerson.email}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              email: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
+                  </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16 gap-5 my-3 max-w-2xl">
-                        <div>
-                          <label className="font-bold lg:text-xl font-poppins lg:px-2 lg:my-1 ">
-                            Date of Birth
-                          </label>
-                          <input
-                            type="date"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  age: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16 gap-5 my-3 max-w-2xl">
+                    <div>
+                      <label className="font-bold lg:text-xl font-poppins lg:px-2 lg:my-1 ">
+                        Date of Birth
+                      </label>
+                      <input
+                        type="date"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              age: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
 
-                        <div>
-                          <label className="font-bold lg:text-xl  ">
-                            Relation/ Relationship
-                          </label>
+                    <div>
+                      <label className="font-bold lg:text-xl  ">
+                        Relation/ Relationship
+                      </label>
 
-                          <input
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="
+                      <input
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="
                     ex.bother / 
                     sister
                     "
-                            value={formData.contactPerson.relation}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  relation: e.target.value,
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
-                      </div>
+                        value={formData.contactPerson.relation}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              relation: e.target.value,
+                            },
+                          })
+                        }
+                      ></input>
+                    </div>
+                  </div>
 
-                      <div
-                        className="
+                  <div
+                    className="
                   flex
                   my-4
                   flex-col
@@ -1294,216 +1219,200 @@ const RegisterDr = () => {
                   lg:items-center
                   text-center
                    "
-                      >
-                        <label className="lg:text-xl font-bold px-8">
-                          Address
-                        </label>
-                        <div
-                          className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1
+                  >
+                    <label className="lg:text-xl font-bold px-8">Address</label>
+                    <div
+                      className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1
                               md:gap-6
                               px-8
                            lg:gap-9
                            gap-7
                             
                         "
-                        >
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="building/area"
-                            value={formData.contactPerson.address.building}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    building: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="city"
-                            value={formData.contactPerson.address.city}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    city: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="Street"
-                            value={formData.contactPerson.address.Street}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    Street: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="District"
-                            value={formData.contactPerson.address.district}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    district: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="number"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            required
-                            placeholder="Pin-code"
-                            value={formData.contactPerson.address.ZipCode}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    ZipCode: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                          <input
-                            type="text"
-                            className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            placeholder="State"
-                            required
-                            value={formData.contactPerson.address.state}
-                            onChange={e =>
-                              setFormData({
-                                ...formData,
-                                contactPerson: {
-                                  ...formData.contactPerson,
-                                  address: {
-                                    ...formData.contactPerson.address,
-                                    state: e.target.value,
-                                  },
-                                },
-                              })
-                            }
-                          ></input>
-                        </div>
-                      </div>
-                      <div className="flex justify-center mb-4 mt-8">
-                        {loading ? (
-                          <button
-                            className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
-                            type="button"
-                            disabled
-                          >
-                            <svg
-                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                stroke-width="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8v1a7 7 0 00-7 7h1zm0 0a8 8 0 018 8H9a7 7 0 00-7-7v-1zm0 0h1a8 8 0 018 8v1a7 7 0 00-7-7zm0 0h1a8 8 0 01-8 8 7 7 0 007-7v-1z"
-                              ></path>
-                            </svg>
-                            Loading...
-                          </button>
-                        ) : (
-                          <button
-                            className="
-                  bg-black
-
-
-                  text-white
-                  font-bold 
-                  py-3
-                  px-9
-                  rounded
-                  hover:bg-sky-50
-                  hover:text-black
-
-
-                  focus:outline-none
-                  focus:shadow-outline
-                  "
-                            type="submit"
-                          >
-                            Register
-                          </button>
-                        )}
-                      </div>
+                    >
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="building/area"
+                        value={formData.contactPerson.address.building}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                building: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="city"
+                        value={formData.contactPerson.address.city}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                city: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="Street"
+                        value={formData.contactPerson.address.Street}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                Street: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="District"
+                        value={formData.contactPerson.address.district}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                district: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="number"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        required
+                        placeholder="Pin-code"
+                        value={formData.contactPerson.address.ZipCode}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                ZipCode: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
+                      <input
+                        type="text"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        placeholder="State"
+                        required
+                        value={formData.contactPerson.address.state}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: {
+                              ...formData.contactPerson,
+                              address: {
+                                ...formData.contactPerson.address,
+                                state: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      ></input>
                     </div>
-                  </form>
-                )
-              }
+                  </div>
+                </div>
+                <div
+                  className="
+       
+            mt-10
+            rounded-lg
+            shadow-xl
+            bg-red-900
+            
+                      "
+                >
+                  {
+                    //error
+                    error ? (
+                      <p className="text-white text-center text-xs italic">
+                        {
+                          //@ts-ignore
+                          error
+                        }
+                      </p>
+                    ) : null
+                  }
+                </div>
 
-              <div
-                className="flex
+                <div
+                  className="flex
         justify-center
         items-center
         space-x-4
         "
-              >
-                <button
-                  className="bg-cyan-400 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
-                  type="button"
-                  onClick={prevStep}
                 >
-                  Previous
-                </button>
+                  <button
+                    className="bg-cyan-400 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
+                    type="button"
+                    onClick={prevStep}
+                  >
+                    Previous
+                  </button>
 
-                <button
-                  className="bg-cyan-400 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
-                  type="button"
-                  onClick={handleSubmit}
-                ></button>
-                <div className="my-11"></div>
-                {loading ? <Loder /> : null}
-              </div>
+                  <div className="flex items-center justify-between ml-14">
+                    {formData.contactPerson.name &&
+                    formData.contactPerson.email &&
+                    formData.contactPerson.address.building &&
+                    formData.contactPerson.address.city &&
+                    formData.name.firstName &&
+                    formData.name.LastName ? (
+                      <button
+                        onClick={handleSubmit}
+                        className="bg-cyan-400 hover:bg-green-400  text-white font-bold
+                             py-2 px-9 rounded focus:outline-none focus:shadow-outline"
+                        type="submit"
+                      >
+                        Next
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-gray-400 text-white font-bold py-2 px-9 rounded focus:outline-none focus:shadow-outline"
+                        type="submit"
+                      >
+                        Next
+                      </button>
+                    )}
+                  </div>
+                  <div className="my-11"></div>
+                  {loading ? <Loder /> : null}
+                </div>
+              </form>
             </div>
           )}
         </>
