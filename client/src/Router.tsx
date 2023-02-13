@@ -2,7 +2,7 @@ import {Routes, Route} from "react-router-dom";
 
 
 import Hero from "./Home/Hero";
-import RouterPatient from "./patient/RouterPatient";
+import RouterPatient from "./patient/router/RouterPatient";
 import {useLogIN} from "../ContextLog";
 import RouterAdmin from "./admin/RouterAdmin";
 import Register from "./Home/auth/Register";

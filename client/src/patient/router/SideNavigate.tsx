@@ -9,18 +9,22 @@ import SideNav, {
 } from "@trendmicro/react-sidenav";
 
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import {RiDashboardFill} from "react-icons/ri";
-import { useLogIN } from "../../ContextLog";
+import {RiDashboardFill, RiLogoutBoxRLine} from "react-icons/ri";
+import {useLogIN} from "../../../ContextLog";
+import {BsCalendarDate} from "react-icons/bs";
+import {FaFilePrescription} from "react-icons/fa";
+import {TbCheckupList} from "react-icons/tb";
+import {CgProfile, CgUserList} from "react-icons/cg";
 
 const SideNavigate = (_props: any) => {
-    const {
-      Profile,
-      setProfile,
+  const {
+    Profile,
+    setProfile,
 
-      setLoading,
-      dark,
-      setdark,
-    } = useLogIN();
+    setLoading,
+    dark,
+    setdark,
+  } = useLogIN();
   const navigate = useNavigate();
 
   return (
@@ -41,6 +45,8 @@ const SideNavigate = (_props: any) => {
           navigate("/patient/about");
         } else if (selected === "appointment") {
           navigate("/patient/appointment");
+        } else if (selected === "Profile") {
+          navigate("/patient/Profile");
         }
 
         // console.log(selected);
@@ -100,9 +106,9 @@ const SideNavigate = (_props: any) => {
             dashboard
           </NavText>
         </NavItem>
-        <NavItem eventKey="about">
+        <NavItem eventKey="MyCalendar">
           <NavIcon>
-            <RiDashboardFill
+            <BsCalendarDate
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -121,38 +127,131 @@ const SideNavigate = (_props: any) => {
               marginTop: "1rem",
             }}
           >
-            about
+            MyCalendar
           </NavText>
         </NavItem>
-        <NavItem eventKey="appointment">
+
+        <NavItem eventKey="Prescription">
           <NavIcon>
-            <RiDashboardFill
+            <FaFilePrescription
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
                 fontWeight: "bold",
                 marginLeft: "1rem",
                 marginTop: "1rem",
-
               }}
             />
           </NavIcon>
           <NavText
-
             style={{
               color: dark ? "rgb(103 232 249)" : "black",
               fontSize: "0.9rem",
               fontWeight: "bold",
               marginLeft: "1rem",
-
               marginTop: "1rem",
             }}
           >
-            appointment
+            Prescription
           </NavText>
         </NavItem>
-        
-      
+        <NavItem eventKey="PrescriptionTable">
+          <NavIcon>
+            <TbCheckupList
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            PrescriptionList
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="ListTable">
+          <NavIcon>
+            <CgUserList
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            PatientsList
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="Profile">
+          <NavIcon>
+            <CgProfile
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            Profile
+          </NavText>
+        </NavItem>
+
+        <NavItem eventKey="logout">
+          <NavIcon>
+            <RiLogoutBoxRLine
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            Logout
+          </NavText>
+        </NavItem>
       </SideNav.Nav>
     </SideNav>
   );

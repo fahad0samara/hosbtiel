@@ -82,20 +82,20 @@ const RegisterDr = () => {
     },
   });
 
-  const addAllergy = formData => {
+  const addAllergy = () => {
     const allergyList1 = [...formData.allergyList];
-    allergyList1.push({allergy: "", YearRound: ""});
+    allergyList1.push({allergy: ""});
     setFormData({...formData, allergyList: allergyList1});
   };
 
-  const addDisease = formData => {
+  const addDisease = () => {
     const diseaseList1 = [...formData.diseaseList];
-    diseaseList1.push({disease: "", YearRound: ""});
+    diseaseList1.push({disease: ""});
     setFormData({...formData, diseaseList: diseaseList1});
   };
-  const addMedication = formData => {
+  const addMedication = () => {
     const medicalHistory1 = [...formData.medicationList];
-    medicalHistory1.push({medication: "", YearRound: ""});
+    medicalHistory1.push({medication: ""});
     setFormData({...formData, medicationList: medicalHistory1});
   };
 
