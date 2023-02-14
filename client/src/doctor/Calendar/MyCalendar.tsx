@@ -161,6 +161,7 @@ const MyCalendar = () => {
             </div>
           ) : (
             <Calendar
+              className="my-calendar-2"
               style={{
                 height: "80vh",
                 width: "80%",

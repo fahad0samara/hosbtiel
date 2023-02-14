@@ -1,9 +1,39 @@
-.holiday {
-    background-color: lightgray;
-    border-radius: 50%;
+.my-calendar-1.rbc-calendar {
+    font-family: 'Open Sans', sans-serif;
 }
 
-.selected-date {
-    background-color: blue;
+.my-calendar-1.rbc-month-view,
+.my-calendar-1.my-calendar-1.rbc-time-view {
+    font-size: 14px;
+}
+
+.my-calendar-1.rbc-date-cell {
+    border: 1px solid #e10101;
+    padding: 5px;
+    height: 100px;
+    position: relative;
+}
+
+.my-calendar-1.rbc-date-cell:after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
+    background-color: #3bf65a;
+}
+
+.my-calendar-1.rbc-date-cell span {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #f6ed3b;
+    padding: 2px 5px;
+    border-radius: 4px;
 }

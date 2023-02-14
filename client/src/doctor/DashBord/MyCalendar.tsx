@@ -134,6 +134,7 @@ const MyCalendar = () => {
         ) : (
           <>
             <Calendar
+              className="my-calendar-3"
               step={60}
               style={{
                 height: "60vh",
