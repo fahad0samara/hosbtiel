@@ -43,6 +43,7 @@ const Calendar = () => {
 
       width: "300px",
       height: "400px",
+      padding: "1rem",
     },
     month: {
       fontSize: "2rem",
@@ -134,43 +135,55 @@ const Calendar = () => {
   const dateRange = getDateRange(currentMonth, currentYear);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.month}>
-        {months[currentMonth]} {currentYear}
-      </div>
-      <div style={styles.weekdays}>
-        {days.map((day, index) => (
-          <div key={index} style={styles.weekday}>
-            {day}
+    <div>
+      <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-4">
+        List of appointments
+      </h1>
+      <div
+        className="
+
+
+      "
+      >
+        {" "}
+        <div style={styles.container}>
+          <div style={styles.weekdays}>
+            {days.map((day, index) => (
+              <div key={index} style={styles.weekday}>
+                {day}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div style={styles.days}>
-        {dateRange.map((day, index) => {
-          const dateStr = day.toISOString().slice(0, 10);
-          const eventsForDate = events[dateStr] || [];
-          return (
-            <div
-              key={index}
-              style={{
-                ...styles.day,
-                ...(day.getMonth() === currentMonth ? {} : {opacity: 0.5}),
-                ...(day.getDay() === 0 ? sunday : {}),
-                ...(day.toDateString() === today.toDateString()
-                  ? styles.today
-                  : {}),
-                ...(selectedDate &&
-                day.toDateString() === selectedDate.toDateString()
-                  ? styles.selected
-                  : {}),
-              }}
-              onClick={() => handleDayClick(day)}
-            >
-              <div>{day.getDate()}</div>
-              {eventsForDate.length > 0 && <div style={styles.eventDot}></div>}
-            </div>
-          );
-        })}
+          <div style={styles.days}>
+            {dateRange.map((day, index) => {
+              const dateStr = day.toISOString().slice(0, 10);
+              const eventsForDate = events[dateStr] || [];
+              return (
+                <div
+                  key={index}
+                  style={{
+                    ...styles.day,
+                    ...(day.getMonth() === currentMonth ? {} : {opacity: 0.5}),
+                    ...(day.getDay() === 0 ? sunday : {}),
+                    ...(day.toDateString() === today.toDateString()
+                      ? styles.today
+                      : {}),
+                    ...(selectedDate &&
+                    day.toDateString() === selectedDate.toDateString()
+                      ? styles.selected
+                      : {}),
+                  }}
+                  onClick={() => handleDayClick(day)}
+                >
+                  <div>{day.getDate()}</div>
+                  {eventsForDate.length > 0 && (
+                    <div style={styles.eventDot}></div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

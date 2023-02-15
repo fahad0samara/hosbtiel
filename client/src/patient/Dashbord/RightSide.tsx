@@ -87,7 +87,7 @@ const RightSide = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 mx-9">
+        <div className="grid grid-cols-3 gap-6 mx-9 p-4">
           <div className="col-span-2">
             {" "}
             <Appointment />
