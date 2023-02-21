@@ -1,2 +1,2 @@
 
-# hosbtiel
+# hospital
