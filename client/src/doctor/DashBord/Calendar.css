@@ -1,0 +1,43 @@
+.my-calendar-3.rbc-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #03d4ec;
+
+}
+
+.my-calendar-3.rbc-toolbar-label {
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+
+.my-calendar-3.rbc-btn-group {
+    display: flex;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
+
+.my-calendar-3.rbc-toolbar button {
+    background-color: transparent;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin-right: 4px;
+    border: none;
+    cursor: pointer;
+
+
+}
+
+
+.my-calendar-3.rbc-toolbar button:hover {
+    background-color: #0b0b0b;
+    color: aliceblue
+}

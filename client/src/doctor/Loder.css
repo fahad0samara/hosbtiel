@@ -1,0 +1,56 @@
+.progress {
+    width: 67.2px;
+    height: 67.2px;
+    border: 16.8px solid #010101;
+    border-radius: 50%;
+    position: relative;
+    transform: rotate(45deg);
+    animation: progress-1tucza 2s infinite linear;
+
+
+}
+
+.progress::before {
+    content: "";
+    position: absolute;
+    inset: -16.8px;
+    border-radius: 50%;
+    border: 16.8px solid #67e8f9;
+    animation: progress-1tucza 2s infinite linear;
+}
+
+@keyframes progress-1tucza {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+    }
+
+    25% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%);
+    }
+
+    75% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%);
+    }
+
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+    }
+}
+.line {
+    width: 100.8px;
+    height: 16.8px;
+    -webkit-mask: linear-gradient(90deg, #67e8f9 70%, #0000 0) left/20% 100%;
+    background: linear-gradient(#67e8f9 0 0) left/0% 100% no-repeat #dbdcef;
+    animation: progress-422c3u 2s infinite linear;
+}
+
+@keyframes progress-422c3u {
+    100% {
+        background-size: 120% 100%;
+    }
+
+}
