@@ -1,2 +1,2 @@
 
-# ho0spital
+# hospital
