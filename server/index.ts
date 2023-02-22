@@ -47,7 +47,7 @@ import doctorRouter from "./router/doctor";
 import adminRouter from "./router/admin";
 import user from "./router/user";
 import Appointment from "./router/app";
-
+import Event from "./router/Event";
 
 app.use(express.json());
 app.use(cors());
@@ -64,6 +64,9 @@ app.use("/admin", adminRouter);
 
 // user
 app.use("/user", user);
+
+// event
+app.use("/Event", Event);
 
 app.set("port", process.env.PORT || 3000);
 

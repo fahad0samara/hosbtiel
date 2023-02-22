@@ -11,6 +11,7 @@ import {useLogIN} from "../../../ContextLog";
 import Modal from "./Model";
 import CalendarInstructions from "./CalendarInstructions";
 import Loder from "../../tools/Loder";
+import EventForm from "./EventForm";
 
 const MyCalendar = () => {
   const {Patient, dark} = useLogIN();
@@ -30,30 +31,46 @@ const MyCalendar = () => {
     );
   }
 
-  //map the Doctor.availableTime
-  const [showModal, setShowModal] = useState(false);
-  const [title, setTitle] = useState("");
-
-  const handleCreateEvent = title => {
-    console.log("Creating event:", title);
-    setShowModal(false);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<
     Array<{start: Date; end: Date; title: any}>
   >([]);
 
   const [interval, setIntervalId] = useState(null);
-  const [instructions, setInstructions] = useState("");
+  const handleCreateEvent = useCallback(
+    (e, newEvent) => {
+      e.preventDefault();
+      axios
+        .post(`http://localhost:3000/Event/add`, newEvent)
+        .then(response => {
+          setEvents([...events, response.data]);
+          console.log("====================================");
+          console.log("response.data", response.data);
+          console.log("====================================");
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      e.target.reset();
+    },
+    [events]
+  );
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/Event/all/${Patient._id}`
+      );
+      setEvents(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
   useEffect(() => {
     const getAppointments = async () => {
       setLoading(true);
@@ -250,13 +267,12 @@ const MyCalendar = () => {
             />
           )
         }
-        <button onClick={handleOpenModal}>Add Event</button>
-        <Modal
-          show={showModal}
-          handleClose={handleCloseModal}
-          handleCreate={handleCreateEvent}
-          eventTitle={title}
-        />
+      </div>
+      <div className="w-full md:w-1/3 p-4 ml-28">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-semibold mb-2">Create Event</h2>
+          <EventForm handleCreateEvent={handleCreateEvent} />
+        </div>
       </div>
     </div>
   );
