@@ -2,13 +2,12 @@ import express from "express";
 const router = express.Router();
 import Event from "../model/Event";
 
-router.post("/add", async (req, res) => {
-  const {title, description, date, time, patient, doctor} = req.body;
+router.post("/add-event", async (req, res) => {
+  const {title, start, end, patient, doctor} = req.body;
   const newEvent = new Event({
     title,
-    description,
-    date,
-    time,
+    start,
+    end,
     patient,
     doctor,
   });
@@ -20,7 +19,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all-event", async (req, res) => {
   try {
     const events = await Event.find();
     res.status(200).json(events);
@@ -28,14 +27,20 @@ router.get("/all", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
-router.get("/get/:id", async (req, res) => {
+router.get("/get-event/:id", async (req, res) => {
+  console.log(req.params.id);
   try {
-    const event = await Event.findById(req.params.id);
-    res.status(200).json(event);
+    const Patient = req.params.id;
+    const events = await Event.find({patient: Patient});
+    res.status(200).json({
+      events,
+    });
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
+
+  
 
 export default router;

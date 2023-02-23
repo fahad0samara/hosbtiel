@@ -8,20 +8,16 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import {useLogIN} from "../../../ContextLog";
 
-import Modal from "./Model";
-import CalendarInstructions from "./CalendarInstructions";
+
+
 import Loder from "../../tools/Loder";
 import EventForm from "./EventForm";
 
-const MyCalendar = () => {
+const MyCalendar = ({}) => {
   const {Patient, dark} = useLogIN();
   const [timeUntilNextAppointment, setTimeUntilNextAppointment] = useState(
     "No upcoming appointments"
   );
-  const [instructionsModalOpen, setInstructionsModalOpen] = useState(false);
-  const handleOpenInstructionsModal = () => {
-    setInstructionsModalOpen(true);
-  };
 
   if (!Patient || !Patient._id) {
     return (
@@ -37,40 +33,30 @@ const MyCalendar = () => {
   >([]);
 
   const [interval, setIntervalId] = useState(null);
-  const handleCreateEvent = useCallback(
-    (e, newEvent) => {
-      e.preventDefault();
-      axios
-        .post(`http://localhost:3000/Event/add`, newEvent)
-        .then(response => {
-          setEvents([...events, response.data]);
-          console.log("====================================");
-          console.log("response.data", response.data);
-          console.log("====================================");
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      e.target.reset();
-    },
-    [events]
-  );
+  const [Event, setEvent] = useState("");
   const fetchEvents = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/Event/all/${Patient._id}`
+        `http://localhost:3000/Event/get-event/${Patient._id}`
       );
-      setEvents(response.data);
+
+      const eventsData = response.data.events.map(event => ({
+        start: moment(event.start).toDate(),
+        end: moment(event.end).toDate(),
+        title: event.title,
+      }));
+      setEvent(eventsData);
+      console.log(eventsData);
     } catch (error) {
       console.error(error);
     }
     setLoading(false);
-  }, []);
+  }, [Patient._id]);
 
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
+
   useEffect(() => {
     const getAppointments = async () => {
       setLoading(true);
@@ -154,11 +140,39 @@ const MyCalendar = () => {
     return () => interval && clearInterval(interval);
   }, []);
 
+  const eventPropGetter = (event, start, end, isSelected) => {
+    let backgroundColor = "";
+    const colors = [
+      "red",
+      "green",
+      "purple",
+      "bronze",
+      "black",
+      "blue",
+      "orange",
+      "pink",
+      "yellow",
+      "gray",
+    ];
+    const eventIndex = events.indexOf(event);
+
+    if (eventIndex >= 0 && eventIndex < colors.length) {
+      backgroundColor = colors[eventIndex];
+    }
+
+    return {style: {backgroundColor}};
+  };
+
   const localizer = momentLocalizer(moment);
   return (
     <div
       className={`${dark ? "bg-black" : "bg-gray-100"}
-   ${dark ? "text-white" : "text-black"}
+      ${dark ? "text-white" : "text-black"}
+      ${dark ? "border-gray-700" : "border-gray-200"}
+
+   
+    
+   
    
 
       
@@ -223,7 +237,7 @@ const MyCalendar = () => {
         <div className="flex items-center ml-4 my-3">
           <div className="flex items-center">
             <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-            <p>Working Hours</p>
+            <p>Appointments </p>
           </div>
           <div className="flex items-center ml-4">
             <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
@@ -252,11 +266,12 @@ const MyCalendar = () => {
               }}
               showMultiDayTimes
               defaultDate={new Date()}
-              events={events}
+              events={[...Event, ...events]}
               localizer={localizer}
               titleAccessor="title"
               startAccessor="start"
               endAccessor="end"
+              eventPropGetter={eventPropGetter}
               timeslots={6}
               popup
               messages={{
@@ -268,11 +283,16 @@ const MyCalendar = () => {
           )
         }
       </div>
-      <div className="w-full md:w-1/3 p-4 ml-28">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-2">Create Event</h2>
-          <EventForm handleCreateEvent={handleCreateEvent} />
-        </div>
+      <div
+        className={`${dark ? "bg-black" : "bg-gray-100"}
+        ${dark ? "text-white" : "text-black"}
+        ${dark ? "border-gray-700" : "border-gray-200"}
+         ml-16 p-12`}
+      >
+        <h2 className="text-xl font-semibold  text-cyan-300 my-6">
+          Create Event
+        </h2>
+        <EventForm />
       </div>
     </div>
   );
