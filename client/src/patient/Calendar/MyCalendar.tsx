@@ -8,13 +8,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import {useLogIN} from "../../../ContextLog";
 
-
-
 import Loder from "../../tools/Loder";
 import EventForm from "./EventForm";
 
-const MyCalendar = ({}) => {
-  const {Patient, dark} = useLogIN();
+const MyCalendar = () => {
+  const {Patient, dark, Events} = useLogIN();
   const [timeUntilNextAppointment, setTimeUntilNextAppointment] = useState(
     "No upcoming appointments"
   );
@@ -33,29 +31,6 @@ const MyCalendar = ({}) => {
   >([]);
 
   const [interval, setIntervalId] = useState(null);
-  const [Event, setEvent] = useState("");
-  const fetchEvents = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/Event/get-event/${Patient._id}`
-      );
-
-      const eventsData = response.data.events.map(event => ({
-        start: moment(event.start).toDate(),
-        end: moment(event.end).toDate(),
-        title: event.title,
-      }));
-      setEvent(eventsData);
-      console.log(eventsData);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  }, [Patient._id]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
 
   useEffect(() => {
     const getAppointments = async () => {
@@ -229,69 +204,132 @@ const MyCalendar = ({}) => {
           </h3>
         </div>
       </div>
+      <div className="ml-16 py-4 px-6 rounded-md shadow-md">
+        <p className="text-gray-700 font-medium text-lg mb-2">
+          Your events for this month
+        </p>
+
+        <h1>
+          {moment().format("MMMM")} {moment().format("YYYY")}
+        </h1>
+
+        {Events.length > 0 ? (
+          <ul className="list-disc pl-4">
+            {Events.map((event, index) => (
+              <li className="text-gray-700" key={index}>
+                {event.title} - {moment(event.start).format("MMM DD, YYYY")} to{" "}
+                {moment(event.end).format("MMM DD, YYYY")}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-700">No events found.</p>
+        )}
+      </div>
       <div
         className={`${
           dark ? "bg-black" : "bg-gray-100"
         } flex justify-between items-center ml-28`}
+      ></div>
+
+      <div
+        className={`${dark ? "bg-black" : "bg-gray-100"}
+   ${dark ? "text-white" : "text-black"}
+   
+
+      
+       flex flex-col h-screen`}
       >
-        <div className="flex items-center ml-4 my-3">
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-            <p>Appointments </p>
-          </div>
-          <div className="flex items-center ml-4">
-            <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-            <p>Holidays</p>
-          </div>
-          <div className="flex items-center ml-4">
-            <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-            <p>Breaks</p>
+        <div className="flex justify-between items-center ml-28">
+          <div className="flex items-center justify-center my-7 mx-7">
+            <h1 className="text-2xl font-bold">Calendar</h1>
+            <div className="flex items-center ml-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+                <p>Appointments</p>
+              </div>
+              <div className="flex items-center ml-4">
+                <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                <p>Holidays</p>
+              </div>
+              <div className="flex items-center ml-4">
+                <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                <p>Breaks</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="">
-        {
-          // loding
-          loading ? (
-            <Loder />
-          ) : (
-            //@ts-ignore
-            <Calendar
-              className="my-calendar-2"
-              style={{
-                height: "80vh",
-                width: "75%",
-                margin: "auto",
-              }}
-              showMultiDayTimes
-              defaultDate={new Date()}
-              events={[...Event, ...events]}
-              localizer={localizer}
-              titleAccessor="title"
-              startAccessor="start"
-              endAccessor="end"
-              eventPropGetter={eventPropGetter}
-              timeslots={6}
-              popup
-              messages={{
-                date: "Date",
-                time: "Time",
-                event: "Event",
-              }}
-            />
-          )
-        }
+        <div className="flex ">
+          {
+            // loding
+            loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="progress"></div>
+              </div>
+            ) : (
+              //@ts-ignore
+              <Calendar
+                className="my-calendar-2"
+                style={{
+                  height: "80vh",
+                  width: "75%",
+                  margin: "auto",
+                }}
+                showMultiDayTimes
+                defaultDate={new Date()}
+                events={[...Events, ...events]}
+                localizer={localizer}
+                titleAccessor="title"
+                startAccessor="start"
+                endAccessor="end"
+                eventPropGetter={eventPropGetter}
+                timeslots={6}
+                popup
+                messages={{
+                  date: "Date",
+                  time: "Time",
+                  event: "Event",
+                }}
+              />
+            )
+          }
+        </div>
       </div>
       <div
         className={`${dark ? "bg-black" : "bg-gray-100"}
-        ${dark ? "text-white" : "text-black"}
-        ${dark ? "border-gray-700" : "border-gray-200"}
-         ml-16 p-12`}
+      ${dark ? "text-white" : "text-black"}
+   
+      p-12
+      `}
       >
-        <h2 className="text-xl font-semibold  text-cyan-300 my-6">
-          Create Event
-        </h2>
+        <div className="flex flex-col ml-14 p-4 my-4">
+          <h1
+            className={`${
+              dark ? "text-white" : "text-black "
+            } md:text-xl font-bold
+
+           
+          
+            `}
+          >
+            Add your holiday or any event you want
+          </h1>
+          <h4
+            className="
+            mt-1
+ 
+
+    
+        text-gray-500
+
+    
+        "
+          >
+            Please select your title and the start time and the end
+          </h4>
+        </div>
+
         <EventForm />
       </div>
     </div>

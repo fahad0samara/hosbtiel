@@ -22,30 +22,23 @@ const ContextLog = createContext(
     setPatient: React.Dispatch<React.SetStateAction<any>>;
     Doctor: any;
     setDoctor: React.Dispatch<React.SetStateAction<any>>;
-
-
-
+    Events: any;
+    setEvents: React.Dispatch<React.SetStateAction<any>>;
   }
 );
 const LogCheck = ({children}: any) => {
   const [logPatient, setlogPatient] = useState(false);
   const [logAdmin, setlogAdmin] = useState(false);
   const [logDr, setlogDr] = useState(false);
-  const [Patient, setPatient] = useState()
+  const [Patient, setPatient] = useState();
   const [Doctor, setDoctor] = useState();
-
-  
-
+  const [Events, setEvents] = useState([]);
 
   const [Profile, setProfile] = useState();
   const [Loading, setLoading] = useState(false);
   const [dark, setdark] = useState(
     localStorage.getItem("dark") === "true" ? true : false
   );
-
-
-
- 
 
   return (
     <ContextLog.Provider
@@ -65,8 +58,9 @@ const LogCheck = ({children}: any) => {
         Patient,
         setPatient,
         Doctor,
-        setDoctor
-
+        setDoctor,
+        Events,
+        setEvents,
       }}
     >
       {Loading ? <Loder /> : children}

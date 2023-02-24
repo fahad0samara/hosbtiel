@@ -5,13 +5,15 @@ import moment from "moment-timezone";
 
 const EventForm = () => {
   const [Loading, setLoading] = useState(false);
-  const {Patient, dark} = useLogIN();
+  const {Patient, dark, setEvents} = useLogIN();
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [EventAdded, setEventAdded] = useState(false);
 
   const handleCreateEvent = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axios.post(`http://localhost:3000/Event/add-event`, {
         title,
@@ -19,6 +21,12 @@ const EventForm = () => {
         end,
         patient: Patient._id,
       });
+      setLoading(false);
+      fetchEvents();
+      setEventAdded(true); // Set a state variable to true to indicate that the event has been added
+      setTimeout(() => {
+        setEventAdded(false); // Set the state variable back to false after a delay
+      }, 3000);
 
       console.log("====================================");
       console.log("newEvent");
@@ -26,18 +34,48 @@ const EventForm = () => {
     } catch (error) {
       //@ts-ignore
       console.error(error.response.data);
+      setLoading(false);
     }
   };
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/Event/get-event/${Patient._id}`
+      );
+
+      const eventsData = response.data.events.map(event => ({
+        start: moment(event.start).toDate(),
+        end: moment(event.end).toDate(),
+        title: event.title,
+      }));
+      setEvents(eventsData);
+      console.log(eventsData);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }, [Patient._id]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   return (
     <div className="ml-12">
+      {Loading && (
+        <div className="flex items-center justify-center w-full h-full fixed top-0 left-0 bg-white bg-opacity-75 z-50">
+          Loading...
+        </div>
+      )}
+      {EventAdded && (
+        <div className="flex items-center justify-center w-full h-full fixed top-0 left-0 bg-white bg-opacity-75 z-50">
+          Event added successfully!
+        </div>
+      )}
       <form onSubmit={handleCreateEvent}>
         <div className=" grid-cols-3 grid gap-20">
           <div className="mb-4">
-            <label
-              htmlFor="start_date"
-              className="block text-gray-700 font-bold mb-2"
-            >
+            <label htmlFor="start_date" className="block  font-bold mb-2">
               Event Title
             </label>
             <input
@@ -54,10 +92,7 @@ const EventForm = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="start_date"
-              className="block text-gray-700 font-bold mb-2"
-            >
+            <label htmlFor="start_date" className="block  font-bold mb-2">
               Start Date
             </label>
             <input
@@ -71,10 +106,7 @@ const EventForm = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="end_date"
-              className="block text-gray-700 font-bold mb-2"
-            >
+            <label htmlFor="end_date" className="block  font-bold mb-2">
               End Date
             </label>
             <input
@@ -90,12 +122,17 @@ const EventForm = () => {
         </div>
 
         <div className="flex items-center justify-center -ml-36 my-4">
-          <button
-            type="submit"
-            className="bg-cyan-400 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Create Event
-          </button>
+          {Loading ? (
+            <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-6 w-6 mb-4"></div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-cyan-400 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Create Event
+            </button>
+          )}
+          {Loading ? <p className="text-gray-500 text-sm">Loading...</p> : null}
         </div>
       </form>
     </div>
