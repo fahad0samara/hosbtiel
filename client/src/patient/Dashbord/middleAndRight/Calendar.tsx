@@ -42,7 +42,7 @@ const Calendar = () => {
       alignItems: "center",
 
       width: "300px",
-      height: "400px",
+      height: "350px",
       padding: "1rem",
     },
     month: {
@@ -141,7 +141,24 @@ const Calendar = () => {
 
       "
     >
-      {" "}
+      <div className="flex justify-between items-center ">
+        <div className="flex items-center justify-center my-7 ">
+          <div className="flex items-center ">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+              <p>Appointments</p>
+            </div>
+            <div className="flex items-center ml-4">
+              <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+              <p>Holidays</p>
+            </div>
+            <div className="flex items-center ml-4">
+              <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+              <p>Today</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div style={styles.container}>
         <div style={styles.weekdays}>
           {days.map((day, index) => (

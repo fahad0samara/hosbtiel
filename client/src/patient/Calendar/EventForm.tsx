@@ -5,7 +5,7 @@ import moment from "moment-timezone";
 
 const EventForm = () => {
   const [Loading, setLoading] = useState(false);
-  const {Patient, dark, setEvents} = useLogIN();
+  const {Patient, dark, Events, setEvents} = useLogIN();
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -22,7 +22,15 @@ const EventForm = () => {
         patient: Patient._id,
       });
       setLoading(false);
-      fetchEvents();
+      setEvents(
+        // Update the events state to include the new event
+        Events.concat({
+          title,
+          start,
+          end,
+        })
+      );
+
       setEventAdded(true); // Set a state variable to true to indicate that the event has been added
       setTimeout(() => {
         setEventAdded(false); // Set the state variable back to false after a delay
@@ -37,28 +45,7 @@ const EventForm = () => {
       setLoading(false);
     }
   };
-  const fetchEvents = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/Event/get-event/${Patient._id}`
-      );
 
-      const eventsData = response.data.events.map(event => ({
-        start: moment(event.start).toDate(),
-        end: moment(event.end).toDate(),
-        title: event.title,
-      }));
-      setEvents(eventsData);
-      console.log(eventsData);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  }, [Patient._id]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
 
   return (
     <div className="ml-12">
