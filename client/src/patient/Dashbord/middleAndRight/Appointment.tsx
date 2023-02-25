@@ -6,6 +6,7 @@ import {useLogIN} from "../../../../ContextLog";
 import {BsAlarm, BsFillArrowRightCircleFill} from "react-icons/bs";
 import {FcOvertime} from "react-icons/fc";
 import {Link} from "react-router-dom";
+import moment from "moment-timezone";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -14,7 +15,8 @@ function formatDate(dateString) {
 }
 const PatientAppointments = () => {
   const {Profile, Patient, dark, setdark} = useLogIN();
-
+  const [timeUntilNextAppointment, setTimeUntilNextAppointment] =
+    useState(null);
   const [appointmentData, setAppointments] = useState([]);
   const [nextAppointment, setNextAppointment] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -44,6 +46,48 @@ const PatientAppointments = () => {
         setLoading(false);
       });
   }, [Patient]);
+  useEffect(() => {
+    if (!appointmentData || !appointmentData.currentAppointment) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      const now = moment();
+      const appointmentDateTime = moment(
+        `${appointmentData.currentAppointment.appointmentDate} ${appointmentData.currentAppointment.appointmentTime}`,
+        "YYYY-MM-DD h:mm A"
+      );
+      const timeDiff = appointmentDateTime.diff(now);
+
+      console.log("now:", now);
+      console.log("appointmentDateTime:", appointmentDateTime);
+      console.log("timeDiff:", timeDiff);
+
+      if (timeDiff < 0) {
+        setTimeUntilNextAppointment("Appointment time has passed");
+      } else {
+        const duration = moment.duration(timeDiff);
+        const days = Math.floor(duration.asDays());
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+
+        const timeString = `${
+          days > 0 ? days + "d " : ""
+        }${hours}h ${minutes}m ${seconds}s`;
+
+        // Convert the appointment time to the user's local time zone
+        const localAppointmentTime = appointmentDateTime
+          .local()
+          .format("h:mm A");
+        setTimeUntilNextAppointment(
+          `Appointment at ${localAppointmentTime} (${timeString} remaining)`
+        );
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [appointmentData]);
 
   const formatDate = dateString => {
     const options = {year: "numeric", month: "short", day: "numeric"};
@@ -65,6 +109,7 @@ const PatientAppointments = () => {
     <div>
       <div>
         {" "}
+        <div>{timeUntilNextAppointment}</div>
         <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-4">
           upcoming Appointment{" "}
         </h1>

@@ -32,6 +32,92 @@ const MyCalendar = () => {
 
   const [interval, setIntervalId] = useState(null);
 
+  // useEffect(() => {
+  //   const getAppointments = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:3000/user/all-appointments/${Patient._id}`
+  //       );
+  //       const appointments = response.data.allAppointments;
+  //       if (!appointments || appointments.length === 0) {
+  //         setLoading(false);
+  //         return;
+  //       }
+  //       const appointmentEvents = appointments.map(appointment => {
+  //         const appointmentDateTime = moment().set({
+  //           year: moment.utc(appointment.appointmentDate).year(),
+  //           month: moment.utc(appointment.appointmentDate).month(),
+  //           date: moment.utc(appointment.appointmentDate).date(),
+  //           hour: moment.utc(appointment.appointmentTime, "h:mm A").hour(),
+  //           minute: moment.utc(appointment.appointmentTime, "h:mm A").minute(),
+  //         });
+  //         return {
+  //           start: appointmentDateTime.toDate(),
+  //           end: appointmentDateTime.clone().add(1, "hours").toDate(),
+  //           title: `Appointment with  dr ${appointment.doctor.name.firstName} ${appointment.doctor.name.LastName}`,
+  //           symptoms: appointment.symptoms,
+  //         };
+  //       });
+  //       const sortedAppointments = appointmentEvents.sort((a, b) =>
+  //         a.start > b.start ? 1 : -1
+  //       );
+  //       const now = moment();
+  //       const upcomingAppointment = sortedAppointments.find(
+  //         appointment => appointment.start > now
+  //       );
+  //       if (upcomingAppointment) {
+  //         const timeUntilAppointment = moment.duration(
+  //           moment(upcomingAppointment.start).diff(now)
+  //         );
+  //         let timeString = "";
+  //         if (timeUntilAppointment.days() > 0) {
+  //           timeString += `${timeUntilAppointment.days()} days, `;
+  //         }
+  //         if (timeUntilAppointment.hours() > 0) {
+  //           timeString += `${timeUntilAppointment.hours()} hours, `;
+  //         }
+  //         timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
+  //         setTimeUntilNextAppointment(timeString);
+
+  //         const intervalId = setInterval(() => {
+  //           const currentTime = moment();
+  //           const timeUntilAppointment = moment.duration(
+  //             moment(upcomingAppointment.start).diff(currentTime)
+  //           );
+  //           let timeString = "";
+  //           if (timeUntilAppointment.days() > 0) {
+  //             timeString += `${timeUntilAppointment.days()} days, `;
+  //           }
+  //           if (timeUntilAppointment.hours() > 0) {
+  //             timeString += `${timeUntilAppointment.hours()} hours, `;
+  //           }
+  //           timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
+  //           setTimeUntilNextAppointment(timeString);
+  //           // show message to patient 5 minutes before appointment time
+  //           if (timeUntilAppointment.asMinutes() <= 5) {
+  //             const appointmentTime = moment(upcomingAppointment.start).format(
+  //               "h:mm A"
+  //             );
+  //             alert(
+  //               `You have an appointment with Dr. ${upcomingAppointment.title} at ${appointmentTime}.`
+  //             );
+  //             clearInterval(intervalId);
+  //           }
+  //         }, 1000);
+  //       }
+  //       return () => {
+  //         clearInterval(intervalId);
+  //       };
+
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   getAppointments();
+  // }, []);
   useEffect(() => {
     const getAppointments = async () => {
       setLoading(true);
@@ -45,17 +131,13 @@ const MyCalendar = () => {
           return;
         }
         const appointmentEvents = appointments.map(appointment => {
+          const appointmentDateTime = moment.utc(
+            `${appointment.appointmentDate} ${appointment.appointmentTime}`,
+            "YYYY-MM-DD h:mm A"
+          );
           return {
-            start: moment(
-              `${appointment.appointmentDate} ${appointment.appointmentTime}`,
-              "YYYY-MM-DD h:mm A"
-            ).toDate(),
-            end: moment(
-              `${appointment.appointmentDate} ${appointment.appointmentTime}`,
-              "YYYY-MM-DD HH:mm"
-            )
-              .add(1, "hours")
-              .toDate(),
+            start: appointmentDateTime.toDate(),
+            end: appointmentDateTime.clone().add(1, "hours").toDate(),
             title: `Appointment with  dr ${appointment.doctor.name.firstName} ${appointment.doctor.name.LastName}`,
             symptoms: appointment.symptoms,
           };
@@ -95,13 +177,21 @@ const MyCalendar = () => {
             timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
             setTimeUntilNextAppointment(timeString);
             // show message to patient 5 minutes before appointment time
-            if (timeUntilAppointment.asMinutes() < 5) {
-              alert("Your appointment is in 5 minutes!");
+            if (
+              timeUntilAppointment.asMinutes() <= 5 &&
+              timeUntilAppointment.asMinutes() > 0
+            ) {
+              alert(
+                `You have an appointment in ${timeUntilAppointment.asMinutes()} minutes!`
+              );
+            }
+            // clear interval once the appointment is over
+            if (timeUntilAppointment.asMinutes() < 0) {
+              clearInterval(intervalId);
             }
           }, 1000);
-          setIntervalId(intervalId);
         } else {
-          setTimeUntilNextAppointment("No upcoming appointments");
+          setTimeUntilNextAppointment("No upcoming appointments.");
         }
         setEvents([...appointmentEvents]);
         setLoading(false);
@@ -110,11 +200,8 @@ const MyCalendar = () => {
         setLoading(false);
       }
     };
-
     getAppointments();
-    return () => interval && clearInterval(interval);
-  }, []);
-
+  }, [Patient._id]);
   const eventPropGetter = (event, start, end, isSelected) => {
     let backgroundColor = "";
     const colors = [
