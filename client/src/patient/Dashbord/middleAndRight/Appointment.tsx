@@ -7,6 +7,8 @@ import {BsAlarm, BsFillArrowRightCircleFill} from "react-icons/bs";
 import {FcOvertime} from "react-icons/fc";
 import {Link} from "react-router-dom";
 import moment from "moment-timezone";
+import AppointmentModal from "./AppointmentModal";
+import Loder from "../../../tools/Loder";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -23,6 +25,14 @@ const PatientAppointments = () => {
   const [error, setError] = useState(null);
 
   const [allAppointments, setAllAppointments] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const handleViewClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -47,6 +57,7 @@ const PatientAppointments = () => {
       });
   }, [Patient]);
   useEffect(() => {
+    setLoading(true);
     if (!appointmentData || !appointmentData.currentAppointment) {
       return;
     }
@@ -58,10 +69,6 @@ const PatientAppointments = () => {
         "YYYY-MM-DD h:mm A"
       );
       const timeDiff = appointmentDateTime.diff(now);
-
-      console.log("now:", now);
-      console.log("appointmentDateTime:", appointmentDateTime);
-      console.log("timeDiff:", timeDiff);
 
       if (timeDiff < 0) {
         setTimeUntilNextAppointment("Appointment time has passed");
@@ -80,12 +87,14 @@ const PatientAppointments = () => {
         const localAppointmentTime = appointmentDateTime
           .local()
           .format("h:mm A");
+        setLoading(true);
         setTimeUntilNextAppointment(
           `Appointment at ${localAppointmentTime} (${timeString} remaining)`
         );
       }
+      setLoading(false);
     }, 1000);
-
+    setLoading(false);
     return () => clearInterval(intervalId);
   }, [appointmentData]);
 
@@ -98,7 +107,11 @@ const PatientAppointments = () => {
   // Usage:
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loder />
+      </div>
+    );
   }
 
   if (error) {
@@ -108,20 +121,38 @@ const PatientAppointments = () => {
   return (
     <div>
       <div>
-        {" "}
-        <div>{timeUntilNextAppointment}</div>
-        <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-4">
+        <div>
+          <>
+            {appointmentData && appointmentData ? (
+              <div className="    italic sm:w-96 w border-cyan-300">
+                <div className="flex flex-row justify-between items-center md:ml-7 ml-4">
+                  {timeUntilNextAppointment && timeUntilNextAppointment ? (
+                    <div className="flex flex-row ">
+                      <BsAlarm className=" sm:text-xl text-lg hidden sm:block" />
+                      <p className=" text-sm ml-2">
+                        {timeUntilNextAppointment}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </>
+        </div>
+        <h1 className="sm:text-2xl font-bold text-cyan-300 mt-4 mb-4 text-lg text-center">
           upcoming Appointment{" "}
         </h1>
-        <div className="grid grid-cols-3 gap-10 rounded-2xl  ">
-          <div className="rounded-2xl h-32 w-40">
+
+        <div className="grid lg:grid-cols-3 gap-10 rounded-2xl mx-auto  md:mx-15  p-3">
+          <div className="rounded-2xl h-32 md:w-40 hidden md:block mx-auto mb-10">
             <img
               src={img}
               alt="Appointment"
               className="
           rounded-2xl
           shadow-60
-w-60
+lg:w-60
+
           object-cover"
             />
             <div className="flex flex-col justify-center items-center">
@@ -133,8 +164,11 @@ w-60
             </div>
           </div>
           {appointmentData.currentAppointment ? (
-            <div className="grid grid-rows-3 gap-4  w-[21rem] mt-7 ">
-              <div className="grid grid-cols-3  items-center  ml-3">
+            <div className="grid grid-rows-3 gap-4  w-[21rem]   ">
+              <div
+                className="grid grid-cols-3
+                items-center  ml-3"
+              >
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8P6POnmXE2YJlFMqlJ-b2F_t8bdqTq4CAb-mQWDeI813MCCXefNOg9RjN2AQZwPzy3Y&usqp=CAU"
                   alt="avatar"
@@ -143,7 +177,7 @@ w-60
                 />
                 <div
                   className="
-                  mt-1
+                  
              -ml-12
              text-center
           
@@ -163,6 +197,7 @@ w-60
                 </div>
 
                 <button
+                  onClick={handleViewClick}
                   className=" bg-cyan-300 rounded-full h-8 w-20    hover:bg-cyan-400
                 shadow-md
                 focus:outline-none
@@ -176,18 +211,31 @@ w-60
                 >
                   <h1 className="text-sm font-bold text-white">View</h1>
                 </button>
+                {showModal && (
+                  <AppointmentModal
+                    appointmentData={appointmentData.currentAppointment}
+                    onClose={handleCloseModal}
+                  />
+                )}
               </div>
+
               <div
                 style={{
-                  backgroundColor: dark ? "#000" : "#dbe6e7",
+                  backgroundColor: dark ? "#000" : "#ddd",
                   color: dark ? "white" : "black",
                   boxShadow: dark
                     ? "0px 0px 5px 0px #ccc"
                     : "0px 0px 10px 0px #ccc",
                 }}
-                className=" rounded-t-3xl
-       bg-red-600
-            rounded-b-3xl"
+                className=" mt-2
+              rounded-2xl
+              shadow-60
+              p-1
+              mx-8
+              sm:mx-3
+
+
+      "
               >
                 <div className="grid grid-cols-2 gap-5  p-4">
                   <div className="flex flex-row justify-center items-center space-x-1">
@@ -286,121 +334,135 @@ w-60
             </div>
           )}
         </div>
-        {appointmentData.nextAppointment ? (
+        {/* {appointmentData.nextAppointment ? (
           <>
             <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-9">
               Your Next Appointment
             </h1>
-            <div
-              style={{
-                backgroundColor: dark ? "#000" : "white",
-                color: dark ? "white" : "black",
-                boxShadow: dark
-                  ? "0px 0px 10px 0px rgb(103 232 249)"
-                  : "0px 0px 10px 0px #ccc",
-              }}
-              className="p-4
-        rounded-2xl
+            <div className="grid lg:grid-cols-3 gap-10 rounded-2xl mx-auto  md:mx-15  p-3">
+              <div className="rounded-2xl h-32 md:w-40 hidden md:block mx-auto mb-10">
+                <img
+                  src={img}
+                  alt="Appointment"
+                  className="
+          rounded-2xl
+          shadow-60
+w-60
+          object-cover"
+                />
+                <div className="flex flex-col justify-center items-center">
+                  <h1 className="text-lg font-bold">Miracle hospital</h1>
+                  <p className="text-sm font-bold text-cyan-300  mb-4">
+                    cypress
+                    <br />
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-rows-3 gap-4  w-[21rem]   ">
+                <div
+                  className="grid grid-cols-3
+                items-center  ml-3"
+                >
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8P6POnmXE2YJlFMqlJ-b2F_t8bdqTq4CAb-mQWDeI813MCCXefNOg9RjN2AQZwPzy3Y&usqp=CAU"
+                    alt="avatar"
+                    //avatar
+                    className=" rounded-full shadow-cyan-300 h-12 w-12 object-cover shadow-sm"
+                  />
+                  <div
+                    className="
+                  
+             -ml-14
+             text-center
+          
 
-       "
-            >
-              <div className=" shadow-md rounded-md overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-300"></div>
-                <div className="px-4 py-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <img
-                        src="https://i.pravatar.cc/150?img=3"
-                        alt="Doctor Avatar"
-                        className="w-10 h-10 rounded-full mr-3"
-                      />
-                      <div>
-                        <h3 className="text-cyan-300 font-semibold text-lg">
-                          Dr.
-                          {
-                            appointmentData.nextAppointment.doctor.name
-                              .firstName
-                          }
-                        </h3>
-                        <p className=" text-sm">
-                          {appointmentData.nextAppointment.doctor.specialty}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      className=" bg-cyan-300 rounded-full h-8 w-20    hover:bg-cyan-400
-                shadow-md
-                focus:outline-none
-                focus:shadow-outline
-                transition duration-150 ease-in-out
-                transform
-                hover:-translate-y-1
-                hover:scale-110
-                active:scale-95
-                active:translate-y-0"
-                    >
-                      View
-                    </button>
+            "
+                  >
+                    <h1 className=" italic text-md">
+                      Dr.
+                      {appointmentData.nextAppointment.doctor.name.firstName}
+                      {"  "}
+                      {appointmentData.nextAppointment.doctor.name.lastName}
+                    </h1>
+                    <p className="text-sm italic mr-12 text-gray-400">
+                      {appointmentData.nextAppointment.doctor.specialty}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="text-cyan-300 font-bold text-xl mr-2">
-                        <svg
-                          className="w-6 h-6 text-gray-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M11.293 3.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L12 6.414V16a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 01-1.414-1.414l4-4z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      </span>
-                      <div>
-                        <p className=" font-semibold text-sm"></p>
-                        <p className=" text-xs">Appointment Date</p>
-                        <p className=" text-sm">
-                          {formatDate(
-                            appointmentData.nextAppointment.appointmentDate
-                          )}
-                        </p>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: dark ? "#000" : "#ddd ",
+                    color: dark ? "white" : "black",
+                    boxShadow: dark
+                      ? "0px 0px 5px 0px #ccc"
+                      : "0px 0px 10px 0px #ccc",
+                  }}
+                  className=" mt-2
+              rounded-2xl
+              shadow-60
+              p-1
+              mx-8
+              sm:mx-3"
+                >
+                  <div className="grid grid-cols-2 gap-5  p-4">
+                    <div className="flex flex-row justify-center items-center space-x-1">
+                      <div
+                        className="
+                  bg-white
+                  rounded-full
+                  h-10
+
+                  w-10
+                  flex
+                  flex-row
+                  justify-center
+                  items-center
+                  "
+                      >
+                        <BsAlarm className="text-xl text-red-500" />
                       </div>
+
+                      <h1 className="text-sm font-bold ml-2">
+                        {appointmentData.nextAppointment.appointmentTime}
+                      </h1>
                     </div>
-                    <div className="flex items-center">
-                      <span className="font-bold text-xl mr-2">
-                        <svg
-                          className="w-6 h-6 text-gray-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M3 2a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 11-2 0V3H5v14h8v-1a1 1 0 112 0v2a1 1 0 01-1 1H4a1 1 0 01-1-1V2z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      </span>
-                      <div>
-                        <p className=" font-semibold text-sm"></p>
-                        <p className="text-xs ">Appointment Time</p>
-                        <p className=" text-sm">
-                          {appointmentData.nextAppointment.appointmentTime}
-                        </p>
+
+                    <div className="flex flex-row justify-center items-center space-x-2 ">
+                      <div
+                        className="
+                  bg-white
+                  rounded-full
+                  h-10
+
+                  w-10
+                  flex
+                  flex-row
+                  justify-center
+                  items-center
+                  "
+                      >
+                        <FcOvertime className="text-xl text-sky-400" />
                       </div>
+
+                      <h1 className="text-sm font-bold ">
+                        {formatDate(
+                          appointmentData.nextAppointment.appointmentDate
+                        )}
+                      </h1>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </>
-        ) : null}
+        ) : null} */}
       </div>
 
-      <div className="flex flex-col items-center justify-center my-8 mx-6 text-center">
+      {/* <div className="flex flex-col items-center justify-center  mx-6 text-center">
         <Link
           to="/patient/ListAppointments"
-          className="inline-flex items-center justify-center p-3 text-base font-medium   
+          className="inline-flex items-center justify-center p-2 text-base font-medium   
         rounded-full
        
         hover:bg-cyan-400
@@ -434,7 +496,7 @@ w-60
           "
           />
         </Link>
-      </div>
+      </div> */}
 
       <ul>
         {appointmentData.allAppointments?.map(appointment => (

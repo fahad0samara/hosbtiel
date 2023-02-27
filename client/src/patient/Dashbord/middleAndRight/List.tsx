@@ -56,11 +56,12 @@ const List = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-4">
+      <h1 className="md:text-2xl sm:text-xl text-lg  font-bold text-cyan-300 mt-4 mb-4">
         List of appointments
       </h1>
-
-      <Calendar />
+      <div className="hidden lg:block">
+        <Calendar />
+      </div>
 
       <div>
         {Events.length > 0 ? (
@@ -177,3 +178,5 @@ const List = () => {
 };
 
 export default List;
+
+

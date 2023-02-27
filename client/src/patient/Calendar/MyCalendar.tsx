@@ -2,10 +2,10 @@ import React, {useState, useEffect, useCallback} from "react";
 import {Calendar, momentLocalizer, Views} from "react-big-calendar";
 import {GrLinkNext, GrLinkPrevious} from "react-icons/gr";
 
-import moment from "moment-timezone";
+
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
+import moment from "moment-timezone";
 import {useLogIN} from "../../../ContextLog";
 
 import Loder from "../../tools/Loder";
@@ -13,9 +13,6 @@ import EventForm from "./EventForm";
 
 const MyCalendar = () => {
   const {Patient, dark, Events} = useLogIN();
-  const [timeUntilNextAppointment, setTimeUntilNextAppointment] = useState(
-    "No upcoming appointments"
-  );
 
   if (!Patient || !Patient._id) {
     return (
@@ -31,93 +28,6 @@ const MyCalendar = () => {
   >([]);
 
   const [interval, setIntervalId] = useState(null);
-
-  // useEffect(() => {
-  //   const getAppointments = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:3000/user/all-appointments/${Patient._id}`
-  //       );
-  //       const appointments = response.data.allAppointments;
-  //       if (!appointments || appointments.length === 0) {
-  //         setLoading(false);
-  //         return;
-  //       }
-  //       const appointmentEvents = appointments.map(appointment => {
-  //         const appointmentDateTime = moment().set({
-  //           year: moment.utc(appointment.appointmentDate).year(),
-  //           month: moment.utc(appointment.appointmentDate).month(),
-  //           date: moment.utc(appointment.appointmentDate).date(),
-  //           hour: moment.utc(appointment.appointmentTime, "h:mm A").hour(),
-  //           minute: moment.utc(appointment.appointmentTime, "h:mm A").minute(),
-  //         });
-  //         return {
-  //           start: appointmentDateTime.toDate(),
-  //           end: appointmentDateTime.clone().add(1, "hours").toDate(),
-  //           title: `Appointment with  dr ${appointment.doctor.name.firstName} ${appointment.doctor.name.LastName}`,
-  //           symptoms: appointment.symptoms,
-  //         };
-  //       });
-  //       const sortedAppointments = appointmentEvents.sort((a, b) =>
-  //         a.start > b.start ? 1 : -1
-  //       );
-  //       const now = moment();
-  //       const upcomingAppointment = sortedAppointments.find(
-  //         appointment => appointment.start > now
-  //       );
-  //       if (upcomingAppointment) {
-  //         const timeUntilAppointment = moment.duration(
-  //           moment(upcomingAppointment.start).diff(now)
-  //         );
-  //         let timeString = "";
-  //         if (timeUntilAppointment.days() > 0) {
-  //           timeString += `${timeUntilAppointment.days()} days, `;
-  //         }
-  //         if (timeUntilAppointment.hours() > 0) {
-  //           timeString += `${timeUntilAppointment.hours()} hours, `;
-  //         }
-  //         timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
-  //         setTimeUntilNextAppointment(timeString);
-
-  //         const intervalId = setInterval(() => {
-  //           const currentTime = moment();
-  //           const timeUntilAppointment = moment.duration(
-  //             moment(upcomingAppointment.start).diff(currentTime)
-  //           );
-  //           let timeString = "";
-  //           if (timeUntilAppointment.days() > 0) {
-  //             timeString += `${timeUntilAppointment.days()} days, `;
-  //           }
-  //           if (timeUntilAppointment.hours() > 0) {
-  //             timeString += `${timeUntilAppointment.hours()} hours, `;
-  //           }
-  //           timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
-  //           setTimeUntilNextAppointment(timeString);
-  //           // show message to patient 5 minutes before appointment time
-  //           if (timeUntilAppointment.asMinutes() <= 5) {
-  //             const appointmentTime = moment(upcomingAppointment.start).format(
-  //               "h:mm A"
-  //             );
-  //             alert(
-  //               `You have an appointment with Dr. ${upcomingAppointment.title} at ${appointmentTime}.`
-  //             );
-  //             clearInterval(intervalId);
-  //           }
-  //         }, 1000);
-  //       }
-  //       return () => {
-  //         clearInterval(intervalId);
-  //       };
-
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   getAppointments();
-  // }, []);
   useEffect(() => {
     const getAppointments = async () => {
       setLoading(true);
@@ -138,63 +48,16 @@ const MyCalendar = () => {
           return {
             start: appointmentDateTime.toDate(),
             end: appointmentDateTime.clone().add(1, "hours").toDate(),
-            title: `Appointment with  dr ${appointment.doctor.name.firstName} ${appointment.doctor.name.LastName}`,
+            title: `Appointment with dr ${appointment.doctor.name.firstName} ${appointment.doctor.name.lastName}`,
             symptoms: appointment.symptoms,
           };
         });
         const sortedAppointments = appointmentEvents.sort((a, b) =>
           a.start > b.start ? 1 : -1
         );
-        const now = moment();
-        const upcomingAppointment = sortedAppointments.find(
-          appointment => appointment.start > now
-        );
-        if (upcomingAppointment) {
-          const timeUntilAppointment = moment.duration(
-            moment(upcomingAppointment.start).diff(now)
-          );
-          let timeString = "";
-          if (timeUntilAppointment.days() > 0) {
-            timeString += `${timeUntilAppointment.days()} days, `;
-          }
-          if (timeUntilAppointment.hours() > 0) {
-            timeString += `${timeUntilAppointment.hours()} hours, `;
-          }
-          timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
-          setTimeUntilNextAppointment(timeString);
-          const intervalId = setInterval(() => {
-            const currentTime = moment();
-            const timeUntilAppointment = moment.duration(
-              moment(upcomingAppointment.start).diff(currentTime)
-            );
-            let timeString = "";
-            if (timeUntilAppointment.days() > 0) {
-              timeString += `${timeUntilAppointment.days()} days, `;
-            }
-            if (timeUntilAppointment.hours() > 0) {
-              timeString += `${timeUntilAppointment.hours()} hours, `;
-            }
-            timeString += `${timeUntilAppointment.minutes()} minutes, ${timeUntilAppointment.seconds()} seconds`;
-            setTimeUntilNextAppointment(timeString);
-            // show message to patient 5 minutes before appointment time
-            if (
-              timeUntilAppointment.asMinutes() <= 5 &&
-              timeUntilAppointment.asMinutes() > 0
-            ) {
-              alert(
-                `You have an appointment in ${timeUntilAppointment.asMinutes()} minutes!`
-              );
-            }
-            // clear interval once the appointment is over
-            if (timeUntilAppointment.asMinutes() < 0) {
-              clearInterval(intervalId);
-            }
-          }, 1000);
-        } else {
-          setTimeUntilNextAppointment("No upcoming appointments.");
-        }
-        setEvents([...appointmentEvents]);
+
         setLoading(false);
+        setEvents(sortedAppointments);
       } catch (error) {
         console.error(error);
         setLoading(false);
@@ -202,6 +65,7 @@ const MyCalendar = () => {
     };
     getAppointments();
   }, [Patient._id]);
+
   const eventPropGetter = (event, start, end, isSelected) => {
     let backgroundColor = "";
     const colors = [
@@ -286,8 +150,7 @@ const MyCalendar = () => {
 
             "
           >
-            {}
-            Next appointment : {timeUntilNextAppointment}
+            Next appointment :
           </h3>
         </div>
       </div>
