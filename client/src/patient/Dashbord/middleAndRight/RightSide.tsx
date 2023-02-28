@@ -54,7 +54,12 @@ const RightSide = () => {
         }}
         className=""
       >
-        <div className="grid grid-cols-2 mt-8 mx-9">
+        <div
+          className="grid lg:grid-cols-2 mt-8 mx-9
+          
+        grid-cols-1
+        "
+        >
           <div className="flex flex-col justify-center ">
             <h1 className="xl:text-2xl md:text-xl text-lg font-bold text-cyan-300  ">
               <span
@@ -69,15 +74,15 @@ const RightSide = () => {
 
               {Patient ? Patient.name.firstName : ""}
             </h1>
-            <h4 className="text-sm font-bold mt-1 ml-3 text-zinc-400  ">
+            <h4 className="text-sm font-bold mt-1 md:ml-3 text-zinc-400  ">
               You'll be feeling healthy and strong again soon!
             </h4>
           </div>
           <div>
-            <div className="flex flex-row justify-end items-center  p-6">
+            <div className="flex flex-row justify-end items-center  md:mr-16 sm:mr-18 ">
               <div className="flex flex-row justify-center items-center">
-                <BiTime className="text-xl" />
-                <h1 className="text-sm font-bold ml-2">{time}</h1>
+                <BiTime className="sm:text-xl text-sm" />
+                <h1 className="text-sm font-bold lg:ml-2">{time}</h1>
               </div>
 
               <div className="flex flex-row justify-center items-center ml-4 ">
@@ -90,15 +95,20 @@ const RightSide = () => {
           </div>
         </div>
         <div
-          className="grid md:grid-cols-3
+          className="grid lg:grid-cols-3
+
+
+    md:grid-cols-2
     grid-cols-1
-         gap-6 mx-9 "
+
+    
+    sm:mx-auto
+         md:gap-6  "
         >
-          <div className="md:col-span-2">
-            {" "}
+          <div className="md:col-span-2 mx-auto col-span-1">
             <Appointment />
           </div>
-          <div className="md:col-span-1">
+          <div className="md:col-span-1 col-span-1 mx-auto md:-mr-40 lg:-ml-10 lg:mx-8">
             {
               //    List of appointments{}
               // calender

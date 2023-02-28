@@ -119,12 +119,12 @@ const PatientAppointments = () => {
   }
 
   return (
-    <div>
+    <div className="">
       <div>
         <div>
           <>
             {appointmentData && appointmentData ? (
-              <div className="    italic sm:w-96 w border-cyan-300">
+              <div className="    italic sm:w-96  border-cyan-300 ">
                 <div className="flex flex-row justify-between items-center md:ml-7 ml-4">
                   {timeUntilNextAppointment && timeUntilNextAppointment ? (
                     <div className="flex flex-row ">
@@ -139,11 +139,15 @@ const PatientAppointments = () => {
             ) : null}
           </>
         </div>
-        <h1 className="sm:text-2xl font-bold text-cyan-300 mt-4 mb-4 text-lg text-center">
+        <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-9 text-center lg:text-start lg:ml-5">
           upcoming Appointment{" "}
         </h1>
 
-        <div className="grid lg:grid-cols-3 gap-10 rounded-2xl mx-auto  md:mx-15  p-3">
+        <div
+          className="grid lg:grid-cols-3 md:gap-10 rounded-2xl mx-auto  md:mx-15  
+        md:-mt-11
+        p-3 lg:-mt-8 "
+        >
           <div className="rounded-2xl h-32 md:w-40 hidden md:block mx-auto mb-10">
             <img
               src={img}
@@ -334,12 +338,12 @@ lg:w-60
             </div>
           )}
         </div>
-        {/* {appointmentData.nextAppointment ? (
+        {appointmentData.nextAppointment ? (
           <>
-            <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-9">
+            <h1 className="text-2xl -mt-11  font-bold text-cyan-300 mt-4 mb-9 text-center lg:text-start lg:ml-5">
               Your Next Appointment
             </h1>
-            <div className="grid lg:grid-cols-3 gap-10 rounded-2xl mx-auto  md:mx-15  p-3">
+            <div className="grid -my-12  lg:grid-cols-3 md:gap-10 rounded-2xl mx-auto  md:mx-15    md:-mt-11  p-3">
               <div className="rounded-2xl h-32 md:w-40 hidden md:block mx-auto mb-10">
                 <img
                   src={img}
@@ -456,10 +460,10 @@ w-60
               </div>
             </div>
           </>
-        ) : null} */}
+        ) : null}
       </div>
 
-      {/* <div className="flex flex-col items-center justify-center  mx-6 text-center">
+      <div className="flex flex-col items-center justify-center  mx-6 text-center">
         <Link
           to="/patient/ListAppointments"
           className="inline-flex items-center justify-center p-2 text-base font-medium   
@@ -496,7 +500,7 @@ w-60
           "
           />
         </Link>
-      </div> */}
+      </div>
 
       <ul>
         {appointmentData.allAppointments?.map(appointment => (

@@ -55,11 +55,11 @@ const List = () => {
   //loading the Events
 
   return (
-    <div>
+    <div className="">
       <h1 className="md:text-2xl sm:text-xl text-lg  font-bold text-cyan-300 mt-4 mb-4">
         List of appointments
       </h1>
-      <div className="hidden lg:block">
+      <div className="hidden lg:block   ">
         <Calendar />
       </div>
 

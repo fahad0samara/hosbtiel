@@ -32,7 +32,8 @@ const Dashboard = (props: any) => {
       className="grid lg:grid-cols-4
     h-screen
     w-screen
-    grid-cols-3
+    md:grid-cols-3
+
 
 
 
@@ -45,12 +46,12 @@ const Dashboard = (props: any) => {
             ? "0px 0px 10px 0px rgb(103 232 249)"
             : "0px 0px 10px 0px #ccc",
         }}
-        className="col-span-1   p-2  hidden sm:block   bg-[#dbe6e7]
+        className="col-span-1   p-2  hidden md:block   bg-[#dbe6e7]
    "
       >
         <LeftSide />
       </div>
-      <div className=" lg:col-span-3  sm:p-1 sm:col-span-2 sm:mx-auto    sm:bg-violet-700 md:bg-pink-600">
+      <div className=" lg:col-span-3  sm:col-span-2 sm:mx-auto ml-14">
         <RightSide />
       </div>
     </div>
