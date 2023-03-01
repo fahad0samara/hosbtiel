@@ -21,6 +21,7 @@ import Patient from "../model/patient";
 import Doctor from "../model/doctor";
 import Appointment from "../model/appointment";
 import {Document, Types} from "mongoose";
+import Prescription from "../model/prescription";
 
 interface JwtPayload {
   _id: string;
@@ -317,52 +318,6 @@ router.get("/appointments", async (req, res) => {
   }
 });
 
-// Helper function to format appointment data
-function formatDate(
-  appointment:
-    | (Document<
-        unknown,
-        any,
-        {
-          patient: Types.ObjectId;
-          doctor: Types.ObjectId;
-          appointmentDate: Date;
-          appointmentTime: string;
-          symptoms: string[];
-          status: string;
-          createdAt: Date;
-        }
-      > & {
-        patient: Types.ObjectId;
-        doctor: Types.ObjectId;
-        appointmentDate: Date;
-        appointmentTime: string;
-        symptoms: string[];
-        status: string;
-        createdAt: Date;
-      } & {_id: Types.ObjectId})
-    | null
-) {
-  if (!appointment) {
-    return null;
-  }
-
-  const date = new Date(appointment.appointmentDate);
-  const formattedDate = date.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-  const formattedTime = appointment.appointmentTime;
-  const formattedSymptoms = appointment.symptoms.join(", ");
-
-  return {
-    date: formattedDate,
-    time: formattedTime,
-    symptoms: formattedSymptoms,
-  };
-}
-
 router.get("/appointments/:id", async (req, res) => {
   try {
     // Check if the patient exists
@@ -593,5 +548,58 @@ router.post("/appointment", async (req, res) => {
     });
   }
 });
+
+// get the prescription
+router.get("/Prescription/:id", async (req, res) => {
+  try {
+    // Find the prescription by its ID and populate the doctor and patient fields
+    const patientId = req.params.id;
+    const prescription = await Prescription.find({
+      patient: patientId,
+    })
+      .populate("patient")
+      .populate("doctor")
+
+      .exec();
+
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
+    const limit = parseInt(req.query.limit as string);
+
+    const skip = (page - 1) * limit;
+
+    // Get the total number of prescriptions
+    const count = await Prescription.countDocuments({
+      patient: patientId,
+    });
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(count / limit);
+
+    // If the prescription is not found, return a 404 response
+    if (!prescription) {
+      return res.status(404).json({
+        message: "Prescription not found",
+      });
+    }
+
+    // Return the prescription in the response
+    res.json({
+      prescription,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    // If there is an error, send a response with a status of 500 and the error message
+    res.status(500).json({message: error.message});
+  }
+});
+
+
 
 export default router;

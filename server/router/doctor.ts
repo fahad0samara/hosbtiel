@@ -389,6 +389,15 @@ router.get("/Prescription/:id", async (req, res) => {
   }
 });
 
+
+
+
+
+    
+
+    
+
+
 router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
   try {
     const doctorId = req.params.id;
@@ -439,6 +448,9 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
+
+// get the patients
+
 
 
 export default router

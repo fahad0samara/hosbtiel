@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import moment from "moment-timezone";
 import AppointmentModal from "./AppointmentModal";
 import Loder from "../../../tools/Loder";
+import Table from "./Table";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -20,11 +21,10 @@ const PatientAppointments = () => {
   const [timeUntilNextAppointment, setTimeUntilNextAppointment] =
     useState(null);
   const [appointmentData, setAppointments] = useState([]);
-  const [nextAppointment, setNextAppointment] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [allAppointments, setAllAppointments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const handleViewClick = () => {
     setShowModal(true);
@@ -57,7 +57,6 @@ const PatientAppointments = () => {
       });
   }, [Patient]);
   useEffect(() => {
-    setLoading(true);
     if (!appointmentData || !appointmentData.currentAppointment) {
       return;
     }
@@ -139,6 +138,7 @@ const PatientAppointments = () => {
             ) : null}
           </>
         </div>
+
         <h1 className="text-2xl font-bold text-cyan-300 mt-4 mb-9 text-center lg:text-start lg:ml-5">
           upcoming Appointment{" "}
         </h1>
@@ -295,6 +295,8 @@ lg:w-60
             <div
               className="flex  w-80
           flex-col
+          -mt-11
+          sm:-mt-0
    
             justify-center items-center"
             >
@@ -308,11 +310,17 @@ lg:w-60
                 <h1>problem or If you feel any diseases</h1>
               </div>
 
-              <button
+              <Link
+                to="/patient/appointment"
                 className="bg-cyan-300 rounded-full w-full
-                h-10
-                mt-4
-                mb-4
+                h-8
+            
+
+            
+             
+                
+                text-center
+                
                 text-white
                 font-bold
                 text-sm
@@ -327,14 +335,11 @@ lg:w-60
                 active:scale-95
                 active:translate-y-0
                 "
-                onClick={() => {
-                  history.push("/addAppointment");
-                }}
               >
-                <h1 className="text-sm font-bold text-white">
+                <h1 className="flex justify-center items-center mt-1">
                   Add Appointment
                 </h1>
-              </button>
+              </Link>
             </div>
           )}
         </div>
@@ -502,7 +507,7 @@ w-60
         </Link>
       </div>
 
-      <ul>
+      {/* <ul>
         {appointmentData.allAppointments?.map(appointment => (
           <li key={appointment._id}>
             <p>Date: {formatDate(appointment.appointmentDate)}</p>
@@ -510,7 +515,7 @@ w-60
             <p>Symptoms: {appointment.symptoms.join(", ")}</p>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

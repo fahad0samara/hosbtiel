@@ -3,21 +3,21 @@ import img from "../../../assets/LeftSide.png";
 import {FcCalendar} from "react-icons/fc";
 import {useLogIN} from "../../../../ContextLog";
 const LeftSide = () => {
-    const {
-      logPatient,
+  const {
+    logPatient,
 
-      Profile,
-      setProfile,
-      Patient,
+    Profile,
+    setProfile,
+    Patient,
 
-      dark,
-      setdark,
-    } = useLogIN();
+    dark,
+    setdark,
+  } = useLogIN();
   return (
-    <div className="ml-16">
-      <div className="mt-12 flex flex-col justify-center mx-2">
-        <h1 className="text-lg font-semibold ml-3">Check your condition</h1>
-        <p className="text-sm font-normal text-gray-500 mt-2 ml-5">
+    <div className="ml-16 ">
+      <div className="mt-12 flex flex-col justify-center ">
+        <h1 className="text-lg font-semibold lg:ml-3">Check your condition</h1>
+        <p className="text-sm font-normal text-gray-500 mt-2 lg:ml-5">
           Check your every situation{" "}
         </p>
         <p className="text-sm font-normal text-gray-500  ml-12">

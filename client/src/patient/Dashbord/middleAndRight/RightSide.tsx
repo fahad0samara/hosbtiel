@@ -79,7 +79,7 @@ const RightSide = () => {
             </h4>
           </div>
           <div>
-            <div className="flex flex-row justify-end items-center  md:mr-16 sm:mr-18 ">
+            <div className="flex flex-row justify-end items-center mr-20  md:mr-16 sm:mr-18 ">
               <div className="flex flex-row justify-center items-center">
                 <BiTime className="sm:text-xl text-sm" />
                 <h1 className="text-sm font-bold lg:ml-2">{time}</h1>
@@ -116,6 +116,7 @@ const RightSide = () => {
             <List />
           </div>
         </div>
+        <Table />
       </div>
     </div>
   );

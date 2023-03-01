@@ -22,23 +22,53 @@ const Prescription = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const fetchpatients = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:3000/doctor/all-patient"
+  //       );
+  //       setPatients(response.data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setLoading(false);
+
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchpatients();
+  // }, []);
+
   useEffect(() => {
     setLoading(true);
-    const fetchpatients = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/doctor/patients"
+    axios
+      .get(`http://localhost:3000/doctor/all-patient/${Doctor._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+
+      .then(res => {
+        setPatients(res.data.patients);
+        setLoading(false);
+        console.log(res.data);
+      })
+
+      .catch(err => {
+        console.log(
+          err.response.data ? err.response.data : "Error in getting patients"
         );
-        setPatients(response.data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
 
-        console.log(error);
-      }
-    };
+        setErrorMessage(
+          err.response.data && err.response.data.error
+            ? err.response.data.error
+            : "Error in getting patients"
+        );
 
-    fetchpatients();
+        setLoading(false);
+      });
   }, []);
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
@@ -195,7 +225,7 @@ const Prescription = () => {
                   <input
                     value={duration}
                     id="duration"
-                    type="text"
+                    type="number"
                     className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
                     onChange={e => setDuration(e.target.value)}
                   />
