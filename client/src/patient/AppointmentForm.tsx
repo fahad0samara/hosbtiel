@@ -4,6 +4,12 @@ import {useEffect} from "react";
 import {useLogIN} from "../../ContextLog";
 import img from "../assets/appotmint.png";
 import moment from "moment-timezone";
+//useNavigate 
+import { useNavigate } from "react-router-dom";
+import Loder from "../tools/Loder";
+import Appointment from "../tools/Appointment";
+
+
 
 const AppointmentForm = () => {
   const {Patient, dark} = useLogIN();
@@ -18,7 +24,9 @@ const AppointmentForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [symptoms, setSymptoms] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
+    const [successMessage, setSuccessMessage] = useState(false);
 
+  const navigate = useNavigate();
   // Update the available appointment times when the doctor or date is changed
   useEffect(() => {
     if (doctorAvailability && appointmentDate) {
@@ -100,7 +108,6 @@ const AppointmentForm = () => {
         }
 
         setLoading(false);
-        console.log("response", response.data);
       } catch (error) {
         setLoading(false);
 
@@ -110,59 +117,8 @@ const AppointmentForm = () => {
     fetchDoctors();
   }, []);
 
-  // const handleSubmit = async e => {
-  //   e.preventDefault();
-  //   if (!appointmentDate || !appointmentTime) {
-  //     setErrorMessage("Please fill up all the fields");
-  //     return;
-  //   }
-
-  //   // Convert the selected date to a JavaScript date object
-  //   const appointmentDateObject = moment(
-  //     appointmentDate,
-  //     "dddd, MMMM D YYYY"
-  //   ).toDate();
-
-  //   // Check if the selected date is before today's date
-  //   const today = moment().startOf("day");
-  //   const selectedDate = moment(appointmentDateObject).startOf("day");
-
-  //   if (selectedDate.isBefore(today)) {
-  //     // If the selected date has already passed, add 7 days to move it to the next week
-  //     selectedDate.add(7, "days");
-  //   }
-
-  //   try {
-  //     setLoading(true);
-  //     const response = await axios.post(
-  //       "http://localhost:3000/user/appointment",
-  //       {
-  //         doctorId: selectedDoctor,
-  //         patient: Patient._id,
-  //         appointmentDate: selectedDate.toDate(),
-  //         appointmentTime,
-  //         symptoms,
-  //       }
-  //     );
-  //     setLoading(false);
-
-  //     console.log("response", response.data);
-  //   } catch (error) {
-  //     // Delete the error message after 2s
-  //     setTimeout(() => {
-  //       setErrorMessage("");
-  //     }, 4000);
-
-  //     setErrorMessage(error.response.data.error);
-
-  //     console.log(
-  //       "Error while creating appointment: ",
-  //       error.response.data.error
-  //     );
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmit = async e => {
+       setLoading(true);
     e.preventDefault();
     if (!appointmentDate || !appointmentTime) {
       setErrorMessage("Please fill up all the fields");
@@ -195,6 +151,13 @@ const AppointmentForm = () => {
         }
       );
       setLoading(false);
+      setSuccessMessage(true);
+
+      // If the form submission is successful, navigate to another page foter th 3s
+      setTimeout(() => {
+
+        navigate("/patient/dashboard");
+      }, 3000);
 
       console.log("response", response.data);
     } catch (error) {
@@ -216,132 +179,178 @@ const AppointmentForm = () => {
     <div
       style={{
         backgroundColor: dark ? "#000" : "#fff",
+        color: dark ? "#fff" : "#000",
       }}
-      className="min-w-screen min-h-screen  flex items-center justify-center px-5 py-5"
     >
       <div
-        className="bg-cyan-300  rounded-3xl shadow-xl w-full overflow-hidden"
         style={{
-          maxWidth: "950px",
+          backgroundColor: dark ? "#000" : "#fff",
+          color: dark ? "#fff" : "#000",
         }}
+        className="ml-12"
       >
-        <div className="md:flex w-full ">
-          <div className="hidden md:block w-1/2 py-20 px-2">
-            <div className=" ml-2">
-              <p className="mb-4">Before your appointment:</p>
-              <ul className="list-disc list-inside mb-4">
-                <li>
-                  Please arrive 15 minutes early to check in and fill out any
-                  necessary paperwork.
-                </li>
-                <li>
-                  If you have any questions or concerns about your appointment,
-                  please call our office at{" "}
-                  <a href="tel:[phone number]" className="text-blue-600">
-                    [phone number]
-                  </a>{" "}
-                  before your scheduled appointment time.
-                </li>
-                <li>
-                  If you need to cancel or reschedule your appointment, please
-                  notify us at least 24 hours in advance.
-                </li>
-                <li>
-                  If you have any insurance information or documents that need
-                  to be submitted before your appointment, please bring them
-                  with you.
-                </li>
-              </ul>
-            </div>
-            <img src={img} alt="img" />
-
-            {errorMessage ? (
-              <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                role="alert"
-              >
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline">{errorMessage}</span>
-              </div>
-            ) : null}
+        {loading && (
+     
+           
+            <Loder />
+          
+        )}
+        {successMessage && (
+          <div
+            style={{
+              backgroundColor: dark ? "#000" : "#fff",
+              color: dark ? "#fff" : "#000",
+            }}
+            className="flex items-center justify-center w-full h-full fixed top-0 left-0   z-50"
+          >
+            <Appointment />
           </div>
-          <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
+        )}
+        {errorMessage && (
+          <div
+            style={{
+              backgroundColor: dark ? "#000" : "#fff",
+              color: dark ? "#fff" : "#000",
+            }}
+            className="flex items-center justify-center w-full h-full fixed top-0 left-0  bg-opacity-75 z-50"
+          >
+            <div className=" rounded-lg p-6">
+              <p className="text-lg font-medium mb-4">
+                There was an error while creating your appointment.
+              </p>
+              <p className="text-lg font-medium mb-4">
+                {errorMessage && (
+                  <div
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                  >
+                    <strong className="font-bold">Error!</strong>
+                    <span className="block sm:inline">{errorMessage}</span>
+                  </div>
+                )}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className=" md:ml-20 p-6  rounded-lg ml-20">
+        <p className="text-lg font-medium  mb-4 ">Before your appointment:</p>
+        <ul className="list-disc list-inside mb-4">
+          <li className="mb-2">
+            Please arrive 15 minutes early to check in and fill out any
+            necessary paperwork.
+          </li>
+          <li className="mb-2">
+            If you have any questions or concerns about your appointment, please
+            call our office at
+            <a
+              href="tel:[phone number]"
+              className="text-cyan-600 hover:text-cyan-800 transition-colors"
+            >
+              [phone number]
+            </a>
+            before your scheduled appointment time.
+          </li>
+          <li className="mb-2">
+            If you need to cancel or reschedule your appointment, please notify
+            us at least 24 hours in advance.
+          </li>
+          <li className="mb-2">
+            If you have any insurance information or documents that need to be
+            submitted before your appointment, please bring them with you.
+          </li>
+        </ul>
+      </div>
+      <div className="min-w-screen min-h-screen  flex items-center justify-center px-5 py-5 ml-12">
+        <div
+          className="  rounded-3xl shadow-xl w-full overflow-hidden "
+          style={{
+            maxWidth: "950px",
+          }}
+        >
+          <div className="">
             <div className="text-center mb-10">
-              <h1 className="font-bold text-3xl text-gray-900">
-                Make an Appointment
-              </h1>
-              <p className="text-gray-600">Fill up the form below</p>
+              <h1 className="font-bold text-3xl ">Make an Appointment</h1>
+              <p className="text-cyan-300">Fill up the form below</p>
             </div>
 
-            {loading ? (
-              <div className="flex justify-center items-center">
-                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12 mb-4"></div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                <div className="px-3 mb-5">
-                  <label className="block font-medium text-lg mb-2">
-                    Choose a doctor:
-                    <select
-                      className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
-                      value={selectedDoctor}
-                      onChange={handleDoctorChange}
-                    >
-                      <option value="">Select a doctor</option>
-                      {doctors &&
-                        doctors.length > 0 &&
-                        doctors.map(doctor => (
-                          <option key={doctor._id} value={doctor._id}>
-                            {doctor.name.firstName} {doctor.name.lastName} (
-                            {doctor.specialty})
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                  <label className="block font-medium text-lg mb-2">
-                    Choose an appointment date:
-                    <select
-                      className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
-                      value={appointmentDate}
-                      onChange={event => setAppointmentDate(event.target.value)}
-                    >
-                      <option value="">Select an appointment date</option>
-                      {doctorAvailability &&
-                        doctorAvailability.length > 0 &&
-                        doctorAvailability.map(availability => (
-                          <option
-                            key={availability._id}
-                            value={availability.day}
-                          >
-                            {availability.day}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                  <label className="block font-medium text-lg mb-2">
-                    Choose an appointment time:
-                    <select
-                      className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
-                      value={appointmentTime}
-                      onChange={handleTimeChange}
-                      disabled={availableTimes.length === 0}
-                    >
-                      <option value="">Select an appointment time</option>
-                      {availableTimes.map(time => (
-                        <option key={time} value={time}>
-                          {time}
+            <form onSubmit={handleSubmit}>
+              <div className="px-3 mb-5">
+                <label className="block font-medium text-lg mb-2">
+                  Choose a doctor:
+                  <select
+                    style={{
+                      backgroundColor: dark ? "#000" : "#fff",
+                      color: dark ? "#fff" : "#000",
+                    }}
+                    className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
+                    value={selectedDoctor}
+                    onChange={handleDoctorChange}
+                  >
+                    <option value="">Select a doctor</option>
+                    {doctors &&
+                      doctors.length > 0 &&
+                      doctors.map(doctor => (
+                        <option key={doctor._id} value={doctor._id}>
+                          {doctor.name.firstName} {doctor.name.lastName} (
+                          {doctor.specialty})
                         </option>
                       ))}
-                    </select>
-                  </label>
-                </div>
-
-                <label
-                  htmlFor="symptoms"
-                  className=" text-xl font-semibold px-1 mr-28 mt-5"
-                >
-                  Symptoms:
+                  </select>
                 </label>
+                <label className="block font-medium text-lg mb-2">
+                  Choose an appointment date:
+                  <select
+                    style={{
+                      backgroundColor: dark ? "#000" : "#fff",
+                      color: dark ? "#fff" : "#000",
+                    }}
+                    className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
+                    value={appointmentDate}
+                    onChange={event => setAppointmentDate(event.target.value)}
+                  >
+                    <option value="">Select an appointment date</option>
+                    {doctorAvailability &&
+                      doctorAvailability.length > 0 &&
+                      doctorAvailability.map(availability => (
+                        <option key={availability._id} value={availability.day}>
+                          {availability.day}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label className="block font-medium text-lg mb-2">
+                  Choose an appointment time:
+                  <select
+                    style={{
+                      backgroundColor: dark ? "#000" : "#fff",
+                      color: dark ? "#fff" : "#000",
+                    }}
+                    className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 mt-2"
+                    value={appointmentTime}
+                    onChange={handleTimeChange}
+                    disabled={availableTimes.length === 0}
+                  >
+                    <option value="">Select an appointment time</option>
+                    {availableTimes.map(time => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <label
+                htmlFor="symptoms"
+                className=" text-xl font-semibold px-1 mr-28 mt-5"
+              >
+                Symptoms:
+              </label>
+              <div
+                className="symptoms-container"
+                style={{height: "200px", overflowY: "scroll"}}
+              >
                 <div className="grid grid-cols-3 gap-4 px-3  mb-5  p-4">
                   <div className="">
                     <input
@@ -514,22 +523,23 @@ const AppointmentForm = () => {
                   />
                   Other than that, I don't know the symptoms
                 </div>
-                <div className="text-gray-700 text-sm font-bold my-4">
-                  Selected Symptoms: {symptoms.join(", ")}
-                </div>
+              </div>
 
-                <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-5">
-                    <button
-                      className="bg-indigo-500 text-white px-4 py-2 rounded font-medium w-full"
-                      type="submit"
-                    >
-                      Book Appointment
-                    </button>
-                  </div>
+              <div className=" text-sm font-bold my-4">
+                Selected Symptoms: {symptoms.join(", ")}
+              </div>
+
+              <div className="flex -mx-3">
+                <div className="w-full px-3 mb-5">
+                  <button
+                    className="bg-cyan-300 text-white px-4 py-2 rounded font-medium w-full"
+                    type="submit"
+                  >
+                    Book Appointment
+                  </button>
                 </div>
-              </form>
-            )}
+              </div>
+            </form>
           </div>
         </div>
       </div>

@@ -332,7 +332,7 @@ const Table = () => {
         <tbody>
           {prescriptions && prescriptions.length > 0
             ? prescriptions.map(prescription => (
-                <tr>
+                <tr key={prescription._id}>
                   <td data-label="Dr Name">
                     {prescription.doctor.name.firstName}
                   </td>

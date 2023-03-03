@@ -60,7 +60,7 @@ const EventForm = () => {
         </div>
       )}
       <form onSubmit={handleCreateEvent}>
-        <div className=" grid-cols-3 grid gap-20">
+        <div className=" lg:grid-cols-3 grid lg:gap-20 grid-cols-1 gap-7 md:mx-12 mx-auto">
           <div className="mb-4">
             <label htmlFor="start_date" className="block  font-bold mb-2">
               Event Title
