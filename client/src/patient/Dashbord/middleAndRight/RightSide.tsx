@@ -2,7 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {useLogIN} from "../../../../ContextLog";
-import Table from "./Table";
+import Table from "./Table/Table";
 import {BiTime} from "react-icons/bi";
 import {FcCalendar} from "react-icons/fc";
 import LeftSide from "../LeftPage/LeftSide";

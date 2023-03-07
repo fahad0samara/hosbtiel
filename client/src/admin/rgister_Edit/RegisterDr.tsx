@@ -225,22 +225,16 @@ const RegisterDr = () => {
           //font
           dark ? "font-bold" : "font-normal"
         }
-          grid grid-cols-3 card  h-screen
+          grid grid-cols-1 card  h-screen ml-10
           `}
         >
-          <img
-            alt="Image"
-            className="object-cover bottom-5 
-            h-72 ml-32"
-          />
-
           <div
             className={`
         ${
           //font
           dark ? "font-bold" : "font-normal"
         }
-        flex flex-col justify-center items-center   `}
+        flex flex-col justify-center items-center mx-12    `}
           >
             <div className="w-full glass-object    ">
               <div className="text-center mb-6">
@@ -274,6 +268,7 @@ const RegisterDr = () => {
             <form
               className="
             w-full max-w-sm
+            
             mx-auto
             mt-10
             rounded-lg
@@ -372,13 +367,6 @@ const RegisterDr = () => {
               </div>
             </form>
           </div>
-          <img
-            alt="Image"
-            className="object-cover 
-            object-center h-72 w-72
-
-              "
-          />
         </div>
       );
     } else if (step === 2) {
@@ -414,9 +402,18 @@ const RegisterDr = () => {
                 ) : (
                   <form
                     className="
-                      w-full  max-w-3xl
-                      shadow-cyan-300
-                md:mx-28 shadow-md rounded px-8 pt-6 pb-8 mb-4 
+                      w-full  lg:max-w-4xl
+                    
+                      md:max-w-2xl
+                     
+                     sm:ml-28
+                     ml-14
+                    
+                      
+                      sm:max-w-xl
+
+                      shadow-cyan-300 
+           shadow-md rounded px-8 pt-6 pb-8 mb-4 
                 "
                   >
                     <h1 className="text-3xl font-bold text-center pt-4 mb-5">
@@ -425,16 +422,18 @@ const RegisterDr = () => {
                     <div
                       className=" grid lg:grid-cols-4
                         md:grid-cols-3
-                     gap-6 "
+                        grid-cols-1
+                         mx-16
+                     sm:gap-6 "
                     >
                       <label
-                        className="block font-bold text-lg mb-2"
+                        className="block font-bold text-lg sm:mb-2"
                         htmlFor="name"
                       >
                         Name
                       </label>
                       <input
-                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 md:py-1 px-2 leading-tight focus:outline-none"
                         type="name"
                         name="name"
                         id="name"
@@ -478,13 +477,13 @@ const RegisterDr = () => {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-28">
-                      <div className="flex items-center  my-5 gap-4">
+                    <div className="grid md:grid-cols-2 md:gap-28 grid-cols-1 mx-16">
+                      <div className="flex items-center  my-5 ">
                         <label className="font-bold text-lg " htmlFor="phone">
                           Phone
                         </label>
                         <input
-                          className="appearance-none bg-transparent mr-16  border-b-2 border-cyan-400   leading-tight focus:outline-none"
+                          className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
                           type="text"
                           name="phone"
                           required
@@ -541,7 +540,7 @@ const RegisterDr = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-28">
+                    <div className="grid md:grid-cols-2 grid-cols-1 md:gap-28  mx-16">
                       <div className="flex items-center  my-5 gap-4">
                         <label className="font-bold text-lg " htmlFor="weight">
                           Weight
@@ -582,7 +581,7 @@ const RegisterDr = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-28">
+                    <div className="grid md:grid-cols-2 md:gap-28  mx-16 ">
                       <div className="mb-4">
                         <label
                           className="block font-bold text-lg mb-2"
@@ -640,7 +639,7 @@ const RegisterDr = () => {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-8  mb-4  mt-9">
+                    <div className="grid md:grid-cols-2 md:gap-8  mb-4  mx-16 mt-9">
                       <div className="mb-4">
                         <label
                           htmlFor="speciality"
@@ -718,7 +717,7 @@ const RegisterDr = () => {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-8  mb-4  mt-9">
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-8  mx-16  mb-4  mt-9">
                       <div className="mb-5">
                         <label
                           className="block font-bold text-lg mb-2"
@@ -777,13 +776,13 @@ const RegisterDr = () => {
                     </div>
                     <div>
                       <label
-                        className="block font-bold text-lg "
+                        className="block font-bold text-lg ml-14 sm:ml-6"
                         htmlFor="address"
                       >
                         HospitalAddress
                       </label>
                     </div>
-                    <div className="grid grid-cols-5 gap-8  mb-4  mt-9">
+                    <div className="grid md:grid-cols-5 gap-8  mb-4   mx-16 mt-9">
                       <div>
                         <label
                           className="block font-bold text-lg mb-2"

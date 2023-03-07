@@ -183,30 +183,7 @@ const SideNavigate = (_props: any) => {
             ListAppointments
           </NavText>
         </NavItem>
-        <NavItem eventKey="ListTable">
-          <NavIcon>
-            <CgUserList
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            PatientsList
-          </NavText>
-        </NavItem>
+
         <NavItem eventKey="Profile">
           <NavIcon>
             <CgProfile

@@ -1,5 +1,5 @@
 import {Routes, Route} from "react-router-dom";
-import SideNavigate from "./Router/SideNavigatee";
+import SideNavigate from "./SideNavigate";
 
 import Dashboard from "../Dashboard";
 import DoctorList from "../List/DoctorList";
@@ -10,14 +10,6 @@ import RegisterDr from "../rgister_Edit/RegisterDr";
 import PatientList from "../List/PatientList";
 import ViewPatient from "../List/ViewPatient";
 import ViewPrescription from "../ViewPrescription";
-
-
-
-
-
-
-
-
 
 const RouterPatient = () => {
   return (
@@ -34,11 +26,10 @@ const RouterPatient = () => {
         <Route path="/ViewDr/:id" element={<ViewDr />} />
         <Route path="/ViewPatient/:id" element={<ViewPatient />} />
         <Route
-          path=
-          "/ViewPrescription/:id/:prescriptionId"
+          path="/ViewPrescription/:id/:prescriptionId"
           element={<ViewPrescription />}
         />
-       
+
         <Route path="/RegisterDr/:id" element={<RegisterDr />} />
       </Routes>
     </div>

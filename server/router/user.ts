@@ -599,7 +599,161 @@ router.get("/Prescription/:id", async (req, res) => {
     res.status(500).json({message: error.message});
   }
 });
+router.get(
+  "/:id/prescriptions/:prescriptionId/download",
 
+  async (req, res) => {
+    try {
+      // Find the prescription by ID
+      const prescription = await Prescription.findById(
+        req.params.prescriptionId
+      )
+        .populate("patient")
+        .populate("doctor");
+      if (!prescription) return res.status(404).send("Prescription not found.");
+
+      // Create a new PDF document
+      const getHeader = (currPage: any, totalPage: any) => [
+        {
+          text: "Hospital Name",
+          style: "hospitalName",
+          alignment: "center",
+          margin: [0, 20, 0, 10],
+          border: [true, true, true, false], // add border to top, left, right
+        },
+        {
+          text: "Hospital Location",
+          style: "hospitalLocation",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+          border: [true, false, true, false], // add border to left and right
+        },
+
+        {
+          text: `Date: ${new Date().toLocaleDateString()}`,
+
+          margin: [0, 0, 0, 10],
+        },
+      ];
+
+      const getFooter = (currPage: any, totalPage: any) => [
+        {
+          //@ts-ignore
+          text: `Doctor: ${prescription.doctor.name.firstName} ${prescription.doctor.name.lastName}`,
+          alignment: "center",
+          style: "footer",
+          margin: [20, 10, 20, 10],
+        },
+      ];
+
+      const docDefinition = {
+        pageSize: {
+          width: 350.28,
+          height: 300.89,
+        },
+
+        pageMargins: [20, 60, 40, 40],
+        header: getHeader,
+        footer: getFooter,
+
+        content: [
+          {
+            //@ts-ignore
+            text: `This is a prescription for ${prescription.patient.name.firstName} ${prescription.patient.name.LastName}`,
+            style: "header",
+            alignment: "center",
+            margin: [20, 10, 20, 10],
+
+            border: [true, true, true, false], // add border to top, left, right
+          },
+          {
+            text: `Medication: ${prescription.medication}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Dosage: ${prescription.dosage}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            //@ts-ignore
+            text: `Frequency: ${prescription.frequency}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Refills: ${prescription.refills}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Duration: ${prescription.duration}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Notes: ${prescription.notes}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 0, 0, 10],
+          },
+          footer: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "gray",
+            backgroundColor: "red",
+            border: [true, true, true, false], // add border to top, left, right
+          },
+          subheader: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 10, 0, 5],
+          },
+
+          hospitalName: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "gray",
+          },
+
+          prescriptionDate: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "white",
+            textDecoration: "underline",
+          },
+        },
+      };
+
+      // Create a PDF from the document definition
+      //@ts-ignore
+      const pdfDoc = pdfMake.createPdf(docDefinition);
+      // Send the PDF as a response
+      pdfDoc.getBase64(data => {
+        res.writeHead(200, {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": 'attachment;filename="prescription.pdf"',
+        });
+        const download = Buffer.from(
+          //@ts-ignore
+          data.toString("utf-8"),
+          "base64"
+        );
+        res.end(download);
+      });
+    } catch (error) {}
+  }
+);
 
 
 export default router;

@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 import moment from "moment-timezone";
 import AppointmentModal from "./AppointmentModal";
 import Loder from "../../../tools/Loder";
-import Table from "./Table";
+import Table from "./Table/Table";
 
 function formatDate(dateString) {
   const date = new Date(dateString);

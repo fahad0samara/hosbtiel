@@ -1,28 +1,9 @@
-import {Link, useNavigate} from "react-router-dom";
-import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactFragment,
-  ReactPortal,
-  useEffect,
-  useState,
-} from "react";
-import axios from "axios";
 import {useLogIN} from "../../../ContextLog";
-import Table from "../Table";
-import {BiTime} from "react-icons/bi";
-import {FcCalendar} from "react-icons/fc";
 import LeftSide from "./LeftPage/LeftSide";
 import RightSide from "./middleAndRight/RightSide";
 
 const Dashboard = (props: any) => {
-  const {
-    Profile,
-    Patient,
-
-    dark,
-    setdark,
-  } = useLogIN();
+  const {dark} = useLogIN();
   return (
     <div
       style={{
@@ -33,10 +14,6 @@ const Dashboard = (props: any) => {
     h-screen
     w-screen
     md:grid-cols-3
-
-
-
-
     "
     >
       <div
@@ -51,7 +28,7 @@ const Dashboard = (props: any) => {
       >
         <LeftSide />
       </div>
-      <div className=" lg:col-span-3  sm:col-span-2 ">
+      <div className=" lg:col-span-3  sm:col-span-2 ml-12 sm:ml-6 ">
         <RightSide />
       </div>
     </div>

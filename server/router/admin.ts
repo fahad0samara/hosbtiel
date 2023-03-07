@@ -159,11 +159,36 @@ router.delete("/admin/:id", checkAdmin, (req, res) => {
 });
 
 // Get a list of all doctors
-router.get("/doctor", checkAdmin, (req, res) => {
-  Doctor.find()
-    .populate("user")
-    .then(doctors => res.json(doctors))
-    .catch(err => res.status(400).json(err));
+router.get("/doctor", checkAdmin, async (req, res) => {
+  try {
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
+    const limit = parseInt(req.query.limit as string);
+
+    const skip = (page - 1) * limit;
+    // Get the total number of Doctor
+    const total = await Doctor.countDocuments();
+    // Calculate the total number of pages
+    const pages = Math.ceil(total / limit);
+    const doctors = await Doctor.find()
+      .populate("user")
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      doctors,
+
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: pages,
+      },
+    });
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 // Get a doctor by id
@@ -190,12 +215,40 @@ router.delete("/doctor/:id", checkAdmin, (req, res) => {
 });
 
 // Get a list of all patients
-router.get("/patient", checkAdmin, (req, res) => {
-  Patient.find()
-    .populate("user")
-    .then(patients => res.json(patients))
-    .catch(err => res.status(400).json(err));
+router.get("/patient", checkAdmin, async (req, res) => {
+  try {
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+    // Get the limit number from the query string
+    const limit = parseInt(req.query.limit as string);
+    const skip = (page - 1) * limit;
+    // Get the total number of patients
+    const total = await Patient.countDocuments();
+    // Calculate the total number of pages
+    const pages = Math.ceil(total / limit);
+    // Set the pagination information
+    const patients = await Patient.find()
+      .populate("user")
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      patients,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: pages,
+      },
+    });
+
+    // res.json(patients);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
+
+
+
 
 // Delete a patient from the database
 router.delete("/patient/:id", checkAdmin, (req, res) => {

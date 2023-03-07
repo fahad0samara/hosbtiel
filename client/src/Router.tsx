@@ -3,7 +3,7 @@ import {Routes, Route} from "react-router-dom";
 import Hero from "./Home/Hero";
 import RouterPatient from "./patient/router/RouterPatient";
 import {useLogIN} from "../ContextLog";
-import RouterAdmin from "./admin/RouterAdmin";
+import RouterAdmin from "./admin/Router/RouterAdmin";
 import Register from "./Home/auth/Register";
 import Login from "./Home/auth/Login";
 import RegisterPatient from "./patient/auth/RegisterPatient";

@@ -134,7 +134,10 @@ import SideNav, {
 
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import {RiDashboardFill} from "react-icons/ri";
-import {useLogIN} from "../../ContextLog";
+
+import {useLogIN} from "../../../ContextLog";
+import {FaClipboardList, FaRegIdCard} from "react-icons/fa";
+import {GoChecklist} from "react-icons/go";
 
 const SideNavigate = (_props: any) => {
   const {
@@ -228,7 +231,7 @@ const SideNavigate = (_props: any) => {
         </NavItem>
         <NavItem eventKey="RegisterDr">
           <NavIcon>
-            <RiDashboardFill
+            <FaRegIdCard
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -252,7 +255,7 @@ const SideNavigate = (_props: any) => {
         </NavItem>
         <NavItem eventKey="doctorList">
           <NavIcon>
-            <RiDashboardFill
+            <FaClipboardList
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",
@@ -277,7 +280,7 @@ const SideNavigate = (_props: any) => {
         </NavItem>
         <NavItem eventKey="patientList">
           <NavIcon>
-            <RiDashboardFill
+            <GoChecklist
               style={{
                 color: dark ? "rgb(103 232 249)" : "black",
                 fontSize: "1.8rem",

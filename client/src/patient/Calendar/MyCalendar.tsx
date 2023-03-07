@@ -159,7 +159,7 @@ const MyCalendar = () => {
             </h1>
 
             {Events.length > 0 ? (
-              <ul className="list-disc pl-4 eventPropGetter">
+              <ul className="list-disc pl-4 ">
                 {Events.map((event, index) => (
                   <li className="" key={index}>
                     {event.title} - {moment(event.start).format("MMM DD, YYYY")}{" "}
@@ -196,10 +196,6 @@ const MyCalendar = () => {
                   <div className="flex items-center ml-4">
                     <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
                     <p>Holidays</p>
-                  </div>
-                  <div className="flex items-center ml-4">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                    <p>Breaks</p>
                   </div>
                 </div>
               </div>
