@@ -8,6 +8,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../model/User";
 import Prescription from "../model/prescription";
+import Appointment from "../model/appointment";
+
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -247,9 +249,6 @@ router.get("/patient", checkAdmin, async (req, res) => {
   }
 });
 
-
-
-
 // Delete a patient from the database
 router.delete("/patient/:id", checkAdmin, (req, res) => {
   Patient.findByIdAndDelete(req.params.id)
@@ -313,8 +312,6 @@ router.put("/patient/:id", checkAdmin, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
-
-module.exports = router;
 
 router.post("/update", async (req, res) => {
   try {
@@ -474,5 +471,34 @@ router.post("/register-patient", async (req, res) => {
     res.status(400).json({message: err.message});
   }
 });
+
+// Define a route to get the number of patients and doctors and Prescription and Appointment
+router.get("/count", async (req, res) => {
+  try {
+    const patients = await Patient.find().countDocuments();
+    const doctors = await Doctor.find().countDocuments();
+    const prescriptions = await Prescription.find().countDocuments();
+    const appointments = await Appointment.find().countDocuments();
+
+    res.json({
+      patients,
+      doctors,
+      prescriptions,
+      appointments,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
+
+
+
+
+
+
+
+
 
 export default router;

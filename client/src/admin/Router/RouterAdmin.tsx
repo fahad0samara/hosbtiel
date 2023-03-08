@@ -1,7 +1,7 @@
 import {Routes, Route} from "react-router-dom";
 import SideNavigate from "./SideNavigate";
 
-import Dashboard from "../Dashboard";
+import Dashboard from "../Dashbord/Dashboard";
 import DoctorList from "../List/DoctorList";
 import Edit from "../rgister_Edit/Edit";
 import NotFound from "../NotFound";

@@ -133,7 +133,7 @@ import SideNav, {
 } from "@trendmicro/react-sidenav";
 
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import {RiDashboardFill} from "react-icons/ri";
+import {RiDashboardFill, RiLogoutBoxRLine} from "react-icons/ri";
 
 import {useLogIN} from "../../../ContextLog";
 import {FaClipboardList, FaRegIdCard} from "react-icons/fa";
@@ -300,6 +300,30 @@ const SideNavigate = (_props: any) => {
             }}
           >
             Patient List
+          </NavText>
+        </NavItem>
+        <NavItem eventKey="logout">
+          <NavIcon>
+            <RiLogoutBoxRLine
+              style={{
+                color: dark ? "rgb(103 232 249)" : "black",
+                fontSize: "1.8rem",
+                fontWeight: "bold",
+                marginLeft: "1rem",
+                marginTop: "1rem",
+              }}
+            />
+          </NavIcon>
+          <NavText
+            style={{
+              color: dark ? "rgb(103 232 249)" : "black",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              marginLeft: "1rem",
+              marginTop: "1rem",
+            }}
+          >
+            Logout
           </NavText>
         </NavItem>
       </SideNav.Nav>
