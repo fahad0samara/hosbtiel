@@ -1,7 +1,10 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
-import Highcharts from "highcharts";
+
 import HighchartsReact from "highcharts-react-official";
+import Highcharts from "highcharts";
+import variablePie from "highcharts/modules/variable-pie.js";
+variablePie(Highcharts);
 import {useLogIN} from "../../../ContextLog";
 
 const Stats = () => {
@@ -59,9 +62,16 @@ const Stats = () => {
   const options0 = {
     chart: {
       type: "column",
+      width: 500,
+      height: 400,
+      backgroundColor: "transparent",
+      borderWidth: 0,
     },
     title: {
       text: "Count of Patients, Doctors, Prescriptions, and Appointments",
+      style: {
+        color: dark ? "#fff" : "#000",
+      },
     },
     xAxis: {
       categories: ["Patients", "Doctors", "Prescriptions", "Appointments"],
@@ -71,14 +81,15 @@ const Stats = () => {
         text: "Count",
       },
     },
+
     series: [
       {
         name: "Total",
         data: [
-          chartData.patients,
-          chartData.doctors,
-          chartData.prescriptions,
-          chartData.appointments,
+          {y: chartData.patients, color: "#ff0000"}, // Set color for each data point
+          {y: chartData.doctors, color: "#00ff00"},
+          {y: chartData.prescriptions, color: "#0000ff"},
+          {y: chartData.appointments, color: "#ffa500"},
         ],
       },
       {
@@ -109,33 +120,42 @@ const Stats = () => {
   const options = {
     chart: {
       type: "pie",
-      height: 250,
+
+      backgroundColor: "transparent",
+      borderWidth: 0,
+
+      pie: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: true,
+          distance: -30,
+          style: {
+            fontWeight: "bold",
+            color: "white",
+            fontSize: "14px",
+            textShadow: "0px 1px 2px black",
+          },
+        },
+      },
     },
     title: {
       text: "Counts of Patients, Doctors, Prescriptions, and Appointments",
-    },
-    xAxis: {
-      type: "category",
-    },
-    yAxis: {
-      title: {
-        text: "Count",
+      style: {
+        color: dark ? "#fff" : "#000",
       },
     },
+
     legend: {
-      enabled: false,
+      enabled: true, // enable legend
     },
     plotOptions: {
-      series: {
+      pie: {
+        // set plotOptions for pie chart
         borderWidth: 0,
         dataLabels: {
           enabled: true,
         },
       },
-    },
-    tooltip: {
-      headerFormat: "<span style='font-size:11px'>{series.name}</span><br>",
-      pointFormat: "<b>{point.y}</b> Count",
     },
     series: [
       {
@@ -169,6 +189,21 @@ const Stats = () => {
         ],
       },
     ],
+
+    xAxis: {
+      type: "category",
+    },
+    yAxis: {
+      title: {
+        text: "Count",
+      },
+    },
+
+    tooltip: {
+      headerFormat: "<span style='font-size:11px'>{series.name}</span><br>",
+      pointFormat: "<b>{point.y}</b> Count",
+    },
+
     drilldown: {
       series: [
         {
@@ -193,29 +228,92 @@ const Stats = () => {
         },
       ],
     },
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: "100%",
+          },
+          chartOptions: {
+            chart: {
+              height: "100%",
+            },
+            xAxis: {
+              labels: {
+                style: {
+                  fontSize: "2.5vw",
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
   };
   return (
-    <div>
-      <div className="grid grid-cols-2  gap-8 mx-24">
-        <div className="grid grid-cols-2 gap-8">
-          <div className="bg-red-500 p-4 rounded-lg">
-            <h1 className="text-2xl text-white">Number of Patients</h1>
-            <h1 className="text-2xl text-white">{numPatients}</h1>
-          </div>
-
-          <div className="bg-green-500 p-4 rounded-lg">
-            <h1 className="text-2xl text-white">Number of Doctors</h1>
-            <h1 className="text-2xl text-white">{numDoctors}</h1>
-          </div>
-          <div className="bg-blue-500 p-4 rounded-lg">
-            <h1 className="text-2xl text-white">Number of Prescriptions</h1>
-            <h1 className="text-2xl text-white">{prescriptions}</h1>
-          </div>
-          <div className="bg-yellow-500 p-4 rounded-lg">
-            <h1 className="text-2xl text-white">Number of Appointments</h1>
-            <h1 className="text-2xl text-white">{appointments}</h1>
-          </div>
+    <div className="my-7">
+      <div className="grid lg:grid-cols-4  gap-8 lg:mx-24 md:grid-cols-2  px-20 mx-12  sm:px-11 ">
+        <div
+          style={{
+            boxShadow: dark ? "0px 0px 10px 0px #fff" : "0px 0px 10px 0px #000",
+          }}
+          className="bg-[#ff0000] p-4 rounded-lg shadow-2xl 
+        hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out
+        "
+        >
+          <h1 className="text-2xl text-white">Number of Patients</h1>
+          <h1 className="text-2xl text-white">
+            {numPatients ? numPatients : "loading..."}
+          </h1>
         </div>
+
+        <div
+          style={{
+            boxShadow: dark ? "0px 0px 10px 0px #fff" : "0px 0px 10px 0px #000",
+          }}
+          className="bg-[#00ff00] p-4 rounded-lg
+        hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out
+          "
+        >
+          <h1 className="text-2xl text-white">Number of Doctors</h1>
+          <h1 className="text-2xl text-white">
+            {numDoctors ? numDoctors : "loading..."}
+          </h1>
+        </div>
+        <div
+          style={{
+            boxShadow: dark ? "0px 0px 10px 0px #fff" : "0px 0px 10px 0px #000",
+          }}
+          className="bg-[#0000ff] p-4 rounded-lg
+        hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out
+          "
+        >
+          <h1 className="text-2xl text-white">Number of Prescriptions</h1>
+          <h1 className="text-2xl text-white">
+            {
+              //loading
+              prescriptions ? prescriptions : "Loading..."
+            }
+          </h1>
+        </div>
+        <div
+          style={{
+            boxShadow: dark ? "0px 0px 10px 0px #fff" : "0px 0px 10px 0px #000",
+          }}
+          className="bg-[#ffa500] p-4 rounded-lg
+        hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out
+          "
+        >
+          <h1 className="text-2xl text-white">Number of Appointments</h1>
+          <h1 className="text-2xl text-white">
+            {appointments ? appointments : "Loading..."}
+          </h1>
+        </div>
+      </div>
+      <h1 className="text-2xl text-center my-5 text-cyan-300 italic hidden sm:block">
+        Total and Average
+      </h1>
+      <div className="  lg:grid-cols-2 gap-3 sm:mx-24 mx-7 ml-10 hidden sm:grid">
         <div className="">
           {data ? (
             <HighchartsReact
@@ -227,15 +325,24 @@ const Stats = () => {
               options={options}
             />
           ) : (
-            "Loading..."
+            <div>
+              <h1 className="text-2xl text-center my-5">Loading...</h1>
+            </div>
           )}
         </div>
+
+        {chartData ? (
+          <HighchartsReact
+            className=""
+            highcharts={Highcharts}
+            options={options0}
+          />
+        ) : (
+          <div>
+            <h1 className="text-2xl text-center my-5">Loading...</h1>
+          </div>
+        )}
       </div>
-      {data ? (
-        <HighchartsReact highcharts={Highcharts} options={options0} />
-      ) : (
-        "Loading..."
-      )}
     </div>
   );
 };
