@@ -112,7 +112,6 @@ const Stats = () => {
       setprescriptions(res.data.prescriptions);
       setappointments(res.data.appointments);
       setData(res.data);
-      console.log(res.data);
     }
     fetchData();
   }, []);

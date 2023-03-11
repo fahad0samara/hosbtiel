@@ -5,6 +5,7 @@ import Example from "./Exmple";
 import {FcCalendar} from "react-icons/fc";
 import {BiTime} from "react-icons/bi";
 import {useEffect, useState} from "react";
+import DoctorList from "./DoctorList";
 
 function Dashboard() {
   const {
@@ -95,6 +96,13 @@ function Dashboard() {
       </div>
 
       <Stats />
+      <div className="grid lg:grid-cols-2 mt-8 ">
+        <div>
+          <h1 className="text-2xl text-center">Last Doctor</h1>
+          <DoctorList />
+        </div>
+        <div></div>
+      </div>
     </div>
   );
 }
