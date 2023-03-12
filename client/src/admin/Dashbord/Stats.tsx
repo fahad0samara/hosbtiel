@@ -37,7 +37,6 @@ const Stats = () => {
     axios
       .get("http://localhost:3000/admin/count")
       .then(response => {
-        console.log(response.data);
         const data = response.data;
         const patientAvg = Math.round(data.patients / 30); // Assuming 30 days in a month
         const doctorAvg = Math.round(data.doctors / 30);

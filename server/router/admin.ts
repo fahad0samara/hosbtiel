@@ -175,7 +175,9 @@ router.get("/doctor", checkAdmin, async (req, res) => {
     // Calculate the total number of pages
     const pages = Math.ceil(total / limit);
     const doctors = await Doctor.find()
+
       .populate("user")
+      .sort({_id: -1})
       .skip(skip)
       .limit(limit);
 
@@ -231,6 +233,7 @@ router.get("/patient", checkAdmin, async (req, res) => {
     // Set the pagination information
     const patients = await Patient.find()
       .populate("user")
+      .sort({_id: -1})
       .skip(skip)
       .limit(limit);
 

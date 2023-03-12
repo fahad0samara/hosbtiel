@@ -1,11 +1,13 @@
 import React from "react";
 import {useLogIN} from "../../../ContextLog";
 import Stats from "./Stats";
-import Example from "./Exmple";
+
 import {FcCalendar} from "react-icons/fc";
 import {BiTime} from "react-icons/bi";
 import {useEffect, useState} from "react";
-import DoctorList from "./DoctorList";
+import DoctorList from "./List/DoctorList";
+
+import ListPatient from "./List/ListPatient";
 
 function Dashboard() {
   const {
@@ -101,7 +103,10 @@ function Dashboard() {
           <h1 className="text-2xl text-center">Last Doctor</h1>
           <DoctorList />
         </div>
-        <div></div>
+        <div>
+          <h1 className="text-2xl text-center">Last Patient</h1>
+          <ListPatient />
+        </div>
       </div>
     </div>
   );
