@@ -47,7 +47,6 @@ const PatientList = () => {
         },
       })
       .then(res => {
-        console.log(res.data);
         setPagination({
           ...pagination,
           totalPages: res.data.pagination.totalPages,
@@ -145,7 +144,7 @@ const PatientList = () => {
       
         "
         >
-          <h1 className=" text-2xl font-bold "> Doctor List</h1>
+          <h1 className=" text-2xl font-bold "> Patients List</h1>
           {
             /* Checking if the data is loaded and if it is loaded it will display the table. */
             patients && patients.length > 0 ? (
@@ -163,7 +162,7 @@ const PatientList = () => {
         </div>
       </div>
       <div className="overflow-x-auto  mx-auto ml-10">
-        <div className={"w-full lg:w-5/6"}>
+        <div className={"w-full "}>
           {loading ? (
             <Loder />
           ) : (

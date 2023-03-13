@@ -10,16 +10,7 @@ import DoctorList from "./List/DoctorList";
 import ListPatient from "./List/ListPatient";
 
 function Dashboard() {
-  const {
-    logPatient,
-
-    Profile,
-    setProfile,
-
-    setLoading,
-    dark,
-    setdark,
-  } = useLogIN();
+  const {dark} = useLogIN();
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
@@ -74,10 +65,10 @@ function Dashboard() {
               {message}
             </span>
 
-            {/* {Patient ? Patient.name.firstName : ""} */}
+            <span className="text-zinc-400">Admin</span>
           </h1>
           <h4 className="text-sm font-bold mt-1 md:ml-3 text-zinc-400  ">
-            You'll be feeling healthy and strong again soon!
+            Welcome to your dashboard
           </h4>
         </div>
         <div>

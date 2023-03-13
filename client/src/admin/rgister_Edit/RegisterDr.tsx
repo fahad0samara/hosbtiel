@@ -1,25 +1,20 @@
-// export default About;
 import {useLogIN} from "../../../ContextLog";
 
-import {Link, useLocation} from "react-router-dom";
 import Loder from "../../tools/Loder";
 
 import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import "./SideNavigate.css";
 import {useNavigate} from "react-router-dom";
-import img1 from "../assets/1.png";
-import img2 from "../assets/2.png";
-import img3 from "../assets/3.png";
+import img from "../../assets/Login.png";
 
 const RegisterDr = () => {
   const Navigate = useNavigate();
   const [step, setStep] = useState(1);
 
-
   const [success, setsuccess] = useState(false);
 
-  const {logPatient, Profile, setProfile, dark, setdark} = useLogIN();
+  const {dark} = useLogIN();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: {
@@ -138,16 +133,12 @@ const RegisterDr = () => {
 
         setStep(2);
         setFormData({...formData, user: res.data.user._id});
-        // cheek who is register and redicet to the
+
         if (role === "admin") {
-          Navigate("/admin/doctorList");
+          // reducreat to the step 3
+          setStep(3);
         }
-        if (role === "doctor") {
-          Navigate("/admin/RegisterDr");
-        }
-        if (role === "patient") {
-          Navigate("/admin/Rg_patient");
-        }
+
         setLoading(false);
       } catch (error) {
         //@ts-ignore
@@ -948,24 +939,80 @@ const RegisterDr = () => {
     } else if (step === 3) {
       return (
         <div
+          style={{
+            backgroundColor: dark ? "#000" : "#f3f4f6",
+            color: dark ? "#f3f4f6" : "#000",
+          }}
           className="flex
         justify-center
+        h-screen
         items-center
-        mt-10"
+       "
         >
-          <div className="text-2xl font-bold text-green-500">
-            Registration Successful
-          </div>
+          <div className="flex flex-col justify-center items-center ml-7">
+            <img src={img} className="md:w-80 w-56" alt="success" />
+            <div className="flex flex-col justify-center items-center ">
+              <h1 className="md:text-3xl font-bold text-gray-700">
+                Registration Successful
+              </h1>
+              <h1 className="md:text-3xl text-lg mx-auto  font-bold text-cyan-300">
+                Please send the Email and
+              </h1>
+              <h1 className="md:text-3xl    md:font-bold text-cyan-300">
+                the password to the
+                {
+                  // show the dr or the admin
+                  formData.role === "admin" ? (
+                    <span className="text-cyan-400"> Admin </span>
+                  ) : (
+                    <span className="text-cyan-400"> Doctor </span>
+                  )
+                }
+                to login
+              </h1>
 
-          <div className="my-11">
-            <Link to="/login">
-              <button
-                className="bg-cyan-400 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
-                type="button"
+              <div className="my-3 md:text-2xl ">
+                {
+                  <>
+                    <span className="">
+                      Email:
+                      {formData.email}
+                    </span>
+                    <br />
+                    Password:
+                    <span className=""> {formData.password} </span>
+                  </>
+                }
+              </div>
+              <div
+                className="flex
+        justify-center
+        items-center
+        space-x-4
+        "
               >
-                Login
-              </button>
-            </Link>
+                <button
+                  className="bg-cyan-300 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
+                  type="button"
+                  onClick={
+                    // show the dr or the admin
+                    formData.role === "admin"
+                      ? () => Navigate("/admin")
+                      : () => Navigate("/admin/doctorList")
+                  }
+                >
+                  list
+                </button>
+
+                <button
+                  className="bg-cyan-300 hover:bg-cyan-500  font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
+                  type="button"
+                  onClick={() => Navigate("/admin/dashboard")}
+                >
+                  Home
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       );

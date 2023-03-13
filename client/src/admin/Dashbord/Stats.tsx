@@ -6,23 +6,21 @@ import Highcharts from "highcharts";
 import variablePie from "highcharts/modules/variable-pie.js";
 variablePie(Highcharts);
 import {useLogIN} from "../../../ContextLog";
-
+type Data = {
+  patients: number;
+  doctors: number;
+  prescriptions: number;
+  appointments: number;
+};
 const Stats = () => {
-  const {
-    logPatient,
+  const {dark} = useLogIN();
 
-    Profile,
-    setProfile,
-
-    setLoading,
-    dark,
-    setdark,
-  } = useLogIN();
   const [numPatients, setNumPatients] = useState(0);
   const [numDoctors, setNumDoctors] = useState(0);
   const [prescriptions, setprescriptions] = useState(0);
   const [appointments, setappointments] = useState(0);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Data>();
+  const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState({
     patients: [],
     doctors: [],
@@ -80,7 +78,11 @@ const Stats = () => {
         text: "Count",
       },
     },
-
+    plotOptions: {
+      column: {
+        animation: false,
+      },
+    },
     series: [
       {
         name: "Total",
@@ -102,15 +104,19 @@ const Stats = () => {
       },
     ],
   };
-
   useEffect(() => {
     async function fetchData() {
-      const res = await axios.get("http://localhost:3000/admin/count");
-      setNumPatients(res.data.patients);
-      setNumDoctors(res.data.doctors);
-      setprescriptions(res.data.prescriptions);
-      setappointments(res.data.appointments);
-      setData(res.data);
+      try {
+        const res = await axios.get("http://localhost:3000/admin/count");
+        setNumPatients(res.data.patients);
+        setNumDoctors(res.data.doctors);
+        setprescriptions(res.data.prescriptions);
+        setappointments(res.data.appointments);
+        setData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+      setIsLoading(false);
     }
     fetchData();
   }, []);
@@ -124,6 +130,7 @@ const Stats = () => {
 
       pie: {
         borderWidth: 0,
+        animation: false,
         dataLabels: {
           enabled: true,
           distance: -30,
@@ -150,6 +157,7 @@ const Stats = () => {
       pie: {
         // set plotOptions for pie chart
         borderWidth: 0,
+        animation: false,
         dataLabels: {
           enabled: true,
         },
@@ -197,11 +205,6 @@ const Stats = () => {
       },
     },
 
-    tooltip: {
-      headerFormat: "<span style='font-size:11px'>{series.name}</span><br>",
-      pointFormat: "<b>{point.y}</b> Count",
-    },
-
     drilldown: {
       series: [
         {
@@ -226,28 +229,8 @@ const Stats = () => {
         },
       ],
     },
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: "100%",
-          },
-          chartOptions: {
-            chart: {
-              height: "100%",
-            },
-            xAxis: {
-              labels: {
-                style: {
-                  fontSize: "2.5vw",
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
   };
+
   return (
     <div className="my-7">
       <div className="grid lg:grid-cols-4  gap-8 lg:mx-24 md:grid-cols-2  px-20 mx-12  sm:px-11 ">
@@ -313,7 +296,9 @@ const Stats = () => {
       </h1>
       <div className="  lg:grid-cols-2 gap-3 sm:mx-24 mx-7 ml-10 hidden sm:grid">
         <div className="">
-          {data ? (
+          {isLoading ? (
+            <h1 className="text-2xl text-center my-5">Loading...</h1>
+          ) : (
             <HighchartsReact
               style={{
                 backgroundColor: dark ? "#000" : "#fff",
@@ -322,10 +307,6 @@ const Stats = () => {
               highcharts={Highcharts}
               options={options}
             />
-          ) : (
-            <div>
-              <h1 className="text-2xl text-center my-5">Loading...</h1>
-            </div>
           )}
         </div>
 

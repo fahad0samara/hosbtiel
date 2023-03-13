@@ -212,10 +212,22 @@ router.put("/doctor/:id", checkAdmin, (req, res) => {
 });
 
 // Delete a doctor from the database
-router.delete("/doctor/:id", checkAdmin, (req, res) => {
-  Doctor.findByIdAndDelete(req.params.id)
-    .then(doctor => res.json(doctor))
-    .catch(err => res.status(400).json(err));
+router.delete("/doctor/:id", checkAdmin, async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).send("Doctor not found");
+    }
+
+    // delete the associated user
+    await User.findByIdAndDelete(doctor.user);
+
+    // delete the doctor
+    const deletedDoctor = await Doctor.findByIdAndDelete(req.params.id);
+    res.send(deletedDoctor);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 // Get a list of all patients
@@ -253,10 +265,22 @@ router.get("/patient", checkAdmin, async (req, res) => {
 });
 
 // Delete a patient from the database
-router.delete("/patient/:id", checkAdmin, (req, res) => {
-  Patient.findByIdAndDelete(req.params.id)
-    .then(patient => res.json(patient))
-    .catch(err => res.status(400).json(err));
+router.delete("/patient/:id", checkAdmin, async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) {
+      return res.status(404).send("Patient not found");
+    }
+
+    // delete the associated user
+    await User.findByIdAndDelete(patient.user);
+
+    // delete the Patient
+    const deletedPatient = await Patient.findByIdAndDelete(req.params.id);
+    res.send(deletedPatient);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 // Get a patient by id
