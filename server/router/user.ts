@@ -1,6 +1,9 @@
 import express from "express";
 const router = express.Router();
 const webpush = require("web-push");
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const {CloudinaryStorage} = require("multer-storage-cloudinary");
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../model/User";
@@ -20,9 +23,17 @@ import {
 import Patient from "../model/patient";
 import Doctor from "../model/doctor";
 import Appointment from "../model/appointment";
-import {Document, Types} from "mongoose";
-import Prescription from "../model/prescription";
 
+import Prescription from "../model/prescription";
+import {Request} from "express-serve-static-core";
+import {ParsedQs} from "qs";
+
+// configure cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 interface JwtPayload {
   _id: string;
   role: string;
@@ -754,6 +765,78 @@ router.get(
     } catch (error) {}
   }
 );
+
+// configure multer storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "avatars",
+    allowed_formats: ["jpg", "png"],
+    transformation: [{width: 150, height: 150, crop: "limit"}],
+  },
+});
+
+// create multer instance with the configured storage
+const multerUpload = multer({storage: storage});
+
+// define function for uploading avatar image to cloudinary
+// define function for uploading avatar image to cloudinary
+async function uploadAvatar(req: Request) {
+  return new Promise((resolve, reject) => {
+    multerUpload.single("avatar")(req, null, (err: any) => {
+      if (err) reject(err);
+      else {
+        //@ts-ignore
+        if (!req.file) {
+          // If no file was uploaded, resolve with default avatar URL
+          resolve("/avatars/default-avatar.png");
+        } else {
+          // Otherwise, upload file to Cloudinary and resolve with URL
+          cloudinary.uploader.upload(
+            //@ts-ignore
+            req.file.path,
+            (error: any, result: any) => {
+              if (error) reject(error);
+              else {
+                console.log("Cloudinary response:", result);
+                const avatarUrl = result.secure_url;
+                resolve(avatarUrl);
+              }
+            }
+          );
+        }
+      }
+    });
+  });
+}
+
+// route handler for updating user profile with avatar
+router.post("/avatar/:id", async (req, res) => {
+  try {
+    // check if user exists
+    const user = await Patient.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send({message: "User not found"});
+    }
+
+    // upload avatar image to cloudinary
+    const avatarUrl = await uploadAvatar(req);
+
+    console.log("Avatar URL:", avatarUrl);
+
+    console.log("User before update:", user);
+    //@ts-ignore
+    user.avatar = avatarUrl;
+    await user.save();
+    console.log("User after update:", user);
+
+    // send response with updated user document
+    res.send(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({message: "Internal server error"});
+  }
+});
 
 
 export default router;

@@ -13,6 +13,7 @@ import Appointment from "../model/appointment";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+const {doctorValidation} = require("../middleware/validtion");
 
 // registerAdmin
 
@@ -359,8 +360,6 @@ router.post("/update", async (req, res) => {
   }
 });
 
-// Router for an administrator to register a new user with any role:
-
 router.post("/register-user", async (req: any, res: any) => {
   // Check if the user is an admin
 
@@ -398,8 +397,8 @@ router.post("/register-user", async (req: any, res: any) => {
 // Router for an administrator to register a new doctor:
 router.post("/register-dr", async (req, res) => {
   // validate the data before we make a doctor
-  // const {error} = doctorValidation(req.body);
-  // if (error) return res.status(400).send(error.details[0].message);
+  const {error} = doctorValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
   // check if the User is already in the database
   const Userfind = await User.findById(req.body.user);

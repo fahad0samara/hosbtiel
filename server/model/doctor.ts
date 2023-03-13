@@ -6,6 +6,10 @@ const doctorSchema = new mongoose.Schema({
     ref: "User", // <-- Add this line
     required: true,
   },
+  avatar: {
+    type: String,
+    default: "default-avatar.png",
+  },
   availableDaysAndHours: [
     {
       day: {

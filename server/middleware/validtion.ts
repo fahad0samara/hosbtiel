@@ -132,6 +132,9 @@ const doctorValidation = (data: any) => {
       ZipCode: Joi.number().min(1).max(999999).required(),
       Country: Joi.string().min(1).required(),
     }),
+    Gender: Joi.string().min(1).max(10).required(),
+    weight: Joi.number().min(1).max(999999).required(),
+    height: Joi.number().min(1).max(999999).required(),
 
     date: Joi.date().required(),
 
