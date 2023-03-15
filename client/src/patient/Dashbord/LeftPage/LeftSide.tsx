@@ -2,6 +2,7 @@ import React from "react";
 import img from "../../../assets/LeftSide.png";
 import {FcCalendar} from "react-icons/fc";
 import {useLogIN} from "../../../../ContextLog";
+import avatar from "../../../assets/avatar.png";
 const LeftSide = () => {
   const {
     logPatient,
@@ -16,6 +17,32 @@ const LeftSide = () => {
   return (
     <div className="ml-16 ">
       <div className="mt-12 flex flex-col justify-center ">
+        {Patient && Patient.avatar ? (
+          <img
+            className="
+        w-20 h-20
+        rounded-full
+        shadow-2xl
+        overflow-hidden
+        ml-16
+      "
+            src={Patient.avatar}
+          />
+        ) : (
+          <img
+            className="
+        w-20 h-20
+        rounded-full
+        shadow-2xl
+        overflow-hidden
+        ml-16
+        object-cover
+      "
+            src={avatar}
+            alt="avatar"
+          />
+        )}
+
         <h1 className="text-lg font-semibold lg:ml-3">Check your condition</h1>
         <p className="text-sm font-normal text-gray-500 mt-2 lg:ml-5">
           Check your every situation{" "}

@@ -26,7 +26,7 @@ import Appointment from "../model/appointment";
 
 import Prescription from "../model/prescription";
 import {Request} from "express-serve-static-core";
-import {ParsedQs} from "qs";
+import Event from "../model/Event";
 
 // configure cloudinary
 cloudinary.config({
@@ -765,6 +765,58 @@ router.get(
     } catch (error) {}
   }
 );
+// Get number of appointments and prescriptions and Event
+router.get("/stats/:id", async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).send("Patient not found.");
+    // Get the number of prescriptions, appointments, and events
+    const prescriptions = await Prescription.find({
+      patient: patient._id,
+    }).countDocuments();
+    const appointments = await Appointment.find({
+      patient: patient._id,
+    }).countDocuments();
+    const events = await Event.find({
+      patient: patient._id,
+    }).countDocuments();
+
+    //Get the most recent Appointment
+    const latestAppointment = await Appointment.findOne({
+      patient: patient._id,
+    }).sort({createdAt: -1});
+    const lastAppointmentDate = latestAppointment
+      ? //@ts-ignore
+        latestAppointment.createdAt.toLocaleTimeString()
+      : null;
+
+    // Get the most recent prescription date
+    const latestPrescription = await Prescription.findOne({
+      patient: patient._id,
+    }).sort({createdAt: -1});
+    const lastPrescriptionDate = latestPrescription
+      ? //@ts-ignore
+        latestPrescription.createdAt.toLocaleTimeString()
+      : null;
+
+    // Return the number of prescriptions, appointments, and events, and the number of days since the last prescription
+    res.send({
+      prescriptions,
+      appointments,
+      events,
+      lastPrescriptionDate,
+      lastAppointmentDate,
+    });
+    console.log(prescriptions, appointments, events, lastPrescriptionDate);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error,
+    });
+  }
+});
 
 // configure multer storage
 const storage = new CloudinaryStorage({
@@ -772,16 +824,13 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "avatars",
     allowed_formats: ["jpg", "png"],
+
     transformation: [{width: 150, height: 150, crop: "limit"}],
   },
 });
 
-// create multer instance with the configured storage
 const multerUpload = multer({storage: storage});
-
-// define function for uploading avatar image to cloudinary
-// define function for uploading avatar image to cloudinary
-async function uploadAvatar(req: Request) {
+async function uploadAvatar(req: Request, previousAvatarUrl: string) {
   return new Promise((resolve, reject) => {
     multerUpload.single("avatar")(req, null, (err: any) => {
       if (err) reject(err);
@@ -789,7 +838,7 @@ async function uploadAvatar(req: Request) {
         //@ts-ignore
         if (!req.file) {
           // If no file was uploaded, resolve with default avatar URL
-          resolve("/avatars/default-avatar.png");
+          resolve(previousAvatarUrl);
         } else {
           // Otherwise, upload file to Cloudinary and resolve with URL
           cloudinary.uploader.upload(
@@ -798,8 +847,15 @@ async function uploadAvatar(req: Request) {
             (error: any, result: any) => {
               if (error) reject(error);
               else {
-                console.log("Cloudinary response:", result);
                 const avatarUrl = result.secure_url;
+                // Delete previous avatar image
+                if (previousAvatarUrl) {
+                  const publicId = previousAvatarUrl
+                    .split("/")
+                    .pop()
+                    ?.split(".")[0];
+                  cloudinary.uploader.destroy(publicId);
+                }
                 resolve(avatarUrl);
               }
             }
@@ -809,7 +865,7 @@ async function uploadAvatar(req: Request) {
     });
   });
 }
-
+// route handler for updating user profile with avatar
 // route handler for updating user profile with avatar
 router.post("/avatar/:id", async (req, res) => {
   try {
@@ -819,24 +875,24 @@ router.post("/avatar/:id", async (req, res) => {
       return res.status(404).send({message: "User not found"});
     }
 
-    // upload avatar image to cloudinary
-    const avatarUrl = await uploadAvatar(req);
+    // save the URL of the previous avatar image
+    const previousAvatarUrl = user.avatar;
 
-    console.log("Avatar URL:", avatarUrl);
+    // upload new avatar image to cloudinary
+    const avatarUrl = await uploadAvatar(req, previousAvatarUrl);
 
-    console.log("User before update:", user);
     //@ts-ignore
     user.avatar = avatarUrl;
     await user.save();
-    console.log("User after update:", user);
 
     // send response with updated user document
     res.send(user);
   } catch (error) {
     console.error(error);
-    res.status(500).send({message: "Internal server error"});
+    res.status(500).json({
+      error,
+    });
   }
 });
-
 
 export default router;

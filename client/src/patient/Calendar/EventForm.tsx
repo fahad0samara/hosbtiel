@@ -46,7 +46,6 @@ const EventForm = () => {
     }
   };
 
-
   return (
     <div className="ml-12">
       {Loading && (

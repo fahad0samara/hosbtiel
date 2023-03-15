@@ -1,6 +1,7 @@
 import {useLogIN} from "../../../ContextLog";
-import AvatarUploader from "../../AvatarUploader";
+import AvatarUploader from "./AvatarUploader";
 import Loder from "../../tools/Loder";
+import Stats from "./Stats";
 const Profile = () => {
   const {
     logPatient,
@@ -12,7 +13,11 @@ const Profile = () => {
     dark,
     setdark,
   } = useLogIN();
-  console.log(Patient);
+
+  // loading the Patient to to wait the data form the servre
+  if (!Patient) {
+    return <Loder />;
+  }
 
   return (
     <>
@@ -37,47 +42,37 @@ const Profile = () => {
             }}
             className="md:p-8 shadow mt-14 p-2 "
           >
-            <div className={"grid grid-cols-1 md:grid-cols-3 "}>
-              {" "}
-              <div
-                className={
-                  "grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0"
-                }
-              >
-                {" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">22</p>{" "}
-                  <p className="text-gray-400">Friends</p>{" "}
-                </div>{" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">10</p>{" "}
-                  <p className="text-gray-400">Photos</p>{" "}
-                </div>{" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">89</p>{" "}
-                  <p className="text-gray-400">Comments</p>{" "}
-                </div>{" "}
-              </div>
-              <div className="relative ">
-                <div
-                  className="  absolute top-0 
-                  -right-44
-              -mt-40
-
-
-                 text-indigo-500"
-                >
-                  <AvatarUploader />
-                </div>{" "}
-              </div>{" "}
-            </div>
             <div
-              className=" border-t-4 border-cyan-400   grid  grid-cols-1
+              //center the img
+              className="absolute
+              md:top-0 md:left-0 md:right-0 md:bottom-0
+              top-0 left-0 right-0 bottom-0
+              
+         
+          
+            "
+            >
+              <AvatarUploader />
+            </div>
+
+            <div
+              className=" border-t-4 border-cyan-400 
+             md:mt-11
+             mt-16
+
+              md:grid-cols-1
+            
+           
+                 grid  sm:grid-cols-1
+                 gap-8
+                  sm:gap-8
+                  md:gap-8
                  
-              xl:grid-cols-3 mt-7 "
+                  lg:grid-cols-2
+
+
+                 
+                 xl:grid-cols-3  "
             >
               <div
                 style={{
@@ -85,19 +80,15 @@ const Profile = () => {
                     ? "0px 0px 01px 0px #cccc "
                     : "0px 0px 10px 0px  #ccc",
                 }}
-                className=" mx-4  my-3  rounded-2xl  
+                className=" mx-4 mt-14 sm:mt-3  my-3  rounded-2xl  
                  p-4"
               >
                 <h1 className="font-bold text-xl leading-8 my-1 text-cyan-400">
-                  {Patient.name.firstName} {Patient.name.middleName}{" "}
+                  Patient Status
                 </h1>
 
-                <p className="text-sm  hover: leading-6">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam
-                  quae vitae maiores ullam. Quo voluptas expedita voluptatum
-                  amet ut, inventore totam non repudiandae quidem iure vitae,
-                  aliquam unde dolorum odio!
-                </p>
+                <Stats />
+
                 <ul className="   py-2 px-3 mt-3 divide-y rounded shadow-sm">
                   <li className="flex items-center py-3">
                     <span>Status</span>
@@ -125,7 +116,7 @@ const Profile = () => {
                     ? "0px 0px 01px 0px #cccc "
                     : "0px 0px 10px 0px  #ccc",
                 }}
-                className=" p-8 my-3 col-span-2 rounded-2xl  
+                className=" p-8 my-3 xl:col-span-2 rounded-2xl  
                   shadow-lg  "
               >
                 <div className="flex items-center space-x-2 font-bold  leading-8">
@@ -188,9 +179,6 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <button className="block w-full text-cyan-300 text-sm font-bold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
-                  Show Full Information
-                </button>
               </div>
             </div>
             <div
