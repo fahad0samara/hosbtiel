@@ -4,7 +4,9 @@ const router = express.Router();
 import jwt from "jsonwebtoken";
 import Doctor from "../model/doctor";
 import User from "../model/User";
-
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const {CloudinaryStorage} = require("multer-storage-cloudinary");
 import Patient from "../model/patient";
 import Prescription from "../model/prescription";
 import Appointment from "../model/appointment";
@@ -13,23 +15,17 @@ const {
   doctorValidation,
   loginDoctorValidation,
   addPrescriptionsValidation,
-
 } = require("../middleware/validtion");
-
 
 // Middleware to extract and decode the token from the headers
 const extractToken = (req: any, res: any, next: any) => {
-
-
   // Get the token from the headers
   const token = req.headers.authorization?.split(" ")[1];
 
   // Check if the token exists
   if (!token) {
-    return res.status(401).json({ error: "Unauthorized access1" });
+    return res.status(401).json({error: "Unauthorized access1"});
   }
-  
-
 
   try {
     // Decode the token and add it to the request object
@@ -37,7 +33,7 @@ const extractToken = (req: any, res: any, next: any) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET as string);
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Unauthorized access2" });
+    return res.status(401).json({error: "Unauthorized access2"});
   }
 };
 
@@ -45,19 +41,19 @@ const extractToken = (req: any, res: any, next: any) => {
 const checkDoctor = (req: any, res: any, next: any) => {
   try {
     // Get the user's role and id from the token
-    const { role, doctorId } = req.user;
+    const {role, doctorId} = req.user;
 
     // Check if the user is a doctor and if the id in the token matches the id in the route
     if (role === "doctor" && doctorId === req.params.id) {
       next();
     } else {
       return res.status(401).json({
-        error: "Unauthorized access3"
+        error: "Unauthorized access3",
       });
     }
   } catch (error) {
     return res.status(401).json({
-      error: "Unauthorized access4"
+      error: "Unauthorized access4",
     });
   }
 };
@@ -70,17 +66,16 @@ router.get("/doctors/:id", extractToken, checkDoctor, async (req, res) => {
     // Check if the doctor exists
     if (!doctor) {
       return res.status(404).json({
-        error: "Doctor not found"
+        error: "Doctor not found",
       });
     }
 
     // Send the doctor's information to the client
     res.json(doctor);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
-
 
 router.post(
   "/doctors/:id/working-hours",
@@ -389,15 +384,6 @@ router.get("/Prescription/:id", async (req, res) => {
   }
 });
 
-
-
-
-
-    
-
-    
-
-
 router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
   try {
     const doctorId = req.params.id;
@@ -449,7 +435,138 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
   }
 });
 
-// get the patients
+router.get("/stats/:id", async (req, res) => {
+  try {
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) return res.status(404).send("doctor not found.");
+    // Get the number of prescriptions, appointments, and events
+    const prescriptions = await Prescription.find({
+      doctor: doctor._id,
+    }).countDocuments();
+    const appointments = await Appointment.find({
+      doctor: doctor._id,
+    }).countDocuments();
+    // const events = await Event.find({
+    //   doctor: doctor._id,
+    // }).countDocuments();
+
+    //Get the most recent Appointment
+    const latestAppointment = await Appointment.findOne({
+      doctor: doctor._id,
+    }).sort({createdAt: -1});
+    const lastAppointmentDate = latestAppointment
+      ? //@ts-ignore
+        latestAppointment.createdAt.toLocaleTimeString()
+      : null;
+
+    // Get the most recent prescription date
+    const latestPrescription = await Prescription.findOne({
+      doctor: doctor._id,
+    }).sort({createdAt: -1});
+    const lastPrescriptionDate = latestPrescription
+      ? //@ts-ignore
+        latestPrescription.createdAt.toLocaleTimeString()
+      : null;
+
+    // Return the number of prescriptions, appointments, and events, and the number of days since the last prescription
+    res.send({
+      prescriptions,
+      appointments,
+      // events,
+      lastPrescriptionDate,
+      lastAppointmentDate,
+    });
+    console.log(prescriptions, appointments, lastPrescriptionDate);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error,
+    });
+  }
+});
+
+// configure multer storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "avatars Doctor",
+    allowed_formats: ["jpg", "png"],
+
+    transformation: [{width: 150, height: 150, crop: "limit"}],
+  },
+});
+
+const multerUpload = multer({storage: storage});
+async function uploadAvatar(req: Request, previousAvatarUrl: string) {
+  return new Promise((resolve, reject) => {
+    multerUpload.single("avatar")(req, null, (err: any) => {
+      if (err) reject(err);
+      else {
+        //@ts-ignore
+        if (!req.file) {
+          // If no file was uploaded, resolve with default avatar URL
+          resolve(previousAvatarUrl);
+        } else {
+          // Otherwise, upload file to Cloudinary and resolve with URL
+          cloudinary.uploader.upload(
+            //@ts-ignore
+            req.file.path,
+            (error: any, result: any) => {
+              if (error) reject(error);
+              else {
+                const avatarUrl = result.secure_url;
+                // Delete previous avatar image
+                if (previousAvatarUrl) {
+                  const publicId = previousAvatarUrl
+                    .split("/")
+                    .pop()
+                    ?.split(".")[0];
+                  cloudinary.uploader.destroy(publicId);
+                }
+                resolve(avatarUrl);
+              }
+            }
+          );
+        }
+      }
+    });
+  });
+}
+// route handler for updating user profile with avatar
+// route handler for updating user profile with avatar
+router.post("/avatar/:id", async (req, res) => {
+  try {
+    // check if user exists
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).send({message: "Doctor not found"});
+    }
+
+    // save the URL of the previous avatar image
+    const previousAvatarUrl = doctor.avatar;
+
+    // upload new avatar image to cloudinary
+    const avatarUrl = await uploadAvatar(
+      //@ts-ignore
+      req,
+      previousAvatarUrl
+    );
+
+    //@ts-ignore
+    doctor.avatar = avatarUrl;
+    await doctor.save();
+
+    // send response with updated user document
+    res.send(doctor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error,
+    });
+  }
+});
 
 
 

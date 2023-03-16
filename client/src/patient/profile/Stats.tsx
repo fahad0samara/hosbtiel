@@ -34,7 +34,7 @@ const Stats = () => {
   }, [Patient._id]);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="grid lg:grid-cols-4 gap-4 grid-cols-1 ">
       <div className="grid grid-cols-2 gap-3">
         <div className=" flex flex-col justify-center items-center p-1">
           <h1 className="font-bo italic text-center mb-2">lastPrescription</h1>

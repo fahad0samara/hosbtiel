@@ -8,6 +8,8 @@ import {Doctor} from "../../types";
 import Loder from "../../tools/Loder";
 import {useLogIN} from "../../../ContextLog";
 import FileSaver from "file-saver";
+import Stats from "./Stats";
+import AvatarUploader from "./AvatarUploader";
 const DoctorProfile = () => {
   const {
     Profile,
@@ -47,69 +49,29 @@ const DoctorProfile = () => {
             }}
             className="md:p-8 shadow mt-14 p-2 "
           >
-            <div className={"grid grid-cols-1 md:grid-cols-3 "}>
-              {" "}
-              <div
-                className={
-                  "grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0"
-                }
-              >
-                {" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">22</p>{" "}
-                  <p className="text-gray-400">Friends</p>{" "}
-                </div>{" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">10</p>{" "}
-                  <p className="text-gray-400">Photos</p>{" "}
-                </div>{" "}
-                <div>
-                  {" "}
-                  <p className="font-bold  text-xl">89</p>{" "}
-                  <p className="text-gray-400">Comments</p>{" "}
-                </div>{" "}
-              </div>{" "}
+            <div className={"grid grid-cols-1 md:grid-cols-2  "}>
+              <div>
+                <h1
+                  className="
+                  text-xl font-bold  tracking-tight text-cyan-300 mb-2
+                  "
+                >
+                  Doctor Status :
+                </h1>
+                <Stats />
+              </div>
+
               <div className="relative">
                 {" "}
-                <div className="w-48 h-48 bg-red-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-24 w-24"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    {" "}
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>{" "}
-                </div>{" "}
-              </div>{" "}
-              <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-                <button className=" py-2 px-4 uppercase rounded bg-cyan-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-                  {" "}
-                  Connect
-                </button>{" "}
-                <button
-                  style={{
-                    backgroundColor: dark ? "#fff" : "black",
-                    color: dark ? "black" : "#fff",
-                  }}
-                  className=" py-2 px-4 uppercase rounded  hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                >
-                  {" "}
-                  Message
-                </button>{" "}
-              </div>{" "}
+                <div className="   absolute inset-x-0 top-0  -mt-32 flex items-center justify-center text-indigo-500">
+                  <AvatarUploader />
+                </div>
+              </div>
             </div>
             <div
-              className=" border-t-4 border-cyan-400   grid  grid-cols-1
+              className=" border-t-4 border-cyan-400 mt-7  grid  grid-cols-1
                  
-              xl:grid-cols-3 mt-7 "
+              xl:grid-cols-3  "
             >
               <div
                 style={{
