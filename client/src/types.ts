@@ -30,6 +30,7 @@ export interface Doctor {
   experience: string;
   date: string;
   bloodGroup: string;
+  avatar: string;
 }
 
 export interface patient {

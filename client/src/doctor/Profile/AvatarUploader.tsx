@@ -130,7 +130,7 @@ function AvatarUploader() {
         />
       </div>
       <div className="relative ">
-        <div className="w-48 h-48 bg-gray-100 mx-auto rounded-full shadow-2xl overflow-hidden">
+        <div className="md:w-48 md:h-48 sm:h-36 sm:w-36 h-28 w-28  mx-auto rounded-full shadow-2xl overflow-hidden">
           {
             // display the default avatar image if no image is selected or loaded
             !imageLoaded || !Doctor.avatar ? (

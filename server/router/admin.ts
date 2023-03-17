@@ -518,6 +518,60 @@ router.get("/count", async (req, res) => {
 });
 
 
+     // Get the number of prescriptions, appointments, and events and latestAppointment
+router.get("/stats/:id", async (req, res) => {
+  try {
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) return res.status(404).send("doctor not found.");
+    // Get the number of prescriptions, appointments, and events
+    const prescriptions = await Prescription.find({
+      doctor: doctor._id,
+    }).countDocuments();
+    const appointments = await Appointment.find({
+      doctor: doctor._id,
+    }).countDocuments();
+    // const events = await Event.find({
+    //   doctor: doctor._id,
+    // }).countDocuments();
+
+    //Get the most recent Appointment
+    const latestAppointment = await Appointment.findOne({
+      doctor: doctor._id,
+    }).sort({createdAt: -1});
+    const lastAppointmentDate = latestAppointment
+      ? //@ts-ignore
+        latestAppointment.createdAt.toLocaleTimeString()
+      : null;
+
+    // Get the most recent prescription date
+    const latestPrescription = await Prescription.findOne({
+      doctor: doctor._id,
+    }).sort({createdAt: -1});
+    const lastPrescriptionDate = latestPrescription
+      ? //@ts-ignore
+        latestPrescription.createdAt.toLocaleTimeString()
+      : null;
+
+    // Return the number of prescriptions, appointments, and events, and the number of days since the last prescription
+    res.send({
+      prescriptions,
+      appointments,
+      // events,
+      lastPrescriptionDate,
+      lastAppointmentDate,
+    });
+    console.log(prescriptions, appointments, lastPrescriptionDate);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error,
+    });
+  }
+});
+
+
 
 
 
