@@ -12,6 +12,7 @@ import Appointment from "../model/appointment";
 
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
+import Event from "../model/Event";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const {doctorValidation} = require("../middleware/validtion");
 
@@ -296,7 +297,7 @@ router.get("/patient/:id", checkAdmin, async (req, res) => {
   }
 });
 
-router.get("/patient/:id/prescriptions", checkAdmin, async (req, res) => {
+router.get("/patient/prescriptions/:id", checkAdmin, async (req, res) => {
   try {
     const prescriptions = await Prescription.find({patient: req.params.id})
       .populate("patient")
@@ -325,6 +326,49 @@ router.get("/patient/:id/prescriptions", checkAdmin, async (req, res) => {
     res.json(prescriptionsArray);
   } catch (error) {
     res.status(500).send(error.message);
+  }
+});
+
+// get the appointments
+router.get("/patient/all-appointments/:id", async (req, res) => {
+  try {
+    // Check if the patient exists
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) {
+      return res.status(404).json({error: "Patient not found"});
+    }
+
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
+    const limit = parseInt(req.query.limit as string);
+
+    const skip = (page - 1) * limit;
+
+    const allAppointments = await Appointment.find({
+      patient: req.params.id,
+    })
+      .sort({appointmentDate: 1})
+      .skip(skip)
+      .limit(limit)
+      .populate("doctor", "name specialty");
+
+    const count = await Appointment.countDocuments({
+      patient: req.params.id,
+    });
+    const totalPages = Math.ceil(count / limit);
+    res.json({
+      allAppointments,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({error});
   }
 });
 
@@ -446,6 +490,240 @@ router.post("/register-dr", async (req, res) => {
   }
 });
 
+router.get("/doctor/Prescription/:id", async (req, res) => {
+  try {
+    // Find the prescription by its ID and populate the doctor and patient fields
+    const doctorId = req.params.id;
+    const prescription = await Prescription.find({
+      doctor: doctorId,
+    })
+      .populate("patient")
+
+      .exec();
+    // If the prescription is not found, return a 404 response
+    if (!prescription) {
+      return res.status(404).json({
+        message: "Prescription not found",
+      });
+    }
+
+    // Return the prescription in the response
+    res.json({
+      prescription,
+    });
+  } catch (error) {
+    // If there is an error, send a response with a status of 500 and the error message
+    res.status(500).json({message: error.message});
+  }
+});
+
+router.get(
+  "/doctor/prescriptions/download/:prescriptionId/:id",
+
+  async (req, res) => {
+    try {
+      // Find the prescription by ID
+      const prescription = await Prescription.findById(
+        req.params.prescriptionId
+      )
+        .populate("patient")
+        .populate("doctor");
+      if (!prescription) return res.status(404).send("Prescription not found.");
+
+      // Create a new PDF document
+      const getHeader = (currPage: any, totalPage: any) => [
+        {
+          text: "Hospital Name",
+          style: "hospitalName",
+          alignment: "center",
+          margin: [0, 20, 0, 10],
+          border: [true, true, true, false], // add border to top, left, right
+        },
+        {
+          text: "Hospital Location",
+          style: "hospitalLocation",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+          border: [true, false, true, false], // add border to left and right
+        },
+
+        {
+          text: `Date: ${new Date().toLocaleDateString()}`,
+
+          margin: [0, 0, 0, 10],
+        },
+      ];
+
+      const getFooter = (currPage: any, totalPage: any) => [
+        {
+          //@ts-ignore
+          text: `Doctor: ${prescription.doctor.name.firstName} ${prescription.doctor.name.lastName}`,
+          alignment: "center",
+          style: "footer",
+          margin: [20, 10, 20, 10],
+        },
+      ];
+
+      const docDefinition = {
+        pageSize: {
+          width: 350.28,
+          height: 300.89,
+        },
+
+        pageMargins: [20, 60, 40, 40],
+        header: getHeader,
+        footer: getFooter,
+
+        content: [
+          {
+            //@ts-ignore
+            text: `This is a prescription for ${prescription.patient.name.firstName} ${prescription.patient.name.LastName}`,
+            style: "header",
+            alignment: "center",
+            margin: [20, 10, 20, 10],
+
+            border: [true, true, true, false], // add border to top, left, right
+          },
+          {
+            text: `Medication: ${prescription.medication}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Dosage: ${prescription.dosage}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            //@ts-ignore
+            text: `Frequency: ${prescription.frequency}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Refills: ${prescription.refills}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Duration: ${prescription.duration}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+          {
+            text: `Notes: ${prescription.notes}`,
+            alignment: "left",
+            margin: [0, 0, 0, 10],
+          },
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 0, 0, 10],
+          },
+          footer: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "gray",
+            backgroundColor: "red",
+            border: [true, true, true, false], // add border to top, left, right
+          },
+          subheader: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 10, 0, 5],
+          },
+
+          hospitalName: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "gray",
+          },
+
+          prescriptionDate: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 0, 0, 10],
+            color: "white",
+            textDecoration: "underline",
+          },
+        },
+      };
+
+      // Create a PDF from the document definition
+      //@ts-ignore
+      const pdfDoc = pdfMake.createPdf(docDefinition);
+      // Send the PDF as a response
+      pdfDoc.getBase64(data => {
+        res.writeHead(200, {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": 'attachment;filename="prescription.pdf"',
+        });
+        const download = Buffer.from(
+          //@ts-ignore
+          data.toString("utf-8"),
+          "base64"
+        );
+        res.end(download);
+      });
+    } catch (error) {}
+  }
+);
+
+router.get("/doctor/all-patient/:id", async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+
+    // Get the page number from the query string
+    const page = parseInt(req.query.page as string);
+
+    // Get the limit from the query string
+    const limit = parseInt(req.query.limit as string);
+
+    const skip = (page - 1) * limit;
+
+    // Get all patients that the doctor saw
+    const patients = await Appointment.find({
+      doctor: doctorId,
+    })
+      .populate("patient")
+
+      .sort({createdAt: -1})
+      .skip(skip)
+      .limit(limit);
+    // Remove duplicate patients
+    const uniquePatients = patients.filter(
+      (patient, index, self) =>
+        index ===
+        self.findIndex(
+          t => t.patient._id.toString() === patient.patient._id.toString()
+        )
+    );
+
+    // Extract only the patient data
+    const extractedPatients = uniquePatients.map(patient => patient.patient);
+
+    // Get the total number of patients that the doctor saw
+
+    const count = await Appointment.countDocuments({doctor: doctorId});
+    const totalPages = Math.ceil(count / limit);
+    res.json({
+      patients: extractedPatients,
+      pagination: {
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({error: error.message});
+  }
+});
+
 // Router for an administrator to register a new patient:
 router.post("/register-patient", async (req, res) => {
   // validate the data before we make a patient
@@ -517,9 +795,9 @@ router.get("/count", async (req, res) => {
   }
 });
 
-
-     // Get the number of prescriptions, appointments, and events and latestAppointment
-router.get("/stats/:id", async (req, res) => {
+// Get the number of prescriptions, appointments, and events and latestAppointment
+//for admin
+router.get("/stats/admin/:id", async (req, res) => {
   try {
     // Find the doctor by ID
     const doctor = await Doctor.findById(req.params.id);
@@ -562,6 +840,61 @@ router.get("/stats/:id", async (req, res) => {
       lastAppointmentDate,
     });
     console.log(prescriptions, appointments, lastPrescriptionDate);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error,
+    });
+  }
+});
+
+// Get the number of prescriptions, appointments, and events and latestAppointment
+//for user
+
+router.get("/stats/user/:id", async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).send("Patient not found.");
+    // Get the number of prescriptions, appointments, and events
+    const prescriptions = await Prescription.find({
+      patient: patient._id,
+    }).countDocuments();
+    const appointments = await Appointment.find({
+      patient: patient._id,
+    }).countDocuments();
+    const events = await Event.find({
+      patient: patient._id,
+    }).countDocuments();
+
+    //Get the most recent Appointment
+    const latestAppointment = await Appointment.findOne({
+      patient: patient._id,
+    }).sort({createdAt: -1});
+    const lastAppointmentDate = latestAppointment
+      ? //@ts-ignore
+        latestAppointment.createdAt.toLocaleTimeString()
+      : null;
+
+    // Get the most recent prescription date
+    const latestPrescription = await Prescription.findOne({
+      patient: patient._id,
+    }).sort({createdAt: -1});
+    const lastPrescriptionDate = latestPrescription
+      ? //@ts-ignore
+        latestPrescription.createdAt.toLocaleTimeString()
+      : null;
+
+    // Return the number of prescriptions, appointments, and events, and the number of days since the last prescription
+    res.send({
+      prescriptions,
+      appointments,
+      events,
+      lastPrescriptionDate,
+      lastAppointmentDate,
+    });
+    console.log(prescriptions, appointments, events, lastPrescriptionDate);
   } catch (error) {
     console.log(error);
 

@@ -8,7 +8,7 @@ import NotFound from "../NotFound";
 import ViewDr from "../List/Doctor/ViewDr";
 import RegisterDr from "../rgister_Edit/RegisterDr";
 import PatientList from "../List/PatientList";
-import ViewPatient from "../List/ViewPatient";
+import ViewPatient from "../List/patient/ViewPatient";
 import ViewPrescription from "../ViewPrescription";
 
 const RouterPatient = () => {

@@ -7,7 +7,8 @@ import {useLocation} from "react-router-dom";
 import {Doctor} from "../../../types";
 import Loder from "../../../tools/Loder";
 import Stats from "./Stats";
-
+import avatar from "../../../assets/avatar.png";
+import Table from "./Table/Table";
 const ViewDr = () => {
   const {dark} = useLogIN();
   const {id} = useParams();
@@ -77,11 +78,25 @@ const ViewDr = () => {
                 <div className="relative">
                   {" "}
                   <div className="   absolute inset-x-0 bottom-80   md:bottom-9  md:top-0  sm:-mt-32 flex items-center justify-center text-indigo-500">
-                    <img
-                      src={Doctor.avatar}
-                      alt="avatar"
-                      className="w-32 h-32 md:h-48 md:w-48 rounded-full shadow-2xl"
-                    />
+                    {
+                      // display the default avatar image if no image is selected or loaded
+                      Doctor.avatar ? (
+                        <div className="flex justify-center items-center h-full">
+                          <img
+                            src={avatar}
+                            alt="avatar"
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      ) : (
+                        // display the actual image when it has loaded
+                        <img
+                          src={Doctor.avatar}
+                          alt="avatar"
+                          className="object-cover w-full h-full"
+                        />
+                      )
+                    }
                   </div>
                 </div>
               </div>
@@ -355,6 +370,7 @@ const ViewDr = () => {
                   </div>
                 </div>
               </div>
+              <Table />
             </div>
           </div>
         </div>

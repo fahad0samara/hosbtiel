@@ -19,14 +19,14 @@ const Stats = () => {
     const getData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/admin/stats/admin/${id}`
+          `http://localhost:3000/admin/stats/user/${id}`
         );
         setappointment(res.data.appointments);
         setprescriptions(res.data.prescriptions);
         setevents(res.data.events);
         setlastPrescriptionDate(res.data.lastPrescriptionDate);
         setlastAppointmentDate(res.data.lastAppointmentDate);
-        console.log(res.data);
+
         setLoading(false);
       } catch (error) {
         console.log(error);
