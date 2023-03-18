@@ -1,14 +1,17 @@
 import axios from "axios";
 import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
-import {useLogIN} from "../../../../ContextLog";
+import {useLogIN} from "../../../../../ContextLog";
 
 import {useLocation} from "react-router-dom";
-import {Doctor} from "../../../types";
-import Loder from "../../../tools/Loder";
+import {Doctor} from "../../../../types";
+
 import Stats from "./Stats";
-import avatar from "../../../assets/avatar.png";
+import avatar from "../../../../assets/avatar.png";
 import Table from "./Table/Table";
+import ListTable from "./ListTable";
+import Alert from "../../../../tools/Alert";
+import Loder from "../../../../tools/Loder";
 const ViewDr = () => {
   const {dark} = useLogIN();
   const {id} = useParams();
@@ -85,7 +88,7 @@ const ViewDr = () => {
                           <img
                             src={avatar}
                             alt="avatar"
-                            className="object-cover w-full h-full"
+                            className="object-cover md:h-44 md:w-44 rounded-full h-28 w-28 sm:h-32 sm:w-32"
                           />
                         </div>
                       ) : (
@@ -370,7 +373,10 @@ const ViewDr = () => {
                   </div>
                 </div>
               </div>
+
               <Table />
+
+              <ListTable />
             </div>
           </div>
         </div>

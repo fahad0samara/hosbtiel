@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import DoctorList from "./List/DoctorList";
 
 import ListPatient from "./List/ListPatient";
+import Alert from "../../tools/Alert";
 
 function Dashboard() {
   const {dark} = useLogIN();
@@ -43,6 +44,14 @@ function Dashboard() {
         color: dark ? "#fff" : "#000",
       }}
     >
+      <div
+        className=" md:hidden absolute 
+      top-0 right-0
+      
+      "
+      >
+        <Alert />
+      </div>
       <div
         className="grid lg:grid-cols-2 
        px-16

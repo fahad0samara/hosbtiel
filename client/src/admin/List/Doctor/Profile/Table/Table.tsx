@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
-import {useLogIN} from "../../../../../ContextLog";
+import {useLogIN} from "../../../../../../ContextLog";
 import "./Table.css";
 import FileSaver from "file-saver";
 import {useParams} from "react-router-dom";
-import {patient} from "../../../../types";
+import {patient} from "../../../../../types";
 const Table = () => {
   let {id} = useParams();
   const {Doctor, dark} = useLogIN();
@@ -23,12 +23,6 @@ const Table = () => {
         const data = await response.json();
         setPrescriptions(data.prescription);
         setLoading(false);
-        console.log("====================================");
-        console.log(
-          "🚀 ~ file: PrescriptionTable.tsx ~ line 18 ~ fetchData ~ data",
-          data.prescription
-        );
-        console.log("====================================");
       } catch (error) {
         setError(error);
         setLoading(false);
@@ -88,7 +82,7 @@ const Table = () => {
         </div>
       ) : prescriptions && prescriptions.length > 0 ? (
         <>
-          <table className="mx-auto ml-14 md:ml-10 lg:ml-4 table md:-mt-24">
+          <table className="mx-auto md:ml-10 lg:ml-4 table md:-mt-24">
             <caption className="text-cyan-300 font-bold tablecaption ">
               {" "}
               Prescription History
@@ -117,7 +111,7 @@ const Table = () => {
                   <td data-label="Frequency">{prescription.frequency}</td>
                   <td data-label="Medication">{prescription.medication}</td>
                   <td data-label="Notes">{prescription.notes}</td>
-                  <td data-label="downloadPrescription">
+                  <td data-label=" Actions">
                     {loading ? (
                       <div className="flex justify-center items-center">
                         <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-6 w-6 mb-4"></div>
@@ -137,11 +131,13 @@ const Table = () => {
           </table>
         </>
       ) : (
-        <div>
-          <h1 className="text-center text-cyan-300 font-bold">
-            No Prescription History
+        <div className="md:-mt-24 flex flex-col justify-center items-center">
+          <h1 className="text-2xl font-bold text-center my-3 text-cyan-300">
+            Prescription History
           </h1>
-          <h2></h2>
+          <p className="text-gray-500 text-center ml-11">
+            The doctor does not have any Prescription
+          </p>
         </div>
       )}
     </div>

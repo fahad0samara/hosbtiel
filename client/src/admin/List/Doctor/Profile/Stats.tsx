@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 
 import axios from "axios";
-import {useLogIN} from "../../../../ContextLog";
+import {useLogIN} from "../../../../../ContextLog";
 import {useParams} from "react-router-dom";
 
 const Stats = () => {

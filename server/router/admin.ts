@@ -490,6 +490,7 @@ router.post("/register-dr", async (req, res) => {
   }
 });
 
+// Router for the admin to get the prescription patient in the doctor profile
 router.get("/doctor/Prescription/:id", async (req, res) => {
   try {
     // Find the prescription by its ID and populate the doctor and patient fields
@@ -517,6 +518,7 @@ router.get("/doctor/Prescription/:id", async (req, res) => {
   }
 });
 
+//Router for the admin to download the prescription patient in the doctor profile
 router.get(
   "/doctor/prescriptions/download/:prescriptionId/:id",
 
@@ -672,7 +674,7 @@ router.get(
     } catch (error) {}
   }
 );
-
+// Router for the admin to get all patients for the doctor
 router.get("/doctor/all-patient/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;

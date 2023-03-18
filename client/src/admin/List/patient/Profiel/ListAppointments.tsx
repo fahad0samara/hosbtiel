@@ -7,9 +7,10 @@ import {Link, useParams} from "react-router-dom";
 import {FiEdit2, FiEye} from "react-icons/fi";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
 
-import {useLogIN} from "../../../../ContextLog";
-import {Appointment} from "../../../types";
-import Loder from "../../../tools/Loder";
+import {useLogIN} from "../../../../../ContextLog";
+import {Appointment} from "../../../../types";
+import Loder from "../../../../tools/Loder";
+
 const ListAppointments = () => {
   const [error, setError] = useState(null);
   let {id} = useParams();

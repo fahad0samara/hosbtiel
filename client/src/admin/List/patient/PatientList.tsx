@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import {useLogIN} from "../../../ContextLog";
+import {useLogIN} from "../../../../ContextLog";
 import {RiDeleteBin5Line} from "react-icons/ri";
 import {FiEdit2, FiEye} from "react-icons/fi";
 import {Link, useNavigate} from "react-router-dom";
 import {useLocation} from "react-router-dom";
-import "../../../lodar.css";
-import Loder from "../../tools/Loder";
 
-import {patient} from "../../types";
+import {patient} from "../../../types";
 import {BsArrowLeftCircleFill, BsArrowRightCircleFill} from "react-icons/bs";
+import Alert from "../../../tools/Alert";
+import Loder from "../../../tools/Loder";
 
 const PatientList = () => {
   const {
@@ -136,6 +136,9 @@ const PatientList = () => {
       }}
       className="p-6 h-screen ml-11 mx-auto"
     >
+      <div className="md:hidden ">
+        <Alert />
+      </div>
       <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
         <div
           className="text-xl  font-medium  flex 

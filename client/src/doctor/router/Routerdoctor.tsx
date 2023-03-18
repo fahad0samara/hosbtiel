@@ -4,7 +4,7 @@ import Dashboard from "../DashBord/Dashboard";
 import SideNav from "./SideNavigate";
 import DoctorProfile from "../Profile/DoctorProfile";
 import MyCalendar from "../Calendar/MyCalendar";
-import ViewPatient from "../../admin/List/patient/ViewPatient";
+import ViewPatient from "../../admin/List/patient/Profiel/ViewPatient";
 import Prescription from "../Prescription/Prescription";
 import PrescriptionTable from "../Prescription/PrescriptionTable";
 import ListTable from "../PatientsList/ListTable";

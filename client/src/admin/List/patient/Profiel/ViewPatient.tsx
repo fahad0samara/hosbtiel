@@ -4,13 +4,15 @@ import {Link, useParams} from "react-router-dom";
 import {useTable, usePagination} from "react-table";
 import saveAs from "file-saver";
 import {useLocation, useNavigate} from "react-router-dom";
-import {patient} from "../../../types";
-import Loder from "../../../tools/Loder";
-import {useLogIN} from "../../../../ContextLog";
+import {patient} from "../../../../types";
+
+import {useLogIN} from "../../../../../ContextLog";
 import FileSaver from "file-saver";
 import Stats from "./Stats";
 import avatar from "../../../assets/avatar.png";
 import ListAppointments from "./ListAppointments";
+import Alert from "../../../../tools/Alert";
+import Loder from "../../../../tools/Loder";
 const ViewPatient = () => {
   const {
     logPatient,
@@ -248,6 +250,9 @@ const ViewPatient = () => {
               : "0px 0px 10px 0px #ccc",
           }}
         >
+          <div className="md:hidden ">
+            <Alert />
+          </div>
           <div className="md:p-16 p-9 md:mx-6 ml-12 ">
             <div
               style={{
