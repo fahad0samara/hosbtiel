@@ -274,14 +274,6 @@ const PatientList = () => {
                             </Link>
                           </div>
 
-                          <Link
-                            to={`/admin/Edit/${patients._id}`}
-                            className={
-                              "w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
-                            }
-                          >
-                            <FiEdit2 />
-                          </Link>
 
                           <div
                             className={

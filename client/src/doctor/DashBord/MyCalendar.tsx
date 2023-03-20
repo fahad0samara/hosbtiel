@@ -79,17 +79,8 @@ const MyCalendar = () => {
           }
         );
         const appointments = response.data.appointments;
-        console.log("====================================");
-        console.log("appointments", appointments);
-        console.log("====================================");
+ 
         if (!appointments || appointments.length === 0) {
-          console.log("====================================");
-          console.log(
-            "No appointments for this doctor",
-            Doctor._id,
-            Doctor.name.firstName
-          );
-          console.log("====================================");
           setEvents([...workingHoursEvents, ...holidays, ...breaks]);
           setLoading(false);
           return;

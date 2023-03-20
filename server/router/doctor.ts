@@ -170,7 +170,7 @@ router.get("/appointments/:id/:date", async (req, res) => {
       doctor: doctorId,
       appointmentDate: appointmentDate,
     }).populate("patient");
-    console.log("appointments", appointments);
+
 
     // Get the appointment count for the current day
     const appointmentCount = await Appointment.countDocuments({
@@ -202,6 +202,8 @@ router.get("/appointments/:id/:date", async (req, res) => {
       appointmentCount: appointmentCount,
       nextDayAppointments: nextDayAppointments,
     });
+    console.log(appointments);
+    
   } catch (error) {
     console.log(error.message);
     res.status(500).json({error: error.message});

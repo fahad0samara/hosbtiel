@@ -2,7 +2,7 @@ import axios from "axios";
 
 import {useEffect, useRef, useState} from "react";
 import moment from "moment-timezone";
-
+import img from "../../assets/Appointment.png";
 import {useLogIN} from "../../../ContextLog";
 import Loder from "../../tools/Loder";
 import {Link} from "react-router-dom";
@@ -13,6 +13,8 @@ import Chart from "./Chart";
 import {patient} from "../../types";
 import Patient from "./Patient";
 import MyCalendar from "./MyCalendar";
+import {FcOvertime} from "react-icons/fc";
+import {BsAlarm} from "react-icons/bs";
 
 interface Appointment {
   _id: string;
@@ -28,10 +30,7 @@ interface AppointmentsResponse {
   nextDayAppointments: Array<Appointment>;
 }
 const Dashboard = () => {
-  const { Doctor, dark } = useLogIN();
-  console.log('====================================');
-  console.log(Doctor);
-  console.log('====================================');
+  const {Doctor, dark} = useLogIN();
 
   const [nextAppointment, setNextAppointment] = useState<
     Appointment | undefined
@@ -108,6 +107,7 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(moment().toDate());
   const dateString = moment(selectedDate).format("YYYY-MM-DD");
 
+  /* Fetching the data from the server and setting the state. */
   useEffect(() => {
     if (Doctor) {
       const getNextAppointment = async () => {
@@ -116,19 +116,14 @@ const Dashboard = () => {
           const response = await axios.get(
             `http://localhost:3000/doctor/appointments/${Doctor._id}/${dateString}`
           );
+          console.log(response.data, "responsedfddddddddddddd");
 
           setAppointments(response.data.appointments);
           setAppointmentsCount(response.data.appointmentCount);
           setAppointmentsCountTomorrow(response.data.nextDayAppointments);
-console.log('====================================');
-          console.log(
-            `${response.data.appointments.length} appointments`,
-            response
-);
-console.log('====================================');
+
           const currentDate = new Date();
 
-          setLoading(false);
           // Filter out appointments that have already passed for the current date
           const filteredAppointments = response.data.appointments.filter(
             appointment => {
@@ -143,7 +138,6 @@ console.log('====================================');
             }
           );
 
-          setLoading(false);
           // Sort appointments by date
           const sortedAppointments = filteredAppointments.sort((a, b) => {
             const aDate = new Date(a.appointmentDate);
@@ -155,71 +149,19 @@ console.log('====================================');
             return aDate.getTime() - bDate.getTime();
           });
 
-          setLoading(false);
-
-          const nextAppointment = response.data.appointments.find(
-            appointment => {
-              const appointmentDate = new Date(appointment.appointmentDate);
-              appointmentDate.setHours(
-                appointment.appointmentTime.split(":")[0]
-              );
-              appointmentDate.setMinutes(
-                appointment.appointmentTime.split(":")[1]
-              );
-              return appointmentDate > currentDate;
-            }
-          );
-
-          setNextAppointment(nextAppointment);
-
-          setLoading(false);
-
-          // If there is no next appointment for today, find the first appointment for tomorrow
-          if (!sortedAppointments[0]) {
-            setLoading(true);
-
-            const response = await axios.get(
-              `http://localhost:3000/doctor/appointments/${Doctor._id}/${moment(
-                date
-              )
-                .add(1, "day")
-                .format("YYYY-MM-DD")}`
-            );
-
-            const filteredAppointments = response.data.appointments.filter(
-              appointment => {
-                const appointmentDate = new Date(appointment.appointmentDate);
-                appointmentDate.setHours(
-                  appointment.appointmentTime.split(":")[0]
-                );
-                appointmentDate.setMinutes(
-                  appointment.appointmentTime.split(":")[1]
-                );
-                return appointmentDate > currentDate;
-              }
-            );
-            setLoading(false);
-            // Sort appointments by date
-            const sortedAppointments = filteredAppointments.sort((a, b) => {
-              const aDate = new Date(a.appointmentDate);
-              aDate.setHours(a.appointmentTime.split(":")[0]);
-              aDate.setMinutes(a.appointmentTime.split(":")[1]);
-              const bDate = new Date(b.appointmentDate);
-              bDate.setHours(b.appointmentTime.split(":")[0]);
-              bDate.setMinutes(b.appointmentTime.split(":")[1]);
-              return aDate.getTime() - bDate.getTime();
-            });
-            setNextAppointment(sortedAppointments[0]);
+          // Get the next appointment
+          let nextAppointment = null;
+          if (sortedAppointments.length > 0) {
+            nextAppointment = sortedAppointments[0];
+          } else if (response.data.nextDayAppointments.length > 0) {
+            nextAppointment = response.data.nextDayAppointments[0];
           }
 
-          // Set next appointment
+          setNextAppointment(nextAppointment);
           setLoading(false);
         } catch (error) {
           setLoading(false);
-          console.log(
-            "🚀 ~ file: Dashboard.tsx ~ line 6 ~ Dashboard ~ error",
-            error
-          );
+          console.log("🚀 ~ file: Dashboard.tsx ~ line 6...", error);
         }
       };
       getNextAppointment();
@@ -243,25 +185,13 @@ console.log('====================================');
         parseInt(nextAppointment.appointmentTime.split(":")[1], 10)
       );
       setTimeLeft(appointmentDate.getTime() - new Date().getTime());
+    } else {
+      // handle the case when nextAppointment is undefined
+      setTimeLeft(0);
     }
   };
 
-  // useEffect(() => {
-  //   let intervalId: number | undefined;
-  //   if (nextAppointment && nextAppointment.appointmentTime) {
-  //     setLoading(true);
-  //     const appointmentDate = new Date(nextAppointment.appointmentDate);
-  //     appointmentDate.setHours(nextAppointment.appointmentTime.split(":")[0]);
-  //     appointmentDate.setMinutes(nextAppointment.appointmentTime.split(":")[1]);
-  //     setTimeLeft(appointmentDate.getTime() - new Date().getTime());
-  //     setLoading(false);
-  //     // Refresh time left every second
-  //     intervalId = setInterval(intervalFunction, 1000);
-  //   }
-
-  //   return () => clearInterval(intervalId);
-  // }, [nextAppointment]);
-
+  /* Setting the time left to the time of the next appointment minus the current time. */
   useEffect(() => {
     let intervalId: number | undefined;
     if (nextAppointment && nextAppointment.appointmentTime) {
@@ -312,25 +242,242 @@ console.log('====================================');
             </span>
             appointments today
           </h1>
+          {nextAppointment && (
+            <h1 className="text-lg text-gray-400">
+              Your next appointment is on{" "}
+              <span className="text-cyan-300 font-bold mx-1">
+                {new Date(nextAppointment.appointmentDate).toLocaleDateString()}
+              </span>{" "}
+              at{" "}
+              <span className="text-cyan-300 font-bold mx-1">
+                {nextAppointment.appointmentTime}
+              </span>
+            </h1>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div
-            className="col-span-2
-            duration-300 hover:rotate-0
-          rotate-1 transform
-          mt-4 
-               "
-          >
-            <MyCalendar />
+        <div className="grid grid-cols-1  ">
+          <div className="grid lg:grid-cols-3 md:gap-10 rounded-2xl mx-auto">
+            <div className="rounded-2xl h-32 md:w-40 hidden md:block mx-auto mb-10">
+              <img
+                src={img}
+                alt="Appointment"
+                className="
+          rounded-2xl
+          shadow-60
+lg:w-60
+
+          object-cover"
+              />
+              <div className="flex flex-col justify-center items-center">
+                <h1 className="text-lg font-bold">Miracle hospital</h1>
+                <p className="text-sm font-bold text-cyan-300  mb-4">
+                  cypress
+                  <br />
+                </p>
+              </div>
+            </div>
+            {nextAppointment ? (
+              <div className="grid grid-rows-3 gap-4  w-[21rem]   ">
+                <div
+                  className="grid grid-cols-3
+                items-center  ml-3"
+                >
+                  <img
+                    src={nextAppointment.patient.avatar}
+                    alt="avatar"
+                    //avatar
+                    className=" rounded-full shadow-cyan-300 h-12 w-12 object-cover shadow-sm"
+                  />
+                  <div
+                    className="
+                  
+             -ml-12
+             text-center
+          
+
+            "
+                  >
+                    <h1 className=" italic text-sm">
+                      patient Name :
+                      {nextAppointment.patient
+                        ? nextAppointment.patient.name.firstName
+                        : "No patient"}
+                      {"  "}
+                      {nextAppointment.patient
+                        ? nextAppointment.patient.name.LastName
+                        : "No patient"}
+                    </h1>
+                    <p className="text-sm italic mr-12 text-gray-400">
+                      {/* {appointmentData.currentAppointment.doctor.specialty} */}
+                    </p>
+                  </div>
+
+                  <button
+                    // onClick={handleViewClick}
+                    className=" bg-cyan-300 rounded-full h-8 w-20    hover:bg-cyan-400
+                shadow-md
+                focus:outline-none
+                focus:shadow-outline
+                transition duration-150 ease-in-out
+                transform
+                hover:-translate-y-1
+                hover:scale-110
+                active:scale-95
+                active:translate-y-0"
+                  >
+                    <h1 className="text-sm font-bold text-white">View</h1>
+                  </button>
+                  {/* {showModal && (
+                    <AppointmentModal
+                      appointmentData={appointmentData.currentAppointment}
+                      onClose={handleCloseModal}
+                    />
+                  )} */}
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: dark ? "#000" : "#ddd",
+                    color: dark ? "white" : "black",
+                    boxShadow: dark
+                      ? "0px 0px 5px 0px #ccc"
+                      : "0px 0px 10px 0px #ccc",
+                  }}
+                  className=" mt-2
+              rounded-2xl
+              shadow-60
+              p-1
+              mx-8
+              sm:mx-3
+
+
+      "
+                >
+                  <div className="grid grid-cols-2 gap-5  p-4">
+                    <div className="flex flex-row justify-center items-center space-x-1">
+                      <div
+                        className="
+                  bg-white
+                  rounded-full
+                  h-10
+
+                  w-10
+                  flex
+                  flex-row
+                  justify-center
+                  items-center
+                  "
+                      >
+                        <BsAlarm className="text-xl text-red-500" />
+                      </div>
+
+                      <h1 className="text-sm font-bold ml-2">
+                        {nextAppointment.appointmentTime}
+                      </h1>
+                    </div>
+
+                    <div className="flex flex-row justify-center items-center space-x-2 ">
+                      <div
+                        className="
+                  bg-white
+                  rounded-full
+                  h-10
+
+                  w-10
+                  flex
+                  flex-row
+                  justify-center
+                  items-center
+                  "
+                      >
+                        {" "}
+                        <FcOvertime className="text-xl text-sky-400" />
+                      </div>
+
+                      <h1 className="text-sm font-bold ">
+                        {moment(nextAppointment.appointmentDate).format("dddd")}
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="flex  w-80
+          flex-col
+          -mt-11
+          sm:-mt-0
+   
+            justify-center items-center"
+              >
+                <div className="flex flex-col justify-center items-center ">
+                  <h1 className="text-lg font-bold text-cyan-300 mt-4">
+                    You have no upcoming appointment,
+                  </h1>
+                  <h1 className="text-md italic  mt-4 ">
+                    please add an appointment If you have any
+                  </h1>
+                  <h1>problem or If you feel any diseases</h1>
+                </div>
+
+                <Link
+                  to="/patient/appointment"
+                  className="bg-cyan-300 rounded-full w-full
+                h-8
+            
+
+            
+             
+                
+                text-center
+                
+                text-white
+                font-bold
+                text-sm
+                hover:bg-cyan-400
+                shadow-md
+                focus:outline-none
+                focus:shadow-outline
+                transition duration-150 ease-in-out
+                transform
+                hover:-translate-y-1
+                hover:scale-110
+                active:scale-95
+                active:translate-y-0
+                "
+                >
+                  <h1 className="flex justify-center items-center mt-1">
+                    Add Appointment
+                  </h1>
+                </Link>
+              </div>
+            )}
           </div>
 
-          <div className=" shadow-2xl mt-4 col-span-1  ml-14 h-96  w-80 bg-cyan-300  rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0">
-            <div>
+          <div
+            style={{
+              backgroundColor: dark ? "#000" : "#fff",
+              color: dark ? "white" : "black",
+              boxShadow: dark
+                ? "0px 0px 5px 0px #ccc"
+                : "0px 0px 10px 4px #ccc",
+            }}
+            className=" absolute
+            shadow-md
+            border-solid             top-24 border-2 border-cyan-300  right-24 h-64    rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0"
+          >
+            <div
+              style={{
+                backgroundColor: dark ? "#fff" : "#000",
+              }}
+              className=" rounded-full p-2 flex float-left h-4 w-4 "
+            ></div>
+            <div className="space-y-2">
               <h1 className="text-xl font-bold text-center ">
                 Next Appointment
               </h1>
-              <div className="border-b-2 border-white my-2  mx-10  text-center  px-4 "></div>
+              <div className="border-b-2 border-cyan-300 my-2  mx-10  text-center  px-4 "></div>
               {nextAppointment ? (
                 <div className="flex flex-col mx-2 space-y-3">
                   <div className="space-x-2 flex">
@@ -377,55 +524,6 @@ console.log('====================================');
                     </h1>
                   </div>
 
-                  <div
-                    className="flex
-                    
-                    "
-                  >
-                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                      Symptoms:
-                    </h1>
-                    <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1"></h1>
-                  </div>
-
-                  <div
-                    className="flex
-                   
-                    "
-                  >
-                    <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                      Allergies:
-                    </h1>
-                    {nextAppointment.patient ? (
-                      nextAppointment.patient.allergyList.filter(
-                        allergy =>
-                          allergy.allergy !== "" && allergy.allergy !== null
-                      ).length > 0 ? (
-                        nextAppointment.patient ? (
-                          nextAppointment.patient.allergyList
-                            .filter(
-                              allergy =>
-                                allergy.allergy !== "" &&
-                                allergy.allergy !== null
-                            )
-                            .map(allergy => {
-                              return (
-                                <div key={allergy.allergy}>
-                                  <h1 className="text-lg font-semibold  ml-1 bg-white shadow-black text-black shadow-md rounded-sm  w-auto  text-center px-1">
-                                    {allergy.allergy}{" "}
-                                  </h1>
-                                </div>
-                              );
-                            })
-                        ) : null
-                      ) : (
-                        <h1 className="text-lg font-semibold  ml-1 shadow-black bg-amber-400 rounded-sm w-auto shadow-md text-center px-1 text white">
-                          No Allergies
-                        </h1>
-                      )
-                    ) : null}
-                  </div>
-
                   {
                     //loding
                   }
@@ -458,22 +556,6 @@ console.log('====================================');
                       Appointment has started
                     </p>
                   )}
-
-                  {nextAppointment.patient ? (
-                    <div className="flex justify-center">
-                      <Link
-                        //"/ViewPatient/:id"
-                        to={`/ViewPatient/${nextAppointment.patient._id}`}
-                        className="
-                      
-                          border-b-white
-                          border-b-2
-                           text-white  py-2 px-4 "
-                      >
-                        View Patient
-                      </Link>
-                    </div>
-                  ) : null}
                 </div>
               ) : (
                 <div

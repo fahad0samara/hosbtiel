@@ -56,9 +56,9 @@ function App() {
         );
         setChartOptions({
           chart: {
-            type: "bar",
-            height: 250,
-            width: 250,
+            type: "column",
+            height: 300,
+            showLabels: false,
 
             backgroundColor: dark ? "#000" : "#fff",
             color: dark ? "#fff" : "#000",
@@ -114,7 +114,7 @@ function App() {
       .then(res => res.json())
       .then(data => {
         setData(data.appointments);
-        console.log(data.appointments);
+
         setLoading(false);
       })
       .catch(err => console.log(err, "eror from chat"));
@@ -220,7 +220,7 @@ function App() {
         backgroundColor: dark ? "#000" : "white",
         color: dark ? "white" : "black",
       }}
-      className="grid grid-cols-3 mt-10 w-full mx-5"
+      className="grid grid-cols-2 mt-10 w-full mx-5"
     >
       <div className="col-span-1 ">
         {
@@ -247,7 +247,7 @@ function App() {
           )
         }
       </div>
-      <div className="col-span-2">
+      <div className="">
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
     </div>
