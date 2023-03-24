@@ -22,42 +22,43 @@ const Patient = () => {
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get(`http://localhost:3000/doctor/all-appointments/${Doctor._id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        params: {
-          page: pagination.page,
-          limit: pagination.limit,
-        },
-      })
+    if (Doctor && Doctor._id) {
+      axios
+        .get(`http://localhost:3000/doctor/all-appointments/${Doctor._id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: {
+            page: pagination.page,
+            limit: pagination.limit,
+          },
+        })
+        .then(res => {
+          setLastPatient(res.data.patients);
 
-      .then(res => {
-        setLastPatient(res.data.patients);
+          setPagination({
+            ...pagination,
+            totalPages: res.data.pagination.totalPages,
+            page: pagination.page,
+          });
 
-        setPagination({
-          ...pagination,
-          totalPages: res.data.pagination.totalPages,
-          page: pagination.page,
+          setLoading(false);
+        })
+        .catch(err => {
+          console.log(
+            err.response.data ? err.response.data : "Error in getting patients"
+          );
+
+          setError(
+            err.response.data && err.response.data.error
+              ? err.response.data.error
+              : "Error in getting patients"
+          );
+
+          setLoading(false);
         });
-
-        setLoading(false);
-      })
-      .catch(err => {
-        console.log(
-          err.response.data ? err.response.data : "Error in getting patients"
-        );
-
-        setError(
-          err.response.data && err.response.data.error
-            ? err.response.data.error
-            : "Error in getting patients"
-        );
-
-        setLoading(false);
-      });
-  }, [pagination.page]);
+    }
+  }, [Doctor, pagination.page]);
 
   // handle prev and next
 
@@ -134,7 +135,7 @@ const Patient = () => {
             <div className="line"></div>
           </div>
         ) : (
-          <table className="min-w-max w-full table-auto ">
+          <table className="min-w-max w-full table-auto   hidden md:table">
             <thead
               className={
                 dark ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
@@ -145,12 +146,10 @@ const Patient = () => {
                 <th className=" text-left">name</th>
                 <th className=" text-left">BloodGroup</th>
 
-                <th className=" text-center">mobile</th>
+                <th className=" text-center ">mobile</th>
                 <th className=" text-center">Date</th>
                 <th className=" text-center">ViSiT Time</th>
                 <th className=" text-center">Age</th>
-
-                <th className=" text-center">Actions</th>
               </tr>
             </thead>
             {
@@ -158,10 +157,8 @@ const Patient = () => {
               lastPatient && lastPatient.length === 0 ? (
                 <tbody className="text-sm font-light">
                   <tr className="text-center">
-                    <td colSpan="8">
-                      <p className="text-red-500 text-center text-2xl">
-                        No Patients
-                      </p>
+                    <td>
+                      <p className=" text-center text-2xl">No Patients</p>
                     </td>
                   </tr>
                 </tbody>
@@ -244,24 +241,6 @@ const Patient = () => {
                             </span>
                           </div>
                         </td>
-
-                        <td className="  text-center">
-                          <div className="flex item-center justify-center mt-3 ">
-                            <div
-                              className={
-                                "w-4 mr-2  transform hover:text-purple-500 hover:scale-110"
-                              }
-                            >
-                              <Link
-                                //
-                                to={`/admin/ViewPatient/${patients._id}`}
-                                className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
-                              >
-                                <FiEye />
-                              </Link>
-                            </div>
-                          </div>
-                        </td>
                       </tr>
                     </tbody>
                   );
@@ -270,6 +249,64 @@ const Patient = () => {
             }
           </table>
         )}
+        {
+          //if there no pation
+          lastPatient && lastPatient.length === 0 ? (
+            <div className="text-center">
+              <p className="text-red-500 text-center text-2xl">No Patients</p>
+            </div>
+          ) : (
+            <div className="md:hidden ">
+              {lastPatient &&
+                lastPatient.map(patients => {
+                  return (
+                    <div
+                      style={{
+                        boxShadow: dark
+                          ? "0px 0px 10px 0px rgb(103 232 249)"
+                          : "0px 0px 10px 0px #ccc",
+                      }}
+                      className="flex  mt-2 w-full overflow-hidden  rounded-lg shadow-md"
+                    >
+                      <div className="w-3 bg-cyan-300"></div>
+
+                      <div className="flex items-center px-2 py-3">
+                        <img
+                          className="object-cover w-10 h-10 rounded-full"
+                          alt="User avatar"
+                          src={patients.patient.avatar}
+                        />
+
+                        <div className="mx-3">
+                          <h3 className=" hover:text-blue-400 hover:underline">
+                            {patients.patient.name.firstName}
+                            {patients.patient.name.LastName}
+                          </h3>
+                        </div>
+                        <div className="flex items-center ">
+                          <div className="">
+                            <h3 className=" hover:text-blue-400 hover:underline">
+                              {patients.patient.bloodGroup}
+                            </h3>
+                          </div>
+                          <div className="mx-3 sm:block hidden">
+                            <h3 className=" hover:text-blue-400 hover:underline">
+                              {patients.patient.mobile}
+                            </h3>
+                          </div>
+                          <div className="mx-3 sm:block hidden">
+                            <h3 className=" hover:text-blue-400 hover:underline">
+                              {patients.appointmentTime}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          )
+        }
 
         <div
           className="
@@ -320,3 +357,4 @@ const Patient = () => {
 };
 
 export default Patient;
+

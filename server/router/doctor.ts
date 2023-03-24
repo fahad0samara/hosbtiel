@@ -210,6 +210,51 @@ router.get("/appointments/:id/:date", async (req, res) => {
   }
 });
 
+router.get("/appointment/:id", async (req, res) => {
+  try {
+    // Check if the patient exists
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).json({error: "doctor not found"});
+    }
+
+    const now = new Date();
+
+    let previousAppointment = null;
+    let currentAppointment = null;
+    let nextAppointment = null;
+
+    const appointments = await Appointment.find({
+      doctor: req.params.id,
+    })
+      .sort({appointmentDate: 1})
+      .populate("patient");
+
+    for (let i = 0; i < appointments.length; i++) {
+      if (appointments[i].appointmentDate.getTime() > now.getTime()) {
+        if (!currentAppointment) {
+          currentAppointment = appointments[i];
+        } else if (!nextAppointment) {
+          nextAppointment = appointments[i];
+        }
+      } else if (appointments[i].appointmentDate.getTime() < now.getTime()) {
+        previousAppointment = appointments[i];
+      }
+    }
+
+    res.json({
+      previousAppointment,
+      currentAppointment,
+      nextAppointment,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
 router.get(
   "/all-appointments/:id",
   extractToken,
