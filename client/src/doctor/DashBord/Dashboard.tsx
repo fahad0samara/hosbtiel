@@ -14,13 +14,14 @@ import MyCalendar from "./MyCalendar";
 import img from "../../assets/Appointment.png";
 import {useLogIN} from "../../../ContextLog";
 import Loder from "../../tools/Loder";
-import {Link} from "react-router-dom";
-import {BsAlarm, BsFillArrowRightCircleFill} from "react-icons/bs";
+
+import {BsAlarm} from "react-icons/bs";
 import {FcOvertime} from "react-icons/fc";
 import {formatDate} from "@fullcalendar/core";
 import {AiOutlineReload} from "react-icons/ai";
-import {Name} from "../../types";
-import AppointmentModal from "./AppointmentModal";
+
+import AppointmentModal from "./Model/AppointmentModal";
+import Alert from "../../tools/Alert";
 
 interface Appointment {
   _id: string;

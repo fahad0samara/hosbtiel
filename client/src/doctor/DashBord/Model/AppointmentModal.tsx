@@ -1,7 +1,7 @@
-import {useLogIN} from "../../../ContextLog";
+import {useLogIN} from "../../../../ContextLog";
 
 const AppointmentModal = ({appointmentData, onClose}) => {
-  const {Profile, Patient, dark, setdark} = useLogIN();
+  const {dark} = useLogIN();
   return (
     <div className="fixed inset-0 z-10 overflow-y-auto bg-gray-900 bg-opacity-50">
       <div className="flex items-center justify-center min-h-screen">

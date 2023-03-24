@@ -203,156 +203,210 @@ const ListTable = () => {
                 <div className="line"></div>
               </div>
             ) : (
-              <table
-                className="
-            max-w-5xl
+              <>
+                <div className="md:hidden ">
+                  {lastPatient &&
+                    lastPatient.map(patients => {
+                      return (
+                        <div
+                          style={{
+                            boxShadow: dark
+                              ? "0px 0px 10px 0px rgb(103 232 249)"
+                              : "0px 0px 10px 0px #ccc",
+                          }}
+                          className="flex  mt-2 w-full overflow-hidden  rounded-lg shadow-md"
+                        >
+                          <div className="w-3 bg-cyan-300"></div>
+
+                          <div className="flex items-center px-2 py-3">
+                            <img
+                              className="object-cover w-10 h-10 rounded-full"
+                              alt="User avatar"
+                              src={patients.avatar}
+                            />
+
+                            <div className="mx-3">
+                              <h3 className=" hover:text-blue-400 hover:underline">
+                                {patients.name.firstName}
+                                {patients.name.LastName}
+                              </h3>
+                            </div>
+                            <div className="flex items-center ">
+                              <div className="">
+                                <h3 className=" hover:text-blue-400 hover:underline">
+                                  {patients.bloodGroup}
+                                </h3>
+                              </div>
+                              <div className="mx-3 sm:block hidden">
+                                <h3 className=" hover:text-blue-400 hover:underline">
+                                  {patients.mobile}
+                                </h3>
+                              </div>
+                              <div className="mx-3 sm:block hidden">
+                                <h3 className=" hover:text-blue-400 hover:underline">
+                                  {patients.appointmentTime}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <table
+                  className="
+            xl:max-w-5xl
+            md:max-w-3xl
             w-full
+             hidden md:table
              
 
             mx-auto
             text-left rounded-lg overflow-hidden table-auto"
-              >
-                <thead
-                  className={
-                    dark
-                      ? "bg-cyan-400 text-gray-200"
-                      : "bg-cyan-400 text-gray-800"
-                  }
                 >
-                  <tr className=" uppercase text-sm leading-normal">
-                    <th className=" text-left">healthIDNumber</th>
-                    <th className=" text-center">name</th>
-                    <th className=" text-center">city</th>
+                  <thead
+                    className={
+                      dark
+                        ? "bg-cyan-400 text-gray-200"
+                        : "bg-cyan-400 text-gray-800"
+                    }
+                  >
+                    <tr className=" uppercase text-sm leading-normal">
+                      <th className=" text-left">healthIDNumber</th>
+                      <th className=" text-center">name</th>
+                      <th className=" text-center">city</th>
 
-                    <th className=" text-left">BloodGroup</th>
+                      <th className=" text-left">BloodGroup</th>
 
-                    <th className=" text-center">mobile</th>
-                    <th className=" text-center">age</th>
+                      <th className=" text-center">mobile</th>
+                      <th className=" text-center">age</th>
 
-                    <th className=" text-center">weight</th>
-                    <th className=" text-center">height</th>
+                      <th className=" text-center">weight</th>
+                      <th className=" text-center">height</th>
 
-                    <th className=" text-center">Actions</th>
-                  </tr>
-                </thead>
-                {
-                  //if there no pation
-                  lastPatient && lastPatient.length === 0 ? (
-                    <tbody className="text-sm font-light">
-                      <tr className="text-center">
-                        <td colSpan={9}>
-                          <p className="text-red-500 text-center text-2xl">
-                            No Patients
-                          </p>
-                        </td>
-                      </tr>
-                    </tbody>
-                  ) : (
-                    lastPatient &&
-                    lastPatient.map(patients => {
-                      return (
-                        <tbody
-                          key={patients._id}
-                          className={" text-sm font-light"}
-                        >
-                          <tr
-                            className={
-                              "border-b border-gray-200 hover:bg-gray-100 hover:text-black"
-                            }
+                      <th className=" text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  {
+                    //if there no pation
+                    lastPatient && lastPatient.length === 0 ? (
+                      <tbody className="text-sm font-light">
+                        <tr className="text-center">
+                          <td colSpan={9}>
+                            <p className="text-red-500 text-center text-2xl">
+                              No Patients
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ) : (
+                      lastPatient &&
+                      lastPatient.map(patients => {
+                        return (
+                          <tbody
+                            key={patients._id}
+                            className={" text-sm font-light"}
                           >
-                            <td className="  ">
-                              <span className="font-medium text-center ml-8">
-                                {patients.healthIDNumber}
-                              </span>
-                            </td>
-                            <td className=" text-left whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="mr-2">
-                                  {
-                                    //loading the image
-                                    patients.avatar ? (
-                                      <img
-                                        className="w-8 h-8 rounded-full"
-                                        src={patients.avatar}
-                                        alt=""
-                                      />
-                                    ) : (
-                                      <div>
-                                        <h1>loading...</h1>
-                                      </div>
-                                    )
-                                  }
+                            <tr
+                              className={
+                                "border-b border-gray-200 hover:bg-gray-100 hover:text-black"
+                              }
+                            >
+                              <td className="  ">
+                                <span className="font-medium text-center ml-8">
+                                  {patients.healthIDNumber}
+                                </span>
+                              </td>
+                              <td className=" text-left whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div className="mr-2">
+                                    {
+                                      //loading the image
+                                      patients.avatar ? (
+                                        <img
+                                          className="w-8 h-8 rounded-full"
+                                          src={patients.avatar}
+                                          alt=""
+                                        />
+                                      ) : (
+                                        <div>
+                                          <h1>loading...</h1>
+                                        </div>
+                                      )
+                                    }
+                                  </div>
+                                  <span className="font-medium">
+                                    {patients.name.firstName}
+                                    {patients.name.LastName}
+                                  </span>
                                 </div>
-                                <span className="font-medium">
-                                  {patients.name.firstName}
-                                  {patients.name.LastName}
-                                </span>
-                              </div>
-                            </td>
-                            <td className=" ">
-                              <div className="mr-6 text-center">
-                                {patients.address.city}
-                              </div>
-                            </td>
-                            <td className=" ">
-                              <div className="mr-6 text-center">
-                                {patients.bloodGroup}
-                              </div>
-                            </td>
-                            <td className=" ">
-                              <div className="flex items-center text-center">
-                                <div className="mr-2"></div>
-                                <span>{patients.mobile}</span>
-                              </div>
-                            </td>
-                            <td className="  text-center">
-                              <div className="flex items-center justify-center">
-                                <span>
-                                  {patients.date
-                                    .toString()
-                                    .substring(0, 10)
-                                    .split("-")
-                                    .reverse()
-                                    .join("-")}
-                                </span>
-                              </div>
-                            </td>
+                              </td>
+                              <td className=" ">
+                                <div className="mr-6 text-center">
+                                  {patients.address.city}
+                                </div>
+                              </td>
+                              <td className=" ">
+                                <div className="mr-6 text-center">
+                                  {patients.bloodGroup}
+                                </div>
+                              </td>
+                              <td className=" ">
+                                <div className="flex items-center text-center">
+                                  <div className="mr-2"></div>
+                                  <span>{patients.mobile}</span>
+                                </div>
+                              </td>
+                              <td className="  text-center">
+                                <div className="flex items-center justify-center">
+                                  <span>
+                                    {patients.date
+                                      .toString()
+                                      .substring(0, 10)
+                                      .split("-")
+                                      .reverse()
+                                      .join("-")}
+                                  </span>
+                                </div>
+                              </td>
 
-                            <td className="  text-center">
-                              <div className="flex items-center justify-center">
-                                <span>{patients.weight}</span>
-                              </div>
-                            </td>
-                            <td className="  text-center">
-                              <div className="flex items-center justify-center">
-                                <span>{patients.height}</span>
-                              </div>
-                            </td>
+                              <td className="  text-center">
+                                <div className="flex items-center justify-center">
+                                  <span>{patients.weight}</span>
+                                </div>
+                              </td>
+                              <td className="  text-center">
+                                <div className="flex items-center justify-center">
+                                  <span>{patients.height}</span>
+                                </div>
+                              </td>
 
-                            <td className="  text-center">
-                              <div className="flex item-center justify-center mt-3 ">
-                                <div
-                                  className={
-                                    "w-4 mr-2  transform hover:text-purple-500 hover:scale-110"
-                                  }
-                                >
-                                  <Link
-                                    //
-                                    to={`/admin/ViewPatient/${patients._id}`}
-                                    className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
+                              <td className="  text-center">
+                                <div className="flex item-center justify-center mt-3 ">
+                                  <div
+                                    className={
+                                      "w-4 mr-2  transform hover:text-purple-500 hover:scale-110"
+                                    }
                                   >
-                                    <FiEye />
-                                  </Link>
+                                    <Link
+                                      //
+                                      to={`/admin/ViewPatient/${patients._id}`}
+                                      className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
+                                    >
+                                      <FiEye />
+                                    </Link>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      );
-                    })
-                  )
-                }
-              </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        );
+                      })
+                    )
+                  }
+                </table>
+              </>
             )}
 
             <div className="flex justify-center items-center mt-4 mb-4 space-x-4">
