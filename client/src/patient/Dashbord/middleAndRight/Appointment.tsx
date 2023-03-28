@@ -46,9 +46,6 @@ const PatientAppointments = () => {
       .then(response => {
         setAppointments(response.data);
         setLoading(false);
-        console.log("====================================");
-        console.log(response.data);
-        console.log("====================================");
       })
 
       .catch(error => {
@@ -174,7 +171,7 @@ lg:w-60
                 items-center  ml-3"
               >
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8P6POnmXE2YJlFMqlJ-b2F_t8bdqTq4CAb-mQWDeI813MCCXefNOg9RjN2AQZwPzy3Y&usqp=CAU"
+                  src={appointmentData.currentAppointment.doctor.avatar}
                   alt="avatar"
                   //avatar
                   className=" rounded-full shadow-cyan-300 h-12 w-12 object-cover shadow-sm"

@@ -347,7 +347,7 @@ router.get("/appointments/:id", async (req, res) => {
       patient: req.params.id,
     })
       .sort({appointmentDate: 1})
-      .populate("doctor", "name specialty");
+      .populate("doctor", "name specialty avatar");
 
     for (let i = 0; i < appointments.length; i++) {
       if (appointments[i].appointmentDate.getTime() > now.getTime()) {
@@ -572,6 +572,7 @@ router.get("/Prescription/:id", async (req, res) => {
       .populate("doctor")
 
       .exec();
+
 
     // Get the page number from the query string
     const page = parseInt(req.query.page as string);

@@ -182,7 +182,7 @@ const MyCalendar = () => {
       
        flex flex-col h-screen`}
       >
-        <div className="flex justify-between items-center ml-28">
+        <div className="flex justify-between items-center md:ml-28 ml-12">
           <div className="flex items-center justify-center my-7 mx-7">
             <h1 className="text-2xl font-bold">Calendar</h1>
             <div className="flex items-center ml-4">
