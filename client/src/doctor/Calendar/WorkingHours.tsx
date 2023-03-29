@@ -7,208 +7,201 @@ const WorkingHours = () => {
   const [workingHours, setWorkingHours] = useState([
     {day: "", startTime: "", endTime: ""},
   ]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+const [error, setError] = useState<string>();
+const [loading, setLoading] = useState(false);
 
-  const [success, setSuccess] = useState(null);
+const [success, setSuccess] = useState(null);
 
-  const [selectedDays, setSelectedDays] = useState([]);
+const [selectedDays, setSelectedDays] = useState([]);
 
-  const handleAddWorkingHours = () => {
-    if (workingHours.length < 7) {
-      setWorkingHours([...workingHours, {day: "", startTime: "", endTime: ""}]);
-    }
-  };
+const handleAddWorkingHours = () => {
+  if (workingHours.length < 7) {
+    setWorkingHours([...workingHours, {day: "", startTime: "", endTime: ""}]);
+  }
+};
 
-  const handleDayChange = (e, index) => {
-    const newWorkingHours = [...workingHours];
-    newWorkingHours[index].day = e.target.value;
+const handleDayChange = (e, index) => {
+  const newWorkingHours = [...workingHours];
+  newWorkingHours[index].day = e.target.value;
 
-    if (selectedDays.includes(e.target.value)) {
-      setError("This day has already been selected, please choose another day");
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    } else {
-      setSelectedDays([...selectedDays, e.target.value]);
-      setWorkingHours(newWorkingHours);
-    }
-  };
-
-  const handleStartTimeChange = (e, index) => {
-    const newWorkingHours = [...workingHours];
-    newWorkingHours[index].startTime = e.target.value;
-    setWorkingHours(newWorkingHours);
-  };
-
-  const handleEndTimeChange = (e, index) => {
-    const newWorkingHours = [...workingHours];
-    const startTime = newWorkingHours[index].startTime;
-    const endTime = e.target.value;
-
-    if (times.indexOf(endTime) <= times.indexOf(startTime)) {
-      setError("End time must be after start time");
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    } else {
+  if (selectedDays.includes(e.target.value)) {
+    setError("You can't select the same day twice");
+    setTimeout(() => {
       setError(null);
-    }
-
-    newWorkingHours[index].endTime = endTime;
+    }, 3000);
+  } else {
+    setSelectedDays([...selectedDays, e.target.value]);
     setWorkingHours(newWorkingHours);
-  };
-  const handleSubmit = async e => {
-    e.preventDefault();
+  }
+};
 
-    let isValid = true;
-    workingHours.forEach(dayAndHour => {
-      if (
-        dayAndHour.day === "" ||
-        dayAndHour.startTime === "" ||
-        dayAndHour.endTime === ""
-      ) {
-        isValid = false;
-      }
-      if (
-        times.indexOf(dayAndHour.endTime) <= times.indexOf(dayAndHour.startTime)
-      ) {
-        isValid = false;
-      }
-    });
-    const days = workingHours.map(dayAndHour => dayAndHour.day);
-    if (new Set(days).size !== days.length) {
+const handleStartTimeChange = (e, index) => {
+  const newWorkingHours = [...workingHours];
+  newWorkingHours[index].startTime = e.target.value;
+  setWorkingHours(newWorkingHours);
+};
+
+const handleEndTimeChange = (e, index) => {
+  const newWorkingHours = [...workingHours];
+  const startTime = newWorkingHours[index].startTime;
+  const endTime = e.target.value;
+
+  if (times.indexOf(endTime) <= times.indexOf(startTime)) {
+    setError("End time must be after start time");
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  } else {
+    setError(null);
+  }
+
+  newWorkingHours[index].endTime = endTime;
+  setWorkingHours(newWorkingHours);
+};
+const handleSubmit = async e => {
+  e.preventDefault();
+
+  let isValid = true;
+  workingHours.forEach(dayAndHour => {
+    if (
+      dayAndHour.day === "" ||
+      dayAndHour.startTime === "" ||
+      dayAndHour.endTime === ""
+    ) {
       isValid = false;
-
-      setError("You can't select the same day twice");
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-      return;
     }
+    if (
+      times.indexOf(dayAndHour.endTime) <= times.indexOf(dayAndHour.startTime)
+    ) {
+      isValid = false;
+    }
+  });
+  const days = workingHours.map(dayAndHour => dayAndHour.day);
+  if (new Set(days).size !== days.length) {
+    isValid = false;
 
-    if (isValid) {
-      setLoading(true);
+    setError("You can't select the same day twice");
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+    return;
+  }
 
-      try {
-        const response = await axios.post(
-          `http://localhost:3000/doctor/doctors/${Doctor._id}/working-hours`,
-          {availableDaysAndHours: workingHours},
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(response.data);
-        setSuccess("Your working hours have been added successfully");
-        setLoading(false);
+  if (isValid) {
+    setLoading(true);
 
-        setTimeout(() => {
-          setSuccess(null);
-        }, 3000);
-      } catch (error) {
-        console.log(error);
-        setError(error.response.data.message);
-        setLoading(false);
-
-        setTimeout(() => {
-          setError(null);
-        }, 3000);
-      }
-    } else {
-      setError(
-        "Please fill all the fields correctly and make sure the end time is after the start time."
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/doctor/doctors/${Doctor._id}/working-hours`,
+        {availableDaysAndHours: workingHours},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
+      console.log(response.data);
+      setSuccess("Your working hours have been added successfully");
+      setLoading(false);
 
       setTimeout(() => {
-        setError(null);
+        setSuccess(null);
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.message);
+      setLoading(false);
+
+      setTimeout(() => {
+        setError("");
       }, 3000);
     }
-  };
+  } else {
+    setError(
+      "Please fill all the fields correctly and make sure the end time is after the start time."
+    );
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-  const times = [
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "1:00 PM",
-    "2:00 PM",
-    "3:00 PM",
-    "4:00 PM",
-    "5:00 PM",
-  ];
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+  }
+};
 
-  return (
+const days = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+const times = [
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+  "5:00 PM",
+];
+
+return (
+  <div>
     <div
       className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"} 
-      xl:grid-cols-3
-
-      md:grid-cols-2
-      lg:grid-cols-2
-      
-grid-cols-1
-      md:first-letter:my-10
-      grid
-
-
-   
-      
-      
-       `}
-    >
-      <div
-        className={`${dark ? "bg-black" : "bg-gray-100"}
       ${dark ? "text-white" : "text-black"}
       md:ml-20
       ml-9
       md:my-8
       my-4
       `}
-      >
-        <h1
-          className={`${
-            dark ? "text-white" : "text-black "
-          } md:text-xl font-bold
+    >
+      <h1
+        className={`${dark ? "text-white" : "text-black "} md:text-xl font-bold
               text-center 
           
             `}
-        >
-          Add your working hours and days
-        </h1>
-        <h4
-          className="
+      >
+        Add your working hours and days
+      </h1>
+      <h4
+        className="
         text-center
-
     
         text-gray-500
-
     
         "
-        >
-          Please select your working days and hours
-        </h4>
-      </div>
-
-      <div className=" my-8 md:ml-28 p-6 max-w-xs ">
-        <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+      >
+        Please select your working days and hours
+      </h4>
+    </div>
+    <div
+      className={`${dark ? "bg-black" : "bg-gray-100"}
+      ${dark ? "text-white" : "text-black"} 
+    mx-16
+      md:grid-cols-2
+      lg:grid-cols-2
+      
+grid-cols-1
+      md:first-letter:my-10
+      grid
+   
+      
+      
+       `}
+    >
+      <div className="  ">
+        <form className="w-full " onSubmit={handleSubmit}>
           {workingHours.map((workingHour, index) => (
-            <div key={index} className="flex my-3">
+            <div key={index} className=" grid grid-cols-3 ">
               <select
                 className={`${dark ? "bg-black" : "bg-gray-100"}
       ${dark ? "text-white" : "text-black"} 
-      border border-gray-400 rounded p-2 mr-3`}
+      border border-gray-400 rounded md:p-2 mr-3`}
                 value={workingHour.day}
                 onChange={e => handleDayChange(e, index)}
               >
@@ -365,7 +358,8 @@ grid-cols-1
         }
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default WorkingHours;

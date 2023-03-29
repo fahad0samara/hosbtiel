@@ -21,8 +21,7 @@ import {AiOutlineReload} from "react-icons/ai";
 
 import AppointmentModal from "./Model/AppointmentModal";
 import Alert from "../../tools/Alert";
-import {BiTimer} from "react-icons/bi";
-
+import {BiTimeFive, BiTimer} from "react-icons/bi";
 interface Appointment {
   _id: string;
   doctor: string;
@@ -202,9 +201,9 @@ const Dashboard = () => {
             </span>
           </h1>
           <h1 className="text-lg text-gray-400">{phrase},</h1>
-          <div className="flex flex-row justify-end items-center mr-20  md:mr-16 sm:mr-18 ">
-            <div className="flex flex-row justify-center items-center">
-              <BiTimer className="sm:text-xl text-sm" />
+          <div className="flex flex-row justify-end items-center   ">
+            <div className="flex flex-row justify-center items-center m">
+              <BiTimeFive className="sm:text-xl text-sm" />
               <h1 className="text-sm font-bold lg:ml-2">{time}</h1>
             </div>
 
@@ -216,7 +215,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className=" ">
+        <div className="sm:ml-24 md:ml-11">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="md:text-2xl text-xl -ml-20 md:-ml-0 font-bold text-cyan-300 mt-4 mb-9 text-center lg:text-start lg:ml-5">
@@ -274,7 +273,6 @@ lg:w-60
                             appointmentData.currentAppointment.patient.name
                               .firstName
                           }
-                          {"  "}
                           {
                             appointmentData.currentAppointment.patient.name
                               .LastName
