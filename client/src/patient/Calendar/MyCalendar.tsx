@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from "react";
 import {Calendar, momentLocalizer, Views} from "react-big-calendar";
-import {GrLinkNext, GrLinkPrevious} from "react-icons/gr";
+
 
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -26,7 +26,6 @@ const MyCalendar = () => {
     Array<{start: Date; end: Date; title: any}>
   >([]);
 
-  const [interval, setIntervalId] = useState(null);
   useEffect(() => {
     const getAppointments = async () => {
       setLoading(true);

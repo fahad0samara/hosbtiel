@@ -77,6 +77,17 @@ router.post(
           },
           process.env.JWT_SECRET as string
         );
+        // Check if it's the first time the doctor  logs in
+        if (user.firstTimeLogin) {
+          // Set firstTimeLogin to false to mark that the user
+          // has completed their profile
+          user.firstTimeLogin = false;
+          await user.save();
+          // Send the doctor to the doctor profile page to complete their profile
+        }
+
+        // Send the doctor to the doctor profile page to complete their profile
+
         res
           .header("auth-token", token)
 
@@ -84,6 +95,7 @@ router.post(
             token,
             user,
             doctor,
+            firstTimeLogin: true,
           });
       } else if (user.role === "patient") {
         // Find the corresponding patient in the Patient collection

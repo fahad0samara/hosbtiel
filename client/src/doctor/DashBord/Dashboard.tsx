@@ -3,6 +3,7 @@ import axios from "axios";
 import {useEffect, useRef, useState} from "react";
 import moment from "moment-timezone";
 
+
 import "../Loder.css";
 
 import Chart from "./Chart";
@@ -15,13 +16,13 @@ import {useLogIN} from "../../../ContextLog";
 import Loder from "../../tools/Loder";
 
 import {BsAlarm} from "react-icons/bs";
-import {FcCalendar, FcOvertime} from "react-icons/fc";
+import {FcOvertime} from "react-icons/fc";
 import {formatDate} from "@fullcalendar/core";
 import {AiOutlineReload} from "react-icons/ai";
 
 import AppointmentModal from "./Model/AppointmentModal";
 import Alert from "../../tools/Alert";
-import {BiTimeFive, BiTimer} from "react-icons/bi";
+
 interface Appointment {
   _id: string;
   doctor: string;
@@ -174,15 +175,6 @@ const Dashboard = () => {
     setLoading(false);
   }, []);
 
-  const [time, setTime] = useState(new Date().toLocaleTimeString());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTime(new Date().toLocaleTimeString());
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
   return loading ? (
     <Loder />
   ) : (
@@ -201,21 +193,8 @@ const Dashboard = () => {
             </span>
           </h1>
           <h1 className="text-lg text-gray-400">{phrase},</h1>
-          <div className="flex flex-row justify-end items-center   ">
-            <div className="flex flex-row justify-center items-center m">
-              <BiTimeFive className="sm:text-xl text-sm" />
-              <h1 className="text-sm font-bold lg:ml-2">{time}</h1>
-            </div>
-
-            <div className="flex flex-row justify-center items-center ml-4 ">
-              <FcCalendar className="text-xl" />
-              <h1 className="text-sm font-bold ml-2">
-                {new Date().toLocaleDateString()}
-              </h1>
-            </div>
-          </div>
         </div>
-        <div className="sm:ml-24 md:ml-11">
+        <div className=" ">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="md:text-2xl text-xl -ml-20 md:-ml-0 font-bold text-cyan-300 mt-4 mb-9 text-center lg:text-start lg:ml-5">
@@ -273,6 +252,7 @@ lg:w-60
                             appointmentData.currentAppointment.patient.name
                               .firstName
                           }
+                          {"  "}
                           {
                             appointmentData.currentAppointment.patient.name
                               .LastName
@@ -402,35 +382,35 @@ lg:w-60
             </div>
 
             <div>
-              {loading ? (
-                <div className="flex justify-center animate-spin items-center mt-20">
-                  <AiOutlineReload className="text-4xl text-cyan-300" />
-                </div>
-              ) : appointmentData.currentAppointment ? (
-                <div
-                  style={{
-                    backgroundColor: dark ? "#000" : "#fff",
-                    color: dark ? "white" : "black",
-                    boxShadow: dark
-                      ? "0px 0px 5px 0px #ccc"
-                      : "0px 0px 10px 4px #ccc",
-                  }}
-                  className=" 
+              <div
+                style={{
+                  backgroundColor: dark ? "#000" : "#fff",
+                  color: dark ? "white" : "black",
+                  boxShadow: dark
+                    ? "0px 0px 5px 0px #ccc"
+                    : "0px 0px 10px 4px #ccc",
+                }}
+                className=" 
                 shadow-md
                 border-solid   hidden md:block        border-2 border-cyan-300 h-64    rotate-6 transform space-y-6 rounded-2xl  duration-300 hover:rotate-0"
-                >
-                  <div
-                    style={{
-                      backgroundColor: dark ? "#fff" : "#000",
-                    }}
-                    className=" rounded-full p-2 flex float-left h-4 w-4 "
-                  ></div>
-                  <div className="space-y-2 ">
-                    <h1 className="text-xl font-bold text-center ">
-                      Next Appointment
-                    </h1>
-                    <div className="border-b-2 border-cyan-300 my-2  mx-10  text-center  px-4 "></div>
+              >
+                <div
+                  style={{
+                    backgroundColor: dark ? "#fff" : "#000",
+                  }}
+                  className=" rounded-full p-2 flex float-left h-4 w-4 "
+                ></div>
+                <div className="space-y-2 ">
+                  <h1 className="text-xl font-bold text-center ">
+                    Next Appointment
+                  </h1>
+                  <div className="border-b-2 border-cyan-300 my-2  mx-10  text-center  px-4 "></div>
 
+                  {loading ? (
+                    <div className="flex justify-center animate-spin items-center mt-20">
+                      <AiOutlineReload className="text-4xl text-cyan-300" />
+                    </div>
+                  ) : appointmentData.currentAppointment ? (
                     <div className="flex flex-col mx-2 space-y-3">
                       <div className="flex flex-col mx-2 space-y-3">
                         <div className="space-x-2 flex">
@@ -488,9 +468,9 @@ lg:w-60
                         ) : null}
                       </div>
                     </div>
-                  </div>
+                  ) : null}
                 </div>
-              ) : null}
+              </div>
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ const [loading, setLoading] = useState(false);
 
 const [success, setSuccess] = useState(null);
 
-const [selectedDays, setSelectedDays] = useState([]);
+const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
 const handleAddWorkingHours = () => {
   if (workingHours.length < 7) {
@@ -27,7 +27,7 @@ const handleDayChange = (e, index) => {
   if (selectedDays.includes(e.target.value)) {
     setError("You can't select the same day twice");
     setTimeout(() => {
-      setError(null);
+      setError("");
     }, 3000);
   } else {
     setSelectedDays([...selectedDays, e.target.value]);
@@ -110,6 +110,7 @@ const handleSubmit = async e => {
       }, 3000);
     } catch (error) {
       console.log(error);
+      //@ts-ignore
       setError(error.response.data.message);
       setLoading(false);
 
@@ -201,7 +202,7 @@ grid-cols-1
               <select
                 className={`${dark ? "bg-black" : "bg-gray-100"}
       ${dark ? "text-white" : "text-black"} 
-      border border-gray-400 rounded md:p-2 mr-3`}
+      border border-gray-400 rounded p-2 mr-3`}
                 value={workingHour.day}
                 onChange={e => handleDayChange(e, index)}
               >
@@ -279,7 +280,7 @@ grid-cols-1
             </button>
 
             {
-              //if there erorr dibibld the btn
+              //if there error dibibld the btn
               error && (
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"

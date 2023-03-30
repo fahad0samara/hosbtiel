@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema(
       default: "patient",
       required: true,
     },
+    firstTimeLogin: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   {

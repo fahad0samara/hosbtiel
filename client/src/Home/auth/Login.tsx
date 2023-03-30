@@ -52,7 +52,6 @@ const Login = () => {
         setLoading(false);
       } else if (response.data.user.role === "patient") {
         try {
-
           setlogPatient(true);
           setlogDr(false);
           setlogAdmin(false);
@@ -66,10 +65,7 @@ const Login = () => {
             `http://localhost:3000/user/getPatient/${decoded.patientId}`
           );
 
-          console.log("patientResponse", patientResponse.data._id);
-
           setPatient(patientResponse.data);
-          
         } catch (error) {
           console.log("Error while fetching patient: ", error);
         }

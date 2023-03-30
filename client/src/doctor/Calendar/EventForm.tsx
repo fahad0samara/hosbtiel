@@ -1,11 +1,10 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState} from "react";
 import {useLogIN} from "../../../ContextLog";
 import axios from "axios";
-import moment from "moment-timezone";
 
 const EventForm = () => {
   const [Loading, setLoading] = useState(false);
-  const {Patient, dark, Events, setEvents} = useLogIN();
+  const {Doctor, Events, setEvents} = useLogIN();
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -15,11 +14,11 @@ const EventForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`http://localhost:3000/Event/add-event`, {
+      await axios.post(`http://localhost:3000/Event/add-event-dr`, {
         title,
         start,
         end,
-        patient: Patient._id,
+        doctor: Doctor._id,
       });
       setLoading(false);
       setEvents(
@@ -35,10 +34,6 @@ const EventForm = () => {
       setTimeout(() => {
         setEventAdded(false); // Set the state variable back to false after a delay
       }, 3000);
-
-      console.log("====================================");
-      console.log("newEvent");
-      console.log("====================================");
     } catch (error) {
       //@ts-ignore
       console.error(error.response.data);

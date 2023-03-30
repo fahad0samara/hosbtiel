@@ -58,6 +58,48 @@ const checkDoctor = (req: any, res: any, next: any) => {
   }
 };
 
+// Check if the user has completed first-time login
+router.get("/checkFirstTimeLogin/:id", async (req, res) => {
+  const doctor = await Doctor.findById(req.params.id);
+  if (doctor) {
+    res.json({
+      hasCompletedFirstTimeLogin: doctor.hasCompletedFirstTimeLogin,
+    });
+  } else {
+    res.sendStatus(404);
+  }
+
+
+});
+
+// Update the first-time login flag
+
+router.post("/completeFirstTimeLogin/:id", async (req, res) => {
+  const doctor = await Doctor.findById(req.params.id);
+  if (doctor) {
+    doctor.hasCompletedFirstTimeLogin = true;
+    await doctor.save();
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
+  }
+
+});
+
+
+
+    
+
+
+  
+
+
+
+
+  
+
+
+
 router.get("/doctors/:id", extractToken, checkDoctor, async (req, res) => {
   try {
     // Find the doctor by their ID and populate the user field

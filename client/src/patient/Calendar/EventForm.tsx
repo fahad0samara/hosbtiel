@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback} from "react";
 import {useLogIN} from "../../../ContextLog";
 import axios from "axios";
-import moment from "moment-timezone";
+
 
 const EventForm = () => {
   const [Loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ const EventForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`http://localhost:3000/Event/add-event`, {
+      await axios.post(`http://localhost:3000/Event/add-event-patient`, {
         title,
         start,
         end,
@@ -36,9 +36,7 @@ const EventForm = () => {
         setEventAdded(false); // Set the state variable back to false after a delay
       }, 3000);
 
-      console.log("====================================");
-      console.log("newEvent");
-      console.log("====================================");
+   
     } catch (error) {
       //@ts-ignore
       console.error(error.response.data);

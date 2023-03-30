@@ -40,7 +40,8 @@ const MyCalendar = () => {
             },
           }
         );
-        const appointments = response.data.allAppointments;
+
+        const appointments = response.data.appointments;
         if (!appointments || appointments.length === 0) {
           setLoading(false);
           return;
@@ -194,11 +195,11 @@ const MyCalendar = () => {
             <div className="flex items-center ml-4">
               <div className="flex items-center">
                 <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                <p>Appointments</p>
+                <p>Event</p>
               </div>
               <div className="flex items-center ml-4">
                 <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                <p>Holidays</p>
+                <p>Appointments</p>
               </div>
             </div>
           </div>
