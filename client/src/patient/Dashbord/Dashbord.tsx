@@ -21,12 +21,16 @@ const Dashboard = (props: any) => {
      backgroundColor: dark ? '#000' : '#dbe6e7',
      boxShadow: dark ? '0px 0px 10px 0px rgb(103 232 249)' : '0px 0px 10px 0px #ccc',
     }}
-    className="col-span-1   p-2  hidden md:block border-r-2 border-cyan-300   bg-[#dbe6e7]
+    className="col-span-1     hidden md:block border-r-2 border-cyan-300   bg-[#dbe6e7]
    "
    >
     <LeftSide />
    </div>
-   <div className=" lg:col-span-3  sm:col-span-2 ml-12 sm:ml-6 ">
+   <div
+    className=" lg:col-span-3  sm:col-span-2  
+    
+   "
+   >
     <RightSide />
    </div>
   </div>

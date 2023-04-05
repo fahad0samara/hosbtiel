@@ -61,7 +61,7 @@ const List = () => {
 
    <div>
     {Events.length > 0 ? (
-     <ul className="list-disc space-y-8">
+     <ul className="list-disc space-y-8 mt-16">
       {loading ? (
        <p>Loading...</p>
       ) : (
@@ -115,7 +115,7 @@ const List = () => {
      </ul>
     ) : (
      // your no events found code here
-     <div className="flex flex-col items-center justify-center ">
+     <div className="flex flex-col items-center justify-center mt-14">
       <h1 className="text-xl font-bold text-cyan-300 mt-4 ml-6">you don't have any Events</h1>
       <h1 className="text-lg italic ">add an event</h1>
       <Link

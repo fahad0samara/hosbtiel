@@ -191,7 +191,6 @@ const Table = () => {
    ) : (
     <div>
      <h1 className="text-center text-cyan-300 font-bold">No Prescription History</h1>
-     <h2></h2>
     </div>
    )}
   </div>
