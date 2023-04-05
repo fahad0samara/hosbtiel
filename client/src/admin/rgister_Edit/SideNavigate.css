@@ -1,19 +1,18 @@
 /* Glassmorphism card effect */
 .caard {
-    background-color: rgb(255, 255, 255);
-    background-image: radial-gradient(at 100% 0%, rgb(34, 211, 238) 0, transparent 21%), radial-gradient(at 17% 100%, rgb(34, 211, 238) 0, transparent 17%);
-
+ background-color: rgb(255, 255, 255);
+ background-image: radial-gradient(at 100% 0%, rgb(34, 211, 238) 0, transparent 21%),
+  radial-gradient(at 17% 100%, rgb(34, 211, 238) 0, transparent 17%);
 }
 
 .glass-object {
-    border-radius: 25px;
-    backdrop-filter: blur(4px);
-    padding: 2rem;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 20%), 0 10px 15px rgb(0 0 0 / 20%);
-    box-sizing: border-box;
-    background-image: linear-gradient(15deg,rgb(34, 211, 238),#fff);
-    width: 100%;
-    min-height: 70px;
-    mix-blend-mode: hard-light;
-
+ border-radius: 25px;
+ backdrop-filter: blur(4px);
+ padding: 2rem;
+ box-shadow: 0 2px 10px rgb(0 0 0 / 20%), 0 10px 15px rgb(0 0 0 / 20%);
+ box-sizing: border-box;
+ background-image: linear-gradient(15deg, rgb(34, 211, 238), #fff);
+ width: 100%;
+ min-height: 70px;
+ mix-blend-mode: hard-light;
 }

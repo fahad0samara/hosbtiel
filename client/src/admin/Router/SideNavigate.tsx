@@ -122,59 +122,51 @@
 // // }
 
 // export default SideNavigate;
-import {Link, Outlet, useNavigate} from "react-router-dom";
-import {useState} from "react";
-import SideNav, {
-  Toggle,
-  Nav,
-  NavItem,
-  NavIcon,
-  NavText,
-} from "@trendmicro/react-sidenav";
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav'
 
-import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import {RiDashboardFill, RiLogoutBoxRLine} from "react-icons/ri";
+import '@trendmicro/react-sidenav/dist/react-sidenav.css'
+import { RiDashboardFill, RiLogoutBoxRLine } from 'react-icons/ri'
 
-import {useLogIN} from "../../../ContextLog";
-import {FaClipboardList, FaRegIdCard} from "react-icons/fa";
-import {GoChecklist} from "react-icons/go";
+import { useLogIN } from '../../../ContextLog'
+import { FaClipboardList, FaRegIdCard } from 'react-icons/fa'
+import { GoChecklist } from 'react-icons/go'
 
 const SideNavigate = (_props: any) => {
-  const {
-    Profile,
-    setProfile,
+ const {
+  Profile,
+  setProfile,
 
-    setLoading,
-    dark,
-    setdark,
-  } = useLogIN();
-  const navigate = useNavigate();
+  setLoading,
+  dark,
+  setdark,
+ } = useLogIN()
+ const navigate = useNavigate()
 
-  return (
-    <SideNav
-      /*  . */
-      style={{
-        backgroundColor: dark ? "#000" : "rgb(103 232 249)",
+ return (
+  <SideNav
+   /*  . */
+   style={{
+    backgroundColor: dark ? '#000' : 'rgb(103 232 249)',
 
-        boxShadow: dark
-          ? "0px 0px 10px 0px rgb(103 232 249)  "
-          : "0px 0px 10px 0px #000",
-      }}
-      onSelect={function (selected: string): void {
-        // Add your code here
-        if (selected === "dashboard") {
-          navigate("/admin/dashboard");
-        } else if (selected === "RegisterDr") {
-          navigate("/admin/RegisterDr");
-        } else if (selected === "doctorList") {
-          navigate("/admin/doctorList");
-        } else if (selected === "patientList") {
-          navigate("/admin/patientList");
-        }
+    boxShadow: dark ? '0px 0px 10px 0px rgb(103 232 249)  ' : '0px 0px 10px 0px #000',
+   }}
+   onSelect={function (selected: string): void {
+    // Add your code here
+    if (selected === 'dashboard') {
+     navigate('/admin/dashboard')
+    } else if (selected === 'RegisterDr') {
+     navigate('/admin/RegisterDr')
+    } else if (selected === 'doctorList') {
+     navigate('/admin/doctorList')
+    } else if (selected === 'patientList') {
+     navigate('/admin/patientList')
+    }
 
-        // console.log(selected);
-      }}
-      className="
+    // console.log(selected);
+   }}
+   className="
   h-full
 
       fixed
@@ -185,150 +177,150 @@ const SideNavigate = (_props: any) => {
       
   z-50
   "
-    >
-      <SideNav.Toggle
-        style={{
-          color: dark ? "red" : "black",
-          fontSize: "1.5rem",
-          fontWeight: "bold",
-        }}
-      />
-      <SideNav.Nav
-        defaultOpenKeys={["dashboard"]}
-        className="
+  >
+   <SideNav.Toggle
+    style={{
+     color: dark ? 'red' : 'black',
+     fontSize: '1.5rem',
+     fontWeight: 'bold',
+    }}
+   />
+   <SideNav.Nav
+    defaultOpenKeys={['dashboard']}
+    className="
 
         "
-        style={{
-          color: dark ? "white" : "black",
-          fontSize: "1.5rem",
-          fontWeight: "bold",
-        }}
-        defaultSelected="dashboard"
-      >
-        <NavItem eventKey="dashboard">
-          <NavIcon>
-            <RiDashboardFill
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            Dashboard
-          </NavText>
-        </NavItem>
-        <NavItem eventKey="RegisterDr">
-          <NavIcon>
-            <FaRegIdCard
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            Register Doctor
-          </NavText>
-        </NavItem>
-        <NavItem eventKey="doctorList">
-          <NavIcon>
-            <FaClipboardList
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
+    style={{
+     color: dark ? 'white' : 'black',
+     fontSize: '1.5rem',
+     fontWeight: 'bold',
+    }}
+    defaultSelected="dashboard"
+   >
+    <NavItem eventKey="dashboard">
+     <NavIcon>
+      <RiDashboardFill
+       style={{
+        color: dark ? 'rgb(103 232 249)' : 'black',
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginLeft: '1rem',
+        marginTop: '1rem',
+       }}
+      />
+     </NavIcon>
+     <NavText
+      style={{
+       color: dark ? 'rgb(103 232 249)' : 'black',
+       fontSize: '0.9rem',
+       fontWeight: 'bold',
+       marginLeft: '1rem',
+       marginTop: '1rem',
+      }}
+     >
+      Dashboard
+     </NavText>
+    </NavItem>
+    <NavItem eventKey="RegisterDr">
+     <NavIcon>
+      <FaRegIdCard
+       style={{
+        color: dark ? 'rgb(103 232 249)' : 'black',
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginLeft: '1rem',
+        marginTop: '1rem',
+       }}
+      />
+     </NavIcon>
+     <NavText
+      style={{
+       color: dark ? 'rgb(103 232 249)' : 'black',
+       fontSize: '0.9rem',
+       fontWeight: 'bold',
+       marginLeft: '1rem',
+       marginTop: '1rem',
+      }}
+     >
+      Register Doctor
+     </NavText>
+    </NavItem>
+    <NavItem eventKey="doctorList">
+     <NavIcon>
+      <FaClipboardList
+       style={{
+        color: dark ? 'rgb(103 232 249)' : 'black',
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginLeft: '1rem',
+        marginTop: '1rem',
+       }}
+      />
+     </NavIcon>
+     <NavText
+      style={{
+       color: dark ? 'rgb(103 232 249)' : 'black',
+       fontSize: '0.9rem',
+       fontWeight: 'bold',
+       marginLeft: '1rem',
 
-              marginTop: "1rem",
-            }}
-          >
-            Doctor List
-          </NavText>
-        </NavItem>
-        <NavItem eventKey="patientList">
-          <NavIcon>
-            <GoChecklist
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            Patient List
-          </NavText>
-        </NavItem>
-        <NavItem eventKey="logout">
-          <NavIcon>
-            <RiLogoutBoxRLine
-              style={{
-                color: dark ? "rgb(103 232 249)" : "black",
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                marginLeft: "1rem",
-                marginTop: "1rem",
-              }}
-            />
-          </NavIcon>
-          <NavText
-            style={{
-              color: dark ? "rgb(103 232 249)" : "black",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              marginLeft: "1rem",
-              marginTop: "1rem",
-            }}
-          >
-            Logout
-          </NavText>
-        </NavItem>
-      </SideNav.Nav>
-    </SideNav>
-  );
-};
+       marginTop: '1rem',
+      }}
+     >
+      Doctor List
+     </NavText>
+    </NavItem>
+    <NavItem eventKey="patientList">
+     <NavIcon>
+      <GoChecklist
+       style={{
+        color: dark ? 'rgb(103 232 249)' : 'black',
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginLeft: '1rem',
+        marginTop: '1rem',
+       }}
+      />
+     </NavIcon>
+     <NavText
+      style={{
+       color: dark ? 'rgb(103 232 249)' : 'black',
+       fontSize: '0.9rem',
+       fontWeight: 'bold',
+       marginLeft: '1rem',
+       marginTop: '1rem',
+      }}
+     >
+      Patient List
+     </NavText>
+    </NavItem>
+    <NavItem eventKey="logout">
+     <NavIcon>
+      <RiLogoutBoxRLine
+       style={{
+        color: dark ? 'rgb(103 232 249)' : 'black',
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginLeft: '1rem',
+        marginTop: '1rem',
+       }}
+      />
+     </NavIcon>
+     <NavText
+      style={{
+       color: dark ? 'rgb(103 232 249)' : 'black',
+       fontSize: '0.9rem',
+       fontWeight: 'bold',
+       marginLeft: '1rem',
+       marginTop: '1rem',
+      }}
+     >
+      Logout
+     </NavText>
+    </NavItem>
+   </SideNav.Nav>
+  </SideNav>
+ )
+}
 
-export default SideNavigate;
+export default SideNavigate
