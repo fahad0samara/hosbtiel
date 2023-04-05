@@ -1,13 +1,5 @@
-import axios from 'axios'
-import React, { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useTable, usePagination } from 'react-table'
-import saveAs from 'file-saver'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Doctor } from '../../types'
-import Loder from '../../tools/Loder'
 import { useLogIN } from '../../../ContextLog'
-import FileSaver from 'file-saver'
+
 import Stats from './Stats'
 import AvatarUploader from './AvatarUploader'
 const DoctorProfile = () => {
@@ -80,10 +72,7 @@ const DoctorProfile = () => {
            <div className="px-4 py-2 font-bold">Last Name</div>
            <div className="px-4 py-2">{Doctor.name.lastName}</div>
           </div>
-          <div className="grid grid-cols-2 ">
-           <div className="px-4 py-2 font-bold">Health ID Number:</div>
-           {/* <div className="px-4 py-2">{Doctor.healthIDNumber}</div> */}
-          </div>
+
           <div className="grid grid-cols-2">
            <div className="px-4 py-2 font-bold">Gender</div>
            <div className="px-4 py-2">{Doctor.Gender}</div>
@@ -188,16 +177,11 @@ const DoctorProfile = () => {
         </h1>
         <div className=" grid grid-cols-2 ">
          <div className="px-4 py-2 font-bold">degree</div>
-         <div className="px-4 py-2">
-          {Doctor.degree}
-
-          <span className="font-semibold ml-1">{/* {Doctor.contactPerson.name.LastName} */}</span>
-         </div>
+         <div className="px-4 py-2">{Doctor.degree}</div>
 
          <div className="px-4 py-2 font-bold"> specialty</div>
          <div className="px-4 py-2">{Doctor.specialty}</div>
          <div className="px-4 py-2 font-bold"></div>
-         <h4 className=" py-2  xl:text-base text-sm">{/* {Doctor.contactPerson.email} */}</h4>
 
          <div className="px-4 py-2 font-bold">experience</div>
          <div className="px-4 py-2">{Doctor.experience}</div>

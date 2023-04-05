@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
-import { useLogIN } from '../../../../../ContextLog'
+
 import { useParams } from 'react-router-dom'
 
 const Stats = () => {
  const { id } = useParams()
- const { Doctor, dark } = useLogIN()
+
  const [loading, setLoading] = useState(false)
  const [appointment, setappointment] = useState()
  const [prescriptions, setprescriptions] = useState()

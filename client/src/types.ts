@@ -22,6 +22,7 @@ export interface Doctor {
  _id: string
  name: Name
  user: User
+ avatar: string
  phoneNumber: string
  Hospital: string
  HospitalAddress: HospitalAddress
@@ -30,7 +31,6 @@ export interface Doctor {
  experience: string
  date: string
  bloodGroup: string
- avatar: string
 }
 
 export interface patient {
@@ -43,6 +43,7 @@ export interface patient {
   middleName: string
   LastName: string
  }
+ avatar: string
  user: User
  mobile: number
  address: {

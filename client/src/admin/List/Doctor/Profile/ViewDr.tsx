@@ -1,21 +1,21 @@
+//@ts-nocheck
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLogIN } from '../../../../../ContextLog'
 
-import { useLocation } from 'react-router-dom'
 import { Doctor } from '../../../../types'
 
 import Stats from './Stats'
 import avatar from '../../../../assets/avatar.png'
 import Table from './Table/Table'
 import ListTable from './ListTable'
-import Alert from '../../../../tools/Alert'
+
 import Loder from '../../../../tools/Loder'
 const ViewDr = () => {
  const { dark } = useLogIN()
  const { id } = useParams()
- const [Doctor, setDoctor] = React.useState<Doctor>()
+ const [Doctor, setDoctor] = React.useState<Doctor[]>([])
 
  const [error, setError] = React.useState<boolean>(false)
  const [Loading, setLoading] = React.useState<boolean>(true)
@@ -39,6 +39,14 @@ const ViewDr = () => {
     setLoading(false)
    })
  }, [id])
+
+ if (error) {
+  return (
+   <div className="flex justify-center items-center h-full">
+    <h1 className="text-2xl font-bold">Something Went Wrong</h1>
+   </div>
+  )
+ }
 
  return (
   <>

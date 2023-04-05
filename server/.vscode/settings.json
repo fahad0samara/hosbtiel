@@ -1,7 +1,5 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/34d5a1eb-e4c5-4cd2-af32-ba6350acf7d3/resourceGroups/appsvc_linux_centralus/subscriptions/34d5a1eb-e4c5-4cd2-af32-ba6350acf7d3/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/nodeandreact",
-    "appService.deploySubpath": ".",
-    "cSpell.words": [
-        "phrasendex"
-    ]
+  "appService.defaultWebAppToDeploy": "/subscriptions/34d5a1eb-e4c5-4cd2-af32-ba6350acf7d3/resourceGroups/appsvc_linux_centralus/subscriptions/34d5a1eb-e4c5-4cd2-af32-ba6350acf7d3/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/nodeandreact",
+  "appService.deploySubpath": ".",
+  "cSpell.words": ["phrasendex"]
 }

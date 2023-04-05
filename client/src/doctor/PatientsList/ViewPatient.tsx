@@ -1,156 +1,112 @@
-//@ts-nocheck
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useTable, usePagination } from 'react-table'
-import { useLogIN } from '../../../../../ContextLog'
-import FileSaver from 'file-saver'
-import Stats from './Stats'
-import ListAppointments from './ListAppointments'
-import Alert from '../../../../tools/Alert'
-import Loder from '../../../../tools/Loder'
-const ViewPatient = () => {
- const { dark } = useLogIN()
- let { id } = useParams()
+import saveAs from 'file-saver'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useLogIN } from '../../../ContextLog'
+import { patient } from '../../types'
+import Loder from '../../tools/Loder'
+import Alert from '../../tools/Alert'
 
- const [patient, setpatient] = React.useState<any>([])
+const ViewPatient = () => {
+ const {
+  logPatient,
+
+  Profile,
+  setProfile,
+
+  dark,
+  setdark,
+ } = useLogIN()
+ let { id } = useParams()
+ console.log('🚀 ~ file: ViewPatient.tsx ~ line 48 ~ ViewPatient ~ id', id)
+
+ const [patient, setpatient] = React.useState({
+  _id: '',
+  healthIDNumber: '',
+  name: {
+   firstName: '',
+   middleName: '',
+   LastName: '',
+  },
+  user: {
+   email: '',
+   password: '',
+   createdAt: '',
+  },
+  mobile: 0,
+  address: {
+   building: '',
+   city: '',
+   street: '',
+   district: '',
+   state: '',
+   zipCode: 0,
+  },
+  date: '',
+  bloodGroup: '',
+  weight: 0,
+  height: 0,
+  diseaseList: [
+   {
+    disease: '',
+    YearRound: 0,
+   },
+  ],
+  allergyList: [
+   {
+    allergy: '',
+    yearRound: 0,
+   },
+  ],
+  medicationList: [
+   {
+    medication: '',
+    yearRound: 0,
+   },
+  ],
+  contactPerson: {
+   name: {
+    firstName: '',
+    middleName: '',
+    LastName: '',
+   },
+   mobile: 0,
+   email: '',
+   relation: '',
+   age: '',
+   address: {
+    building: '',
+    city: '',
+    zipCode: 0,
+    street: '',
+    district: '',
+    state: '',
+   },
+  },
+ })
 
  const [error, setError] = React.useState<boolean>(false)
  const [Loading, setLoading] = React.useState<boolean>(true)
  const [prescriptions, setPrescriptions] = React.useState<any>([])
- const [appointments, setAppointments] = React.useState<any>([])
 
  useEffect(() => {
   setLoading(true)
   axios
-   .get(`http://localhost:3000/admin/patient/${id}`, {
-    headers: {
-     'Content-Type': 'application/json',
-     Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-   })
+   .get(`http://localhost:3000/doctor/patient/${id}`)
    .then((res) => {
     setpatient(res.data)
 
-    // make the second API call to retrieve the prescriptions
-    axios
-     .get(`http://localhost:3000/admin/patient/prescriptions/${id}`, {
-      headers: {
-       'Content-Type': 'application/json',
-       Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-     })
-     .then((res) => {
-      setPrescriptions(res.data)
-
-      setLoading(false)
-     })
-
-    axios
-     .get(`http://localhost:3000/admin/patient/all-appointments/${id}`)
-     .then((res) => {
-      setAppointments(res.data)
-      setLoading(false)
-     })
-     .catch((err) => {
-      setError(true)
-      setLoading(false)
-     })
+    setLoading(false)
    })
+
    .catch((err) => {
     console.log(err)
     setError(true)
     setLoading(false)
    })
  }, [id])
-
- const downloadPrescription = async (prescriptionId) => {
-  setLoading(true)
-  console.log(prescriptionId, 'prescriptionId')
-  try {
-   const res = await axios.get(`http://localhost:3000/admin/patient/${id}/prescriptions/${prescriptionId}/download`, {
-    headers: {
-     Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    responseType: 'arraybuffer',
-   })
-   console.log(res.data)
-
-   FileSaver.saveAs(new Blob([res.data], { type: 'application/pdf' }), `Prescription ${prescriptionId}.pdf`)
-   setLoading(false)
-  } catch (error) {
-   setLoading(false)
-   console.log(error)
-  }
- }
-
- const columns = React.useMemo(
-  () => [
-   {
-    Header: 'Doctor Name',
-    accessor: 'doctor',
-   },
-   {
-    Header: 'Date',
-
-    accessor: 'date',
-    Cell: ({ value }) => {
-     const date = new Date(value)
-     return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-     })
-    },
-   },
-   {
-    Header: 'Dosage',
-    accessor: 'dosage',
-   },
-   {
-    Header: 'Duration',
-    accessor: 'duration',
-   },
-   {
-    Header: 'Instruction',
-    accessor: 'frequency',
-   },
-   {
-    Header: 'Medication',
-    accessor: 'medication',
-   },
-   {
-    Header: 'Notes',
-    accessor: 'notes',
-   },
-   {
-    Header: 'Refills',
-    accessor: 'refills',
-   },
-   {
-    Header: 'Download',
-    accessor: (row) => (
-     <button
-      onClick={() => {
-       downloadPrescription(row._id)
-      }}
-     >
-      Download
-     </button>
-    ),
-   },
-  ],
-  [],
- )
-
- const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-  {
-   //@ts-ignore
-   columns,
-   data: prescriptions,
-  },
-  usePagination,
- )
 
  return (
   <>
@@ -165,9 +121,7 @@ const ViewPatient = () => {
       boxShadow: dark ? '0px 0px 10px 0px rgb(103 232 249)' : '0px 0px 10px 0px #ccc',
      }}
     >
-     <div className="md:hidden ">
-      <Alert />
-     </div>
+     <div className="md:hidden ">{/* <Alert /> */}</div>
      <div className="md:p-16 p-9 md:mx-6 ml-12 ">
       <div
        style={{
@@ -186,18 +140,17 @@ const ViewPatient = () => {
          >
           patient Status :
          </h1>
-         <Stats />
         </div>
 
         <div className="relative">
          {' '}
-         <div className="   absolute inset-x-0 bottom-80    md:bottom-9  md:top-0  sm:-mt-32 flex items-center justify-center text-indigo-500">
+         {/* <div className="   absolute inset-x-0 bottom-80    md:bottom-9  md:top-0  sm:-mt-32 flex items-center justify-center text-indigo-500">
           <img
            src={patient.avatar}
            alt="avatar"
            className="object-cover md:h-44 md:w-44 w-24 h-24  shadow-2xl rounded-full border-2 border-dotted border-cyan-300"
           />
-         </div>
+         </div> */}
         </div>
        </div>
        <div
@@ -469,78 +422,6 @@ const ViewPatient = () => {
          </div>
         </div>
        </div>
-       <div
-        style={{
-         boxShadow: dark ? '0px 0px 01px 0px #cccc ' : '0px 0px 10px 0px  #ccc',
-        }}
-        className="overflow-x-auto
-                  p-8 my-3 col-span-2 rounded-2xl 
-                  shadow-lg
-                "
-       >
-        {
-         //prescription
-        }
-
-        <h1
-         className="
-                  text-center
-                  md:text-left
-                  font-bold
-                   text-2xl mb-5 text-cyan-400 "
-        >
-         Prescription History
-        </h1>
-
-        {Loading ? (
-         <p>Loading...</p>
-        ) : rows.length > 0 ? (
-         <table className="w-full text-center table-collapse border border-cyan-300-200 rounded-lg shadow-lg">
-          <thead>
-           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-             {headerGroup.headers.map((column) => (
-              <th
-               style={{
-                backgroundColor: dark ? '#fff' : '#000',
-                color: dark ? '#000' : '#fff',
-               }}
-               className="px-1 py-1 font-medium"
-               {...column.getHeaderProps()}
-              >
-               {column.render('Header')}
-              </th>
-             ))}
-            </tr>
-           ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-           {rows.map((row, index) => {
-            prepareRow(row)
-            return (
-             <tr
-              {...row.getRowProps()}
-              style={{
-               backgroundColor: index % 3 === 0 ? '' : index % 3 === 1 ? '#67e8f9' : 'purple',
-              }}
-             >
-              {row.cells.map((cell) => {
-               return (
-                <td className="px-4 py-2" {...cell.getCellProps()}>
-                 {cell.render('Cell')}
-                </td>
-               )
-              })}
-             </tr>
-            )
-           })}
-          </tbody>
-         </table>
-        ) : (
-         <p className="text-gray-500 text-center ml-11">The patient does not have any prescription yet</p>
-        )}
-       </div>
-       <ListAppointments />
       </div>
      </div>
     </div>

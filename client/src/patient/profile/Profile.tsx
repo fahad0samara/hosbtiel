@@ -281,7 +281,7 @@ const Profile = () => {
             {Patient.medicationList.length > 0 ? (
              <div className="mx-auto p-4  ">
               {Patient.medicationList.filter(
-               (medication) => medication.medication !== '' && medication.medication !== null
+               (medication) => medication.medication !== '' && medication.medication !== null,
               ).length > 0 ? (
                Patient.medicationList
                 .filter((medication) => medication.medication !== '' && medication.medication !== null)

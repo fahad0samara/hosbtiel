@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useLogIN } from '../../../ContextLog'
-import PrescriptionTable from './PrescriptionTable'
 import Loder from '../../tools/Loder'
-
+import { useNavigate } from 'react-router-dom'
 const Prescription = () => {
+ const navigate = useNavigate()
  const { Doctor, dark } = useLogIN()
-
+ const [successMessage, setSuccessMessage] = useState('')
  const [patients, setPatients] = useState<Array<{ _id: string; name: { firstName: string; lastName: string } }>>([])
 
  const [medication, setMedication] = useState('')
@@ -41,7 +41,7 @@ const Prescription = () => {
     console.log(err.response.data ? err.response.data : 'Error in getting patients')
 
     setErrorMessage(
-     err.response.data && err.response.data.error ? err.response.data.error : 'Error in getting patients'
+     err.response.data && err.response.data.error ? err.response.data.error : 'Error in getting patients',
     )
 
     setLoading(false)
@@ -65,6 +65,23 @@ const Prescription = () => {
     refills,
    })
    setLoading(false)
+
+   setMedication('')
+   setDosage('')
+   setFrequency('')
+   setDuration('')
+   setDate('')
+   setNotes('')
+   setRefills('')
+   setSelectedpatient('')
+   setErrorMessage('')
+   setSuccessMessage('Prescription added successfully.')
+   setTimeout(() => {
+    setSuccessMessage('')
+    navigate('/doctor/PrescriptionTable')
+   }, 4000)
+
+   setLoading(false)
   } catch (error) {
    //@ts-ignore
 
@@ -76,7 +93,7 @@ const Prescription = () => {
 
    console.log(
     //@ts-ignore
-    error
+    error,
    )
    setLoading(false)
   }
@@ -107,6 +124,17 @@ const Prescription = () => {
     className="
     w-full lg:max-w-4xl md:max-w-xl max-w-md   shadow-cyan-300 rounded-2xl p-4 my  my-20"
    >
+    {successMessage && (
+     <div
+      className="bg-green-100 border 
+        
+      border-green-400 text-green-700 px-4 py-3 rounded relative"
+      role="alert"
+     >
+      <strong className="font-bold">Success!</strong>
+      <span className="block sm:inline">{successMessage}</span>
+     </div>
+    )}
     {errorMessage && (
      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
       <strong className="font-bold">Error!</strong>
@@ -136,6 +164,7 @@ const Prescription = () => {
          <select
           value={selectedpatient}
           className="block w-full px-4 py-2 mt-2  border border-cyan-300 rounded-md bg-gray-800 text-cyan-300   focus:outline-none focus:ring"
+          required
           onChange={(e) => {
            if (e.target.value === '') {
             setErrorMessage('Please select a patient')
@@ -153,7 +182,7 @@ const Prescription = () => {
             <option key={patient._id} value={patient._id}>
              {patient.name.firstName} {patient.name.lastName}
             </option>
-           )
+           ),
           )}
          </select>
         </div>
@@ -161,8 +190,12 @@ const Prescription = () => {
         <div>
          <label className="">Medication</label>
          <input
+          required
           value={medication}
           id="medication"
+          placeholder="
+                      eg. Tylenol
+                     "
           type="text"
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
           onChange={(e) => setMedication(e.target.value)}
@@ -172,7 +205,11 @@ const Prescription = () => {
         <div>
          <label className="c">Dosage</label>
          <input
+          required
           value={dosage}
+          placeholder="
+                      eg. 1 tablet
+                     "
           id="dosage"
           type="text"
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
@@ -183,7 +220,11 @@ const Prescription = () => {
         <div>
          <label className="c">Frequency</label>
          <input
+          required
           value={frequency}
+          placeholder="
+                      eg. 1 tablet 3 times a day
+                     "
           id="frequency"
           type="text"
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
@@ -193,7 +234,11 @@ const Prescription = () => {
         <div>
          <label className="c">Duration</label>
          <input
+          required
           value={duration}
+          placeholder="
+                      eg. 1 week
+                     "
           id="duration"
           type="number"
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
@@ -204,9 +249,13 @@ const Prescription = () => {
         <div>
          <label className="">Refills</label>
          <input
+          required
           value={refills}
           id="date"
           type="number"
+          placeholder="
+                      eg. 1
+                     "
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
           onChange={(e) => setRefills(e.target.value)}
          />
@@ -215,8 +264,12 @@ const Prescription = () => {
          <label className="c">Date</label>
          <input
           id="date"
+          required
           type="date"
           className="block w-full px-4 py-2 mt-2  border-cyan-300 border-b-2 bg-transparent rounded-md cbg-gray-800 ctext-gray-300"
+          placeholder="
+                      eg. 1
+                     "
           onChange={(e) => setDate(e.target.value)}
          />
         </div>
@@ -224,6 +277,16 @@ const Prescription = () => {
          <label className="c">Prescription Notes</label>
          <textarea
           value={notes}
+          style={{
+           backgroundColor: dark ? '#000' : '#fff',
+           color: dark ? '#fff' : '#000',
+          }}
+          required
+          placeholder="
+                      eg. Take with food
+                     
+                      
+                     "
           onChange={(e) => setNotes(e.target.value)}
           id="textarea"
           className="block w-full px-4 py-2 mt-2 border-cyan-300  border  rounded-md  focus:border-cyan-300 focus:outline-none focus:ring"
@@ -262,7 +325,7 @@ const Prescription = () => {
 
        <div className="flex justify-end mt-6">
         <button className="px-6 py-2 leading-5 transition-colors duration-200 transform bg-cyan-300 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600">
-         Save
+         Submit
         </button>
        </div>
       </form>

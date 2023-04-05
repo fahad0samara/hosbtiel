@@ -49,7 +49,7 @@ const Login = () => {
      // Use the user ID to query the patient collection
      const patientResponse = await axios.get(
       //@ts-ignore
-      `http://localhost:3000/user/getPatient/${decoded.patientId}`
+      `http://localhost:3000/user/getPatient/${decoded.patientId}`,
      )
 
      setPatient(patientResponse.data)
@@ -73,7 +73,7 @@ const Login = () => {
        headers: {
         Authorization: `Bearer ${response.data.token}`,
        },
-      }
+      },
      )
 
      setDoctor(doctorResponse.data)

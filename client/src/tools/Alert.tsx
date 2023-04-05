@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+//@ts-nocheck
+import { useState } from 'react'
 import { BsInfoCircle } from 'react-icons/bs'
 import { useLogIN } from '../../ContextLog'
 import { FaInfoCircle } from 'react-icons/fa'

@@ -35,7 +35,6 @@ const ListAppointments = () => {
 
    .then((res) => {
     setAppointments(res.data.allAppointments)
-    console.info('🚀 ~ file: ListTable.tsx ~ line 38 ~ .then ~ res.data.patients', res.data)
 
     setPagination({
      ...pagination,

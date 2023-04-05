@@ -21,7 +21,7 @@ const Stats = () => {
     setevents(res.data.events)
     setlastPrescriptionDate(res.data.lastPrescriptionDate)
     setlastAppointmentDate(res.data.lastAppointmentDate)
-    console.log(res.data)
+
     setLoading(false)
    } catch (error) {
     console.log(error)

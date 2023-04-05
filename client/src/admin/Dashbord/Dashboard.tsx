@@ -49,9 +49,7 @@ function Dashboard() {
       top-0 right-0
       
       "
-   >
-    <Alert />
-   </div>
+   ></div>
    <div
     className="grid lg:grid-cols-2 
        px-16

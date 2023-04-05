@@ -99,7 +99,7 @@ const FirstTimeLogin = ({ onContinue }) => {
        Authorization: `Bearer ${localStorage.getItem('token')}`,
        'Content-Type': 'application/json',
       },
-     }
+     },
     )
     console.log(response.data)
     setSuccess('Your working hours have been added successfully')
@@ -250,8 +250,8 @@ grid-cols-1
          setWorkingHours(
           workingHours.filter(
            // clear until 1
-           (workingHour, i) => i !== workingHours.length - 1
-          )
+           (workingHour, i) => i !== workingHours.length - 1,
+          ),
          )
         }
        >

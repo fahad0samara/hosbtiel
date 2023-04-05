@@ -143,7 +143,10 @@ const DoctorList = () => {
    className="p-6 h-screen ml-11"
   >
    <div className="md:hidden ">
-    <Alert />
+    {
+     //@ts-ignore
+     <Alert />
+    }
    </div>
 
    <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
@@ -260,6 +263,8 @@ const DoctorList = () => {
                               ${doctor.specialty === 'Psychiatrist' ? 'bg-lime-300' : ''}
                               ${doctor.specialty === 'Pulmonologist' ? 'bg-green-400' : ''}
                               ${doctor.specialty === 'Neurologist' ? 'bg-teal-300 ' : ''}
+                                  ${doctor.specialty === 'Orthopedic' ? 'bg-pink-900 ' : ''}
+                                ${doctor.specialty === 'Ophthalmologist' ? 'bg-teal-800 ' : ''}
                               ${doctor.specialty === 'Rheumatologist' ? 'bg-orange-500 ' : ''}${
                doctor.specialty === 'Urologist' ? 'bg-teal-300 ' : ''
               }

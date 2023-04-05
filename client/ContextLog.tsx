@@ -23,7 +23,7 @@ const ContextLog = createContext(
   setDoctor: React.Dispatch<React.SetStateAction<any>>
   Events: any
   setEvents: React.Dispatch<React.SetStateAction<any>>
- }
+ },
 )
 const LogCheck = ({ children }: any) => {
  const [logPatient, setlogPatient] = useState(false)

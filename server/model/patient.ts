@@ -1,9 +1,4 @@
-
 import mongoose from "mongoose";
-
-
-
-
 
 //bcrypt
 

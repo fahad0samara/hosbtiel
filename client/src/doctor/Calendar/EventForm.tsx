@@ -27,7 +27,7 @@ const EventForm = () => {
      title,
      start,
      end,
-    })
+    }),
    )
 
    setEventAdded(true) // Set a state variable to true to indicate that the event has been added

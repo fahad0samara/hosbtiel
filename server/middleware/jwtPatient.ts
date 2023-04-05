@@ -2,8 +2,6 @@ import jwt from "jsonwebtoken";
 import User from "../model/User";
 import Patient from "../model/patient";
 
-
-
 interface JwtPayload {
   _id: string;
 }
@@ -20,13 +18,12 @@ export const authUser = async (req: any, res: any, next: any) => {
   }
 };
 
-
 export const isAuth = async (req: any, res: any, next: any) => {
   if (req.header && req.headers.authorization) {
     const token = req.headers.authorization.split(" ")[1];
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-      const user = await User.findById((decoded as JwtPayload)._id)
+      const user = await User.findById((decoded as JwtPayload)._id);
       if (!user) {
         return res.status(400).send("user not found");
       }
@@ -44,9 +41,10 @@ export const authPatient = async (req: any, res: any, next: any) => {
   if (req.header && req.headers.authorization) {
     const token = req.headers.authorization.split(" ")[1];
     try {
-      
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-      const user = await Patient.findById((decoded as JwtPayload)._id).populate("user");
+      const user = await Patient.findById((decoded as JwtPayload)._id).populate(
+        "user"
+      );
 
       if (!user) {
         return res.status(400).send("user nott found");
@@ -60,8 +58,6 @@ export const authPatient = async (req: any, res: any, next: any) => {
     res.status(400).send("Invalid Token");
   }
 };
-
-
 
 //admin middleware
 export const authAdmin = async (req: any, res: any, next: any) => {

@@ -36,7 +36,7 @@ const MyCalendar = () => {
     const appointmentEvents = appointments.map((appointment) => {
      const appointmentDateTime = moment.utc(
       `${appointment.appointmentDate} ${appointment.appointmentTime}`,
-      'YYYY-MM-DD h:mm A'
+      'YYYY-MM-DD h:mm A',
      )
      return {
       start: appointmentDateTime.toDate(),

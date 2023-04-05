@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useLogIN } from '../../../../ContextLog'
 import { RiDeleteBin5Line } from 'react-icons/ri'
-import { FiEdit2, FiEye } from 'react-icons/fi'
-import { Link, useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
+import { FiEye } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
 
 import { patient } from '../../../types'
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
@@ -12,15 +11,7 @@ import Alert from '../../../tools/Alert'
 import Loder from '../../../tools/Loder'
 
 const PatientList = () => {
- const {
-  logPatient,
-
-  Profile,
-  setProfile,
-
-  dark,
-  setdark,
- } = useLogIN()
+ const { dark } = useLogIN()
  const [patients, setpatients] = useState<patient[]>([])
 
  const [error, setError] = useState('')
@@ -136,8 +127,22 @@ const PatientList = () => {
    }}
    className="p-6 h-screen ml-11 mx-auto"
   >
+   {
+    //error
+    error && (
+     <div className="flex justify-center items-center">
+      <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">Error</div>
+      <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+       <p>{error}</p>
+      </div>
+     </div>
+    )
+   }
    <div className="md:hidden ">
-    <Alert />
+    {
+     //@ts-ignore
+     <Alert />
+    }
    </div>
    <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
     <div

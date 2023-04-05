@@ -3,7 +3,7 @@ const router = express.Router();
 import Event from "../model/Event";
 
 router.post("/add-event-patient", async (req, res) => {
-  const {title, start, end, patient, doctor} = req.body;
+  const { title, start, end, patient, doctor } = req.body;
   const newEvent = new Event({
     title,
     start,
@@ -30,7 +30,7 @@ router.get("/all-event-patient", async (req, res) => {
 router.get("/get-event-patient/:id", async (req, res) => {
   try {
     const Patient = req.params.id;
-    const events = await Event.find({patient: Patient});
+    const events = await Event.find({ patient: Patient });
     res.status(200).json({
       events,
     });
@@ -40,7 +40,7 @@ router.get("/get-event-patient/:id", async (req, res) => {
 });
 
 router.post("/add-event-dr", async (req, res) => {
-  const {title, start, end, patient, doctor} = req.body;
+  const { title, start, end, patient, doctor } = req.body;
   const newEvent = new Event({
     title,
     start,
@@ -59,7 +59,7 @@ router.post("/add-event-dr", async (req, res) => {
 router.get("/get-event-dr/:id", async (req, res) => {
   try {
     const Doctor = req.params.id;
-    const events = await Event.find({doctor: Doctor});
+    const events = await Event.find({ doctor: Doctor });
     res.status(200).json({
       events,
     });
@@ -67,7 +67,5 @@ router.get("/get-event-dr/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
-  
 
 export default router;

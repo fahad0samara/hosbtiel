@@ -77,7 +77,7 @@ const Dashboard = () => {
    const now = moment()
    const appointmentDateTime = moment(
     `${appointmentData.currentAppointment.appointmentDate} ${appointmentData.currentAppointment.appointmentTime}`,
-    'YYYY-MM-DD h:mm A'
+    'YYYY-MM-DD h:mm A',
    )
    const timeDiff = appointmentDateTime.diff(now)
 

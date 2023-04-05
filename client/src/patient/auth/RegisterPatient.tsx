@@ -144,7 +144,7 @@ export default function RegisterPatient() {
      // Use the user ID to query the patient collection
      const patientResponse = await axios.get(
       //@ts-ignore
-      `http://localhost:3000/user/getPatient/${decoded.patientId}`
+      `http://localhost:3000/user/getPatient/${decoded.patientId}`,
      )
 
      console.log('patientResponse', patientResponse.data._id)

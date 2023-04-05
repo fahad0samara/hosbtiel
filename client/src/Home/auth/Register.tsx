@@ -226,7 +226,7 @@ const RegisterDr = () => {
           ${!formData.contactPerson.address.Street ? 'Street' : ''}
           ${!formData.contactPerson.address.district ? 'District' : ''}
 
-            `
+            `,
      )
      setTimeout(() => setError(''), 2000)
      setLoading(false)
@@ -271,7 +271,7 @@ const RegisterDr = () => {
     // Use the user ID to query the patient collection
     const patientResponse = await axios.get(
      //@ts-ignore
-     `http://localhost:3000/user/getPatient/${decoded.patientId}`
+     `http://localhost:3000/user/getPatient/${decoded.patientId}`,
     )
 
     console.log('patientResponse', patientResponse.data._id)

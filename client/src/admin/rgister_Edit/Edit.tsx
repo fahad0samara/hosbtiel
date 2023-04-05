@@ -89,7 +89,7 @@ const Edit = () => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
      },
-    }
+    },
    )
    .then((res) => {
     setSuccess(true)

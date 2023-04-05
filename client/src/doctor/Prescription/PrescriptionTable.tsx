@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+//@ts-nocheck
+import { useEffect, useState } from 'react'
+
 import { useLogIN } from '../../../ContextLog'
 import img from '../../assets/Medical.png'
 import Loder from '../../tools/Loder'
@@ -18,13 +19,10 @@ const Prescription = () => {
     const data = await response.json()
     setPrescriptions(data.prescription)
     setLoading(false)
-    console.log('====================================')
-    console.log('🚀 ~ file: PrescriptionTable.tsx ~ line 18 ~ fetchData ~ data', data.prescription)
-    console.log('====================================')
    } catch (error) {
     setError(error)
     setLoading(false)
-
+    //@ts-ignore
     console.error(error.message)
    }
   }

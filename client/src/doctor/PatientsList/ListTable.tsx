@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
-
-import { Link } from 'react-router-dom'
-import { FiEdit2, FiEye } from 'react-icons/fi'
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 import { useLogIN } from '../../../ContextLog'
 import img from '../../assets/List.png'
 import Loder from '../../tools/Loder'
+import { patient } from '../../types'
 const ListTable = () => {
- const [lastPatient, setLastPatient] = useState()
+ const [lastPatient, setLastPatient] = useState<patient>()
  const [error, setError] = useState(null)
  const { Doctor, dark } = useLogIN()
 
@@ -36,7 +32,6 @@ const ListTable = () => {
 
    .then((res) => {
     setLastPatient(res.data.patients)
-    console.info('🚀 ~ file: ListTable.tsx ~ line 38 ~ .then ~ res.data.patients', res.data.patients)
 
     setPagination({
      ...pagination,
@@ -117,12 +112,7 @@ const ListTable = () => {
     backgroundColor: dark ? '#000' : '#fff',
     color: dark ? '#fff' : '#000',
    }}
-   className="p-6
-      h-screen
-      ml-11
-
-    
-      "
+   className="p-6 h-screen ml-11"
   >
    <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
     <div
@@ -247,8 +237,6 @@ const ListTable = () => {
 
            <th className=" text-center">weight</th>
            <th className=" text-center">height</th>
-
-           <th className=" text-center">Actions</th>
           </tr>
          </thead>
          {
@@ -316,20 +304,6 @@ const ListTable = () => {
                <td className="  text-center">
                 <div className="flex items-center justify-center">
                  <span>{patients.height}</span>
-                </div>
-               </td>
-
-               <td className="  text-center">
-                <div className="flex item-center justify-center mt-3 ">
-                 <div className={'w-4 mr-2  transform hover:text-purple-500 hover:scale-110'}>
-                  <Link
-                   //
-                   to={`/admin/ViewPatient/${patients._id}`}
-                   className="w-4 mr-2 transform text-cyan-400 hover:text-cyan-400 hover:scale-150"
-                  >
-                   <FiEye />
-                  </Link>
-                 </div>
                 </div>
                </td>
               </tr>

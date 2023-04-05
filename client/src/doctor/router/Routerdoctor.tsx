@@ -1,10 +1,10 @@
-import { Routes, Route, useParams, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 import Dashboard from '../DashBord/Dashboard'
 import SideNav from './SideNavigate'
 import DoctorProfile from '../Profile/DoctorProfile'
 import MyCalendar from '../Calendar/MyCalendar'
-import ViewPatient from '../../admin/List/patient/Profiel/ViewPatient'
+
 import Prescription from '../Prescription/Prescription'
 import PrescriptionTable from '../Prescription/PrescriptionTable'
 import ListTable from '../PatientsList/ListTable'
@@ -104,7 +104,6 @@ const Routerdoctor = () => {
         <Route path="Prescription" element={<Prescription />} />
         <Route path="ListTable" element={<ListTable />} />
         <Route path="PrescriptionTable" element={<PrescriptionTable />} />
-        <Route path="/ViewPatient/:id" element={<ViewPatient />} />
        </Routes>
       </div>
      )}

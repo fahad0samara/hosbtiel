@@ -84,6 +84,11 @@ function Chart() {
        text: 'Number of Appointments',
       },
      },
+     plotOptions: {
+      column: {
+       animation: false,
+      },
+     },
      series: [
       {
        name: 'Appointments',
@@ -172,7 +177,7 @@ function Chart() {
 
  const options = {
   chart: {
-   type: 'column',
+   type: 'pie',
    backgroundColor: 'transparent',
    borderWidth: 0,
    height: 300,
@@ -197,6 +202,9 @@ function Chart() {
    },
   ],
   plotOptions: {
+   pie: {
+    animation: false,
+   },
    series: {
     marker: {
      enabled: true,
@@ -232,7 +240,11 @@ function Chart() {
    <div className="col-span-1 ">
     {
      // if there no appointments
-     data.length === 0 && !loading ? null : data.length === 0 && loading ? (
+     data.length === 0 && !loading ? (
+      <div>
+       <h1 className="text-center text-lg italic">No appointments available for the selected date range.</h1>
+      </div>
+     ) : data.length === 0 && loading ? (
       <div>
        <h1 className="text-center text-2xl font-bold">Loading...</h1>
       </div>
@@ -246,11 +258,9 @@ function Chart() {
     }
    </div>
    <div className="col-span-1 ">
-    {chartOptions && chartOptions.length > 0 ? (
-     <div className="flex justify-center">
-      <HighchartsReact highcharts={Highcharts} options={options} />
-     </div>
-    ) : null}
+    <div className="flex justify-center">
+     <HighchartsReact highcharts={Highcharts} options={options} />
+    </div>
    </div>
   </div>
  )

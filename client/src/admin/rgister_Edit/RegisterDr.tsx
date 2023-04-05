@@ -528,6 +528,7 @@ const RegisterDr = () => {
              type="text"
              name="weight"
              id="weight"
+             required
              value={formData.weight}
              onChange={(e) =>
               setFormData({
@@ -543,6 +544,7 @@ const RegisterDr = () => {
              Height
             </label>
             <input
+             required
              className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
              type="text"
              name="height"
