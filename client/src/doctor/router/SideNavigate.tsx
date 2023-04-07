@@ -16,9 +16,27 @@ import { FaUserInjured } from 'react-icons/fa'
 import { TbCheckupList } from 'react-icons/tb'
 
 const SideNavigate = (_props: any) => {
- const { Profile, setProfile, setLoading, dark, setdark } = useLogIN()
+ const { setEvents, setAuthenticated, setProfile, setPatient, dark, setDoctor, setlogPatient, setlogAdmin, setlogDr } =
+  useLogIN()
+ const [loading, setLoading] = useState(false)
  const navigate = useNavigate()
  const { id } = useParams()
+ const HandleLogout = () => {
+  setLoading(true)
+  localStorage.removeItem('token')
+  localStorage.removeItem('authenticated')
+  localStorage.removeItem('role')
+  setlogPatient(false)
+  setlogAdmin(false)
+  setlogDr(false)
+  setPatient(undefined)
+  setDoctor(undefined)
+  setEvents([])
+  setProfile(undefined)
+  setAuthenticated(false)
+  setLoading(false)
+  navigate('/login')
+ }
 
  return (
   <SideNav
@@ -41,6 +59,9 @@ const SideNavigate = (_props: any) => {
      navigate(`/doctor/PrescriptionTable`)
     } else if (selected === 'ListTable') {
      navigate(`/doctor/ListTable`)
+    } else if (selected === 'logout') {
+     // add this code for logout functionality
+     HandleLogout()
     }
    }}
    className="
@@ -229,6 +250,26 @@ const SideNavigate = (_props: any) => {
       />
      </NavIcon>
      <NavText
+      onClick={
+       //HandleLogout
+       () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('role')
+        localStorage.removeItem('token')
+        localStorage.removeItem('authenticated')
+        setlogPatient(false)
+        setlogAdmin(false)
+        setlogDr(false)
+        setPatient(undefined)
+        setDoctor(undefined)
+        setEvents([])
+        setProfile(undefined)
+        setAuthenticated(false)
+        navigate('/login')
+        console.log('logout')
+       }
+      }
       style={{
        color: dark ? 'rgb(103 232 249)' : 'black',
        fontSize: '0.9rem',

@@ -43,6 +43,7 @@ import FirstTimeLogin from '../FirstTimeLogin'
 //   );
 // }
 
+
 const Routerdoctor = () => {
  const { Doctor, dark, Profile } = useLogIN()
 
@@ -95,17 +96,25 @@ const Routerdoctor = () => {
      {showFirstTimeLogin ? (
       <FirstTimeLogin onContinue={handleContinue} />
      ) : (
-      <div>
-       <SideNav />
-       <Routes>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="MyCalendar" element={<MyCalendar />} />
-        <Route path="/doctor/:id" element={<DoctorProfile />} />
-        <Route path="Prescription" element={<Prescription />} />
-        <Route path="ListTable" element={<ListTable />} />
-        <Route path="PrescriptionTable" element={<PrescriptionTable />} />
-       </Routes>
-      </div>
+      <>
+       {Doctor ? (
+        <div>
+         <SideNav />
+         <Routes>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="MyCalendar" element={<MyCalendar />} />
+          <Route path="/doctor/:id" element={<DoctorProfile />} />
+          <Route path="Prescription" element={<Prescription />} />
+          <Route path="ListTable" element={<ListTable />} />
+          <Route path="PrescriptionTable" element={<PrescriptionTable />} />
+         </Routes>
+        </div>
+       ) : (
+        <div>
+         <p>You must be logged in as a Doctor to access this page.</p>
+        </div>
+       )}
+      </>
      )}
     </>
    )}

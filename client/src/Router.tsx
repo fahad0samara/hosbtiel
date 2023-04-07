@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import Hero from './Home/Hero'
 import RouterPatient from './patient/router/RouterPatient'
@@ -10,8 +11,18 @@ import RegisterPatient from './patient/auth/RegisterPatient'
 import Routerdoctor from './doctor/router/Routerdoctor'
 
 const Router = () => {
- const { logPatient, logAdmin, logDr, setlogAdmin, setlogPatient } = useLogIN()
+ const { logPatient, logAdmin, logDr, setlogAdmin, setlogPatient, authenticated } = useLogIN()
+ const navigator = useNavigate()
 
+ if (authenticated) {
+  if (logAdmin) {
+   navigator('/admin/dashboard')
+  } else if (logPatient) {
+   navigator('/patient/dashboard')
+  } else if (logDr) {
+   navigator('/doctor/dashboard')
+  }
+ }
  return (
   <Routes>
    {logPatient && <Route path="/patient/*" element={<RouterPatient />} />}
