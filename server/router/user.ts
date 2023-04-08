@@ -156,13 +156,13 @@ router.post("/logout", (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      return res.status(401).json({message: "Unauthorized"});
+      return res.status(401).json({ message: "Unauthorized" });
     }
     const token = authHeader.split(" ")[1];
     res.clearCookie("token");
     const decodedToken = jwt.decode(token);
     if (!decodedToken || typeof decodedToken === "string") {
-      return res.status(401).json({message: "Invalid token"});
+      return res.status(401).json({ message: "Invalid token" });
     }
     const expiresInMs = decodedToken.exp
       ? decodedToken.exp * 1000 - Date.now()
@@ -188,7 +188,7 @@ router.post("/logout", (req, res) => {
     );
   } catch (error) {
     // Handle error
-    res.status(500).json({message: "Internal server error"});
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

@@ -28,7 +28,7 @@ const Table = () => {
     })
     .then((res) => {
      setPrescriptions(res.data.prescription)
-    setLoading(false)
+     setLoading(false)
 
      setPagination({
       ...pagination,

@@ -25,10 +25,10 @@ const Login = () => {
     email,
     password,
    })
-          localStorage.setItem('token', response.data.token)
-          sessionStorage.setItem('token', response.data.token)
-          localStorage.setItem('role', response.data.user.role)
-          localStorage.setItem('authenticated', 'true')
+   localStorage.setItem('token', response.data.token)
+   sessionStorage.setItem('token', response.data.token)
+   localStorage.setItem('role', response.data.user.role)
+   localStorage.setItem('authenticated', 'true')
    const decoded = jwtDecode(response.data.token)
 
    setLoading(false)

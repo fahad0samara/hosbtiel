@@ -43,7 +43,6 @@ import FirstTimeLogin from '../FirstTimeLogin'
 //   );
 // }
 
-
 const Routerdoctor = () => {
  const { Doctor, dark, Profile } = useLogIN()
 
