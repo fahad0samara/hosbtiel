@@ -123,7 +123,9 @@ const LogCheck = ({ children }: any) => {
        })
        .then((response) => {
         setPatient(response.data)
-        setProfile(response.data)
+           setProfile(response.data)
+           console.log('🚀 ~ file: ContextLog.tsx ~ line 101 ~ .then ~ response.data', response.data)
+           
        })
        .catch((error) => {
         console.log('Error while fetching patient:', error)

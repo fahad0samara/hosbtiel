@@ -27,7 +27,7 @@ const List = () => {
    return
   }
   try {
-   const response = await axios.get(`http://localhost:3000/Event/get-event/${Patient._id}`)
+   const response = await axios.get(`http://localhost:3000/Event/get-event-patient/${Patient._id}`)
 
    const eventsData = response.data.events.map((event) => ({
     start: moment(event.start).toDate(),
@@ -35,7 +35,7 @@ const List = () => {
     title: event.title,
    }))
    setEvents(eventsData)
-   console.log(eventsData)
+
    setLoading(false)
   } catch (error) {
    console.error(error)

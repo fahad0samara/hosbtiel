@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 import Hero from './Home/Hero'
@@ -9,9 +9,16 @@ import Register from './Home/auth/Register'
 import Login from './Home/auth/Login'
 import RegisterPatient from './patient/auth/RegisterPatient'
 import Routerdoctor from './doctor/router/Routerdoctor'
-
+const NotFound = () => {
+ return (
+  <div>
+   <h1>Page Not Found</h1>
+   <p>The requested page could not be found.</p>
+  </div>
+ )
+}
 const Router = () => {
- const { logPatient, logAdmin, logDr, setlogAdmin, setlogPatient, authenticated } = useLogIN()
+ const { logPatient, logAdmin, logDr, authenticated } = useLogIN()
  const navigator = useNavigate()
 
  if (authenticated) {
@@ -35,6 +42,18 @@ const Router = () => {
 
    <Route path="/Register" element={<Register />} />
    <Route path="/login" element={<Login />} />
+   {/* Catch-all route */}
+   <Route
+    path="/*"
+    element={
+     <Navigate
+      to={logPatient ? '/patient/dashboard' : logAdmin ? '/admin/dashboard' : logDr ? '/doctor/dashboard' : '/'}
+     />
+    }
+   />
+
+   {/* Catch-all route for 404 page */}
+   <Route path="*" element={<NotFound />} />
   </Routes>
  )
 }

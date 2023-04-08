@@ -152,6 +152,46 @@ router.post(
   }
 );
 
+router.post("/logout", (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({message: "Unauthorized"});
+    }
+    const token = authHeader.split(" ")[1];
+    res.clearCookie("token");
+    const decodedToken = jwt.decode(token);
+    if (!decodedToken || typeof decodedToken === "string") {
+      return res.status(401).json({message: "Invalid token"});
+    }
+    const expiresInMs = decodedToken.exp
+      ? decodedToken.exp * 1000 - Date.now()
+      : 0;
+    const pastDate = new Date(0);
+    const pastExpiresInSec = Math.floor(pastDate.getTime() / 1000);
+    const pastToken = jwt.sign({}, process.env.JWT_SECRET as string, {
+      expiresIn: pastExpiresInSec,
+    });
+
+    res.json({
+      token: pastToken,
+      expiresIn: expiresInMs,
+      message: "Logged out successfully",
+    });
+    console.log(
+      "Logged out successfully. Token expires in " +
+        expiresInMs +
+        " milliseconds",
+      "Logged out successfully",
+
+      token
+    );
+  } catch (error) {
+    // Handle error
+    res.status(500).json({message: "Internal server error"});
+  }
+});
+
 router.get("/getPatient/:id", async (req, res) => {
   try {
     // Find the patient by their ID and populate the user field
