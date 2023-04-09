@@ -9,27 +9,11 @@ import Register from './Home/auth/Register'
 import Login from './Home/auth/Login'
 import RegisterPatient from './patient/auth/RegisterPatient'
 import Routerdoctor from './doctor/router/Routerdoctor'
-const NotFound = () => {
- return (
-  <div>
-   <h1>Page Not Found</h1>
-   <p>The requested page could not be found.</p>
-  </div>
- )
-}
+import NotFound from './NotFound'
+
 const Router = () => {
  const { logPatient, logAdmin, logDr, authenticated } = useLogIN()
- const navigator = useNavigate()
 
- if (authenticated) {
-  if (logAdmin) {
-   navigator('/admin/dashboard')
-  } else if (logPatient) {
-   navigator('/patient/dashboard')
-  } else if (logDr) {
-   navigator('/doctor/dashboard')
-  }
- }
  return (
   <Routes>
    {logPatient && <Route path="/patient/*" element={<RouterPatient />} />}
@@ -41,16 +25,34 @@ const Router = () => {
    <Route path="/RegisterPatient" element={<RegisterPatient />} />
 
    <Route path="/Register" element={<Register />} />
-   <Route path="/login" element={<Login />} />
-   {/* Catch-all route */}
-   <Route
-    path="/*"
-    element={
-     <Navigate
-      to={logPatient ? '/patient/dashboard' : logAdmin ? '/admin/dashboard' : logDr ? '/doctor/dashboard' : '/'}
+
+   {/* Check if the user is authenticated */}
+   {authenticated ? (
+    <>
+     {/* Redirect to dashboard */}
+     <Route
+      path="/*"
+      element={
+       <Navigate
+        to={logPatient ? '/patient/dashboard' : logAdmin ? '/admin/dashboard' : logDr ? '/doctor/dashboard' : '/'}
+       />
+      }
      />
-    }
-   />
+
+     {/* Redirect to dashboard if user visits the login page */}
+     <Route
+      path="/login"
+      element={
+       <Navigate
+        to={logPatient ? '/patient/dashboard' : logAdmin ? '/admin/dashboard' : logDr ? '/doctor/dashboard' : '/'}
+       />
+      }
+     />
+    </>
+   ) : (
+    /* If the user is not authenticated, render the Login component */
+    <Route path="/login" element={<Login />} />
+   )}
 
    {/* Catch-all route for 404 page */}
    <Route path="*" element={<NotFound />} />

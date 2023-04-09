@@ -13,6 +13,7 @@ import WorkingHours from '../Calendar/WorkingHours'
 import { useLogIN } from '../../../ContextLog'
 import axios from 'axios'
 import FirstTimeLogin from '../FirstTimeLogin'
+import NotFound from '../../NotFound'
 
 // function FirstTimeLogin({ onContinue }) {
 //   const [hoursSubmitted, setHoursSubmitted] = useState(false);
@@ -106,6 +107,7 @@ const Routerdoctor = () => {
           <Route path="Prescription" element={<Prescription />} />
           <Route path="ListTable" element={<ListTable />} />
           <Route path="PrescriptionTable" element={<PrescriptionTable />} />
+          <Route path="*" element={<NotFound />} />
          </Routes>
         </div>
        ) : (

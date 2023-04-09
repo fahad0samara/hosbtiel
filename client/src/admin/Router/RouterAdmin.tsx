@@ -4,11 +4,12 @@ import SideNavigate from './SideNavigate'
 import Dashboard from '../Dashbord/Dashboard'
 import DoctorList from '../List/Doctor/DoctorList'
 import Edit from '../rgister_Edit/Edit'
-import NotFound from '../NotFound'
+
 import ViewDr from '../List/Doctor/Profile/ViewDr'
 import RegisterDr from '../rgister_Edit/RegisterDr'
 import PatientList from '../List/patient/PatientList'
 import ViewPatient from '../List/patient/Profiel/ViewPatient'
+import NotFound from '../../NotFound'
 
 const RouterPatient = () => {
  return (

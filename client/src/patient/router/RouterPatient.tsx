@@ -6,6 +6,7 @@ import Appointment from '../AppointmentForm'
 import Profile from '../profile/Profile'
 import ListAppointments from '../ListAppointments'
 import MyCalendar from '../Calendar/MyCalendar'
+import NotFound from '../../NotFound'
 
 const RouterPatient = () => {
  return (
@@ -19,6 +20,7 @@ const RouterPatient = () => {
     <Route path="appointment" element={<Appointment />} />
     <Route path="ListAppointments" element={<ListAppointments />} />
     <Route path="Profile" element={<Profile />} />
+    <Route path="*" element={<NotFound />} />
    </Routes>
   </div>
  )

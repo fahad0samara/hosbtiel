@@ -3,8 +3,13 @@ import React, { useContext, useState, createContext, useEffect } from 'react'
 import axios from 'axios'
 import Loder from './src/tools/Loder'
 import jwtDecode from 'jwt-decode'
-import { Navigate } from 'react-router-dom'
 
+interface DecodedJwt {
+ exp: number
+ patientId?: string
+ doctorId?: string
+ // add more properties as needed
+}
 const ContextLog = createContext(
  {} as {
   logPatient: boolean
@@ -36,67 +41,13 @@ const LogCheck = ({ children }: any) => {
  const [Patient, setPatient] = useState()
  const [Doctor, setDoctor] = useState()
  const [Events, setEvents] = useState([])
-
  const [Profile, setProfile] = useState()
  const [Loading, setLoading] = useState(false)
  const [dark, setdark] = useState(localStorage.getItem('dark') === 'true' ? true : false)
  const [authenticated, setAuthenticated] = useState(false)
 
- //  // Check if the user is authenticated when the component mounts
- //  useEffect(() => {
- //   const token = localStorage.getItem('token')
+ // Check if the user is authenticated when the component mounts
 
- //   if (token) {
- //    try {
- //     const decoded = jwtDecode(token)
- //     if (decoded.exp * 1000 < Date.now()) {
- //      // Token has expired
- //      localStorage.removeItem('token')
- //     } else {
- //      // Token is valid
- //      if (decoded.role === 'admin') {
- //       setlogAdmin(true)
- //      } else if (decoded.role === 'patient') {
- //       axios
- //        .get(`http://localhost:3000/user/getPatient/${decoded.patientId}`, {
- //         headers: {
- //          Authorization: `Bearer ${token}`,
- //         },
- //        })
- //        .then((response) => {
- //         setPatient(response.data)
- //         setProfile(response.data)
- //        })
- //        .catch((error) => {
- //         console.log('Error while fetching patient:', error)
- //        })
- //       setlogPatient(true)
- //      } else if (decoded.role === 'doctor') {
- //       axios
- //        .get(`http://localhost:3000/doctor/doctors/${decoded.doctorId}`, {
- //         headers: {
- //          Authorization: `Bearer ${token}`,
- //         },
- //        })
- //        .then((response) => {
- //         setDoctor(response.data)
- //         setProfile(response.data)
- //        })
- //        .catch((error) => {
- //         console.log('Error while fetching doctor:', error)
- //        })
- //       setlogDr(true)
- //      }
- //      setAuthenticated(true)
- //     }
- //    } catch (error) {
- //     console.log('Error while decoding token:', error)
- //     localStorage.removeItem('token')
- //    }
- //   } else {
- //    setAuthenticated(false)
- //   }
- //  }, [])
  useEffect(() => {
   const token = localStorage.getItem('token')
   const role = localStorage.getItem('role')
@@ -104,9 +55,11 @@ const LogCheck = ({ children }: any) => {
 
   if (token && authenticated) {
    try {
-    const decoded = jwtDecode(token)
+    const decoded: DecodedJwt = jwtDecode(token)
+    //
     if (decoded.exp * 1000 < Date.now()) {
      // Token has expired
+
      localStorage.removeItem('token')
      localStorage.removeItem('role')
      localStorage.removeItem('authenticated')
