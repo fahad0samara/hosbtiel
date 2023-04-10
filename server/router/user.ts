@@ -3,7 +3,7 @@ const router = express.Router();
 const webpush = require("web-push");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const {CloudinaryStorage} = require("multer-storage-cloudinary");
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../model/User";
@@ -25,7 +25,7 @@ import Doctor from "../model/doctor";
 import Appointment from "../model/appointment";
 
 import Prescription from "../model/prescription";
-import { Request } from "express-serve-static-core";
+import {Request} from "express-serve-static-core";
 import Event from "../model/Event";
 
 // configure cloudinary
@@ -46,19 +46,44 @@ router.post(
 
   async (req, res) => {
     // validate the data before we make a user
-    const { error } = loginUserValidation(req.body);
+    const {error} = loginUserValidation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // check if the user is already in the database
     const user = await User.findOne({
       email: req.body.email,
     });
-    if (!user) return res.status(400).send("Email is not found");
+    if (!user)
+      return res.status(400).send(`
+    Email  is wrong
+    Please
+    1. Check your email 
+    and try again
+    2. If you don't have an account, please register
+  
+
+    
+
+
+
+
+    
+
+      `);
 
     try {
       // check if the password is correct
       const validPass = await bcrypt.compare(req.body.password, user.password);
-      if (!validPass) return res.status(400).send("Invalid password");
+      if (!validPass)
+        return res.status(400).send(
+          `
+    Password is wrong
+    Please
+        1. Check your password
+    and try again
+    2. If you forgot your password, click on the forgot password link below
+    `
+        );
 
       // Check if the user is a doctor
       if (user.role === "doctor") {
@@ -142,11 +167,11 @@ router.post(
           });
       }
     } catch (error) {
-      console.log(error);
+      console.log(error, "Error in login user");
 
       res.status(400).json({
-        message: (error as Error).message,
-        error,
+        message: "Error",
+        error: error.message,
       });
     }
   }
@@ -156,13 +181,13 @@ router.post("/logout", (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({message: "Unauthorized"});
     }
     const token = authHeader.split(" ")[1];
     res.clearCookie("token");
     const decodedToken = jwt.decode(token);
     if (!decodedToken || typeof decodedToken === "string") {
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({message: "Invalid token"});
     }
     const expiresInMs = decodedToken.exp
       ? decodedToken.exp * 1000 - Date.now()
@@ -188,7 +213,7 @@ router.post("/logout", (req, res) => {
     );
   } catch (error) {
     // Handle error
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({message: "Internal server error"});
   }
 });
 
@@ -207,7 +232,7 @@ router.get("/getPatient/:id", async (req, res) => {
     // Send the patient's information to the client
     res.json(patient);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -226,7 +251,7 @@ router.get("/getDoctor/:id", async (req, res) => {
     // Send the doctor's information to the client
     res.json(doctor);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -245,7 +270,7 @@ router.get("/getAdmin/:id", async (req, res) => {
     // Send the admin's information to the client
     res.json(admin);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -264,7 +289,7 @@ router.get("/getPatient", async (req, res) => {
     // Send the patient's information to the client
     res.json(patient);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -283,13 +308,13 @@ router.get("/getDoctor", async (req, res) => {
     // Send the doctor's information to the client
     res.json(doctor);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
 router.post("/register-user", async (req: any, res: any) => {
   // validate
-  const { error } = registerUserValidation(req.body);
+  const {error} = registerUserValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // check if the user is already in the database
@@ -299,7 +324,7 @@ router.post("/register-user", async (req: any, res: any) => {
   if (emailFind) return res.status(400).send("Email already exists");
 
   // destructure the request body
-  const { email, password, role } = req.body;
+  const {email, password, role} = req.body;
 
   // hash the password
   const salt = bcrypt.genSaltSync(10);
@@ -325,7 +350,7 @@ router.post("/register-user", async (req: any, res: any) => {
 
 router.post("/register-patient", async (req, res) => {
   // validate the data before we make a patient
-  const { error } = registerValidation(req.body);
+  const {error} = registerValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // check if the User is already in the database
@@ -368,7 +393,7 @@ router.post("/register-patient", async (req, res) => {
       newPatient,
     });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({message: err.message});
   }
 });
 router.get("/appointments", async (req, res) => {
@@ -377,7 +402,7 @@ router.get("/appointments", async (req, res) => {
     res.json(appointments); // Return the appointments as a JSON response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({error: "Internal server error"});
   }
 });
 
@@ -386,7 +411,7 @@ router.get("/appointments/:id", async (req, res) => {
     // Check if the patient exists
     const patient = await Patient.findById(req.params.id);
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({error: "Patient not found"});
     }
 
     const now = new Date();
@@ -398,7 +423,7 @@ router.get("/appointments/:id", async (req, res) => {
     const appointments = await Appointment.find({
       patient: req.params.id,
     })
-      .sort({ appointmentDate: 1 })
+      .sort({appointmentDate: 1})
       .populate("doctor", "name specialty avatar");
 
     for (let i = 0; i < appointments.length; i++) {
@@ -430,7 +455,7 @@ router.get("/all-appointments/:id", async (req, res) => {
     // Check if the patient exists
     const patient = await Patient.findById(req.params.id);
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({error: "Patient not found"});
     }
 
     // Get the page number from the query string
@@ -444,7 +469,7 @@ router.get("/all-appointments/:id", async (req, res) => {
     const allAppointments = await Appointment.find({
       patient: req.params.id,
     })
-      .sort({ appointmentDate: 1 })
+      .sort({appointmentDate: 1})
       .skip(skip)
       .limit(limit)
       .populate("doctor", "name specialty");
@@ -463,7 +488,7 @@ router.get("/all-appointments/:id", async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ error });
+    res.status(500).json({error});
   }
 });
 
@@ -473,13 +498,13 @@ router.post("/appointment", async (req, res) => {
     // Check if the patient exists
     const patient = await Patient.findById(req.body.patient);
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({error: "Patient not found"});
     }
 
     // Check if the doctor exists
     const doctor = await Doctor.findById(req.body.doctorId);
     if (!doctor) {
-      return res.status(404).json({ error: "Doctor not found" });
+      return res.status(404).json({error: "Doctor not found"});
     }
 
     // Extract the patient's ID, doctor's ID, appointment date, and appointment time from the request body
@@ -492,7 +517,7 @@ router.post("/appointment", async (req, res) => {
     const latestAppointment = await Appointment.findOne({
       patient: patientId,
       appointmentDate: appointmentDate,
-    }).sort({ appointmentTime: -1 });
+    }).sort({appointmentTime: -1});
     if (latestAppointment) {
       // Compare the current time with the latest appointment time
       //@ts-ignore
@@ -659,7 +684,7 @@ router.get("/Prescription/:id", async (req, res) => {
     });
   } catch (error) {
     // If there is an error, send a response with a status of 500 and the error message
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 });
 router.get(
@@ -802,7 +827,7 @@ router.get(
       //@ts-ignore
       const pdfDoc = pdfMake.createPdf(docDefinition);
       // Send the PDF as a response
-      pdfDoc.getBase64((data) => {
+      pdfDoc.getBase64(data => {
         res.writeHead(200, {
           "Content-Type": "application/pdf",
           "Content-Disposition": 'attachment;filename="prescription.pdf"',
@@ -837,7 +862,7 @@ router.get("/stats/:id", async (req, res) => {
     //Get the most recent Appointment
     const latestAppointment = await Appointment.findOne({
       patient: patient._id,
-    }).sort({ createdAt: -1 });
+    }).sort({createdAt: -1});
     const lastAppointmentDate = latestAppointment
       ? //@ts-ignore
         latestAppointment.createdAt.toLocaleTimeString()
@@ -846,7 +871,7 @@ router.get("/stats/:id", async (req, res) => {
     // Get the most recent prescription date
     const latestPrescription = await Prescription.findOne({
       patient: patient._id,
-    }).sort({ createdAt: -1 });
+    }).sort({createdAt: -1});
     const lastPrescriptionDate = latestPrescription
       ? //@ts-ignore
         latestPrescription.createdAt.toLocaleTimeString()
@@ -877,11 +902,11 @@ const storage = new CloudinaryStorage({
     folder: "avatars",
     allowed_formats: ["jpg", "png"],
 
-    transformation: [{ width: 150, height: 150, crop: "limit" }],
+    transformation: [{width: 150, height: 150, crop: "limit"}],
   },
 });
 
-const multerUpload = multer({ storage: storage });
+const multerUpload = multer({storage: storage});
 async function uploadAvatar(req: Request, previousAvatarUrl: string) {
   return new Promise((resolve, reject) => {
     multerUpload.single("avatar")(req, null, (err: any) => {
@@ -924,7 +949,7 @@ router.post("/avatar/:id", async (req, res) => {
     // check if user exists
     const user = await Patient.findById(req.params.id);
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({message: "User not found"});
     }
 
     // save the URL of the previous avatar image
