@@ -1,15 +1,14 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
 
-import Hero from './Home/Hero'
 import RouterPatient from './patient/router/RouterPatient'
 import { useLogIN } from '../ContextLog'
 import RouterAdmin from './admin/Router/RouterAdmin'
 import Register from './Home/auth/Register'
 import Login from './Home/auth/Login'
-import RegisterPatient from './patient/auth/RegisterPatient'
+
 import Routerdoctor from './doctor/router/Routerdoctor'
 import NotFound from './NotFound'
+import Connection from './Home/components/connection'
 
 const Router = () => {
  const { logPatient, logAdmin, logDr, authenticated } = useLogIN()
@@ -20,9 +19,7 @@ const Router = () => {
    {logAdmin && <Route path="/admin/*" element={<RouterAdmin />} />}
    {logDr && <Route path="/doctor/*" element={<Routerdoctor />} />}
 
-   <Route path="/" element={<Hero />} />
-
-   <Route path="/RegisterPatient" element={<RegisterPatient />} />
+   <Route path="/" element={<Connection />} />
 
    <Route path="/Register" element={<Register />} />
 

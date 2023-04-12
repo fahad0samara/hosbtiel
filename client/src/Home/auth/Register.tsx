@@ -356,6 +356,7 @@ const RegisterDr = () => {
              Email
             </label>
             <input
+             placeholder="Enter your email address"
              className={`appearance-none bg-transparent placeholder:font-bold  border-b-2 border-cyan-300 text-white w-full  mr-3 py-1 px-2 leading-tight focus:outline-none
                 ${error ? 'border-red-500 ' : ''}
                 `}
@@ -363,11 +364,16 @@ const RegisterDr = () => {
              name="email"
              value={formData.email}
              onChange={handleChange('email')}
-             placeholder="
-                  Enter your Email 
-                  "
              required
             />
+            <h1>asfdasfd</h1>
+
+            {error && error.includes('formData.email') && (
+             <span className="text-center text-red-500 text-sm flex italic font-bold">
+              {error}
+              sfsdfsdfsdf
+             </span>
+            )}
            </div>
            <div className="mb-4">
             <label className="block  text-sm font-bold mb-2 text-white" htmlFor="password">
@@ -381,9 +387,7 @@ const RegisterDr = () => {
              name="password"
              value={formData.password}
              onChange={handleChange('password')}
-             placeholder="
-                  Enter your Password
-                  "
+             placeholder="Enter your Password"
              required
             />
            </div>
@@ -1093,7 +1097,7 @@ const RegisterDr = () => {
               },
              })
             }
-           ></input>
+           />
           </div>
          </div>
 
@@ -1123,9 +1127,7 @@ const RegisterDr = () => {
             className="appearance-none bg-transparent  border-b-2 border-cyan-400 w-full  mr-3 py-1 px-2 leading-tight focus:outline-none"
             required
             placeholder="
-                    ex.bother / 
-                    sister
-                    "
+ex.bother /  sister"
             value={formData.contactPerson.relation}
             onChange={(e) =>
              setFormData({
@@ -1136,7 +1138,10 @@ const RegisterDr = () => {
               },
              })
             }
-           ></input>
+           />
+           {error && error.includes('relation') && (
+            <span className="text-center text-red-500 text-sm flex italic font-bold">{error}</span>
+           )}
           </div>
          </div>
 
@@ -1283,7 +1288,7 @@ const RegisterDr = () => {
             mt-10
             rounded-lg
             shadow-xl
-            bg-red-900
+            bg-red-500
             
                       "
         >

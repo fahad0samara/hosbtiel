@@ -18,7 +18,6 @@ const Login = () => {
  const [isLoading, setisLoading] = useState(false)
 
  const HandelLogin = async (e: { preventDefault: () => void }) => {
-  setisLoading(true)
   e.preventDefault()
   if (email === '' || password === '' || email === null || password === null) {
    setError(
@@ -216,7 +215,7 @@ const Login = () => {
             type="submit"
             className="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline
                             focus:outline-none
-
+hover:bg-cyan-600
                         hover:text-black
                         "
            >
