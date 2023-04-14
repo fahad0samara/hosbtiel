@@ -1,31 +1,32 @@
 import { Link } from 'react-router-dom'
 import { useLogIN } from '../../../../ContextLog'
+import img from '../../../assets/miracle.png'
+import img0 from '../../../assets/Hero.jpg'
 
 const Hero = () => {
  const { dark, logPatient, logAdmin } = useLogIN()
 
  return (
-  <div className="">
-   <header className="relative flex max-w-screen-xl flex-col overflow-hidden px-4 py-4 text-blue-900 md:mx-auto md:flex-row md:items-center">
-    <a href="#" className="flex cursor-pointer items-center whitespace-nowrap text-2xl font-black">
-     <span className="mr-2 text-4xl text-blue-500">
-      <svg
-       xmlns="http://www.w3.org/2000/svg"
-       aria-hidden="true"
-       role="img"
-       width="1em"
-       height="1em"
-       preserveAspectRatio="xMidYMid meet"
-       viewBox="0 0 24 24"
-      >
-       <path
-        fill="currentColor"
-        d="M6.925 16.875Q5.2 16.225 4.1 14.713Q3 13.2 3 11.25q0-1.975.938-3.513Q4.875 6.2 6 5.15q1.125-1.05 2.062-1.6L9 3v2.475q0 .625.45 1.062q.45.438 1.075.438q.35 0 .65-.15q.3-.15.5-.425L12 6q.95.55 1.625 1.35t1.025 1.8l-1.675 1.675q-.05-.6-.287-1.175q-.238-.575-.638-1.05q-.35.2-.738.287q-.387.088-.787.088q-1.1 0-1.987-.612Q7.65 7.75 7.25 6.725q-.95.925-1.6 2.062Q5 9.925 5 11.25q0 .775.275 1.462q.275.688.75 1.213q.05-.5.287-.938q.238-.437.588-.787L9 10.1l2.15 2.1q.05.05.1.125t.1.125l-1.425 1.425q-.05-.075-.087-.125q-.038-.05-.088-.1L9 12.925l-.7.7q-.125.125-.212.287q-.088.163-.088.363q0 .3.175.537q.175.238.45.363ZM9 10.1Zm0 0ZM7.4 22L6 20.6L19.6 7L21 8.4L17.4 12H21v2h-5.6l-.5.5l1.5 1.5H21v2h-2.6l2.1 2.1l-1.4 1.4l-2.1-2.1V22h-2v-4.6l-1.5-1.5l-.5.5V22h-2v-3.6Z"
-       />
-      </svg>
-     </span>
-     streamio
-    </a>
+  <div
+   style={{
+    backgroundColor: `${dark ? '#000' : '#fff'}`,
+    color: `${dark ? '#fff' : '#000'}`,
+   }}
+   className=""
+  >
+   <header className="relative flex max-w-screen-xl flex-col overflow-hidden px-4 py-4 text-cyan-300 md:mx-auto md:flex-row md:items-center">
+    <img
+     className="w-14 h-14 rounded-full 
+               
+                object-cover
+                
+    "
+     src={img}
+     alt=""
+    />
+
+    <span className="text-2xl font-bold">Hospital</span>
+
     <input type="checkbox" className="peer hidden" id="navbar-open" />
     <label className="absolute top-5 right-7 cursor-pointer md:hidden" htmlFor="navbar-open">
      <span className="sr-only">Toggle Navigation</span>
@@ -74,35 +75,43 @@ const Hero = () => {
     </nav>
    </header>
 
-   <div className="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-24 md:py-36 lg:max-w-screen-xl lg:px-8">
+   <div className="mx-auto h-full px-4 py-10 sm:max-w-xl md:max-w-full md:px-14 md:py-20 lg:max-w-screen-xl lg:px-8">
     <div className="flex flex-col items-center justify-between lg:flex-row">
      <div className="">
-      <div className="lg:max-w-xl lg:pr-5">
-       <h2 className="mb-6 max-w-lg text-5xl font-light leading-snug tracking-tight text-blue-600 sm:text-8xl">
-        Drive sales <br />
-        to
-        <span className="my-1 inline-block border-b-8 border-blue-600 font-bold text-blue-600"> the sky </span>
+      <div className="lg:max-w-xl lg:pr-4">
+       <h2 className="mb-6 max-w-lg text-4xl font-light leading-snug tracking-tight text-cyan-300 sm:text-8xl">
+        for private try
+        <span className="my-1 inline-block border-b-8 border-cyan-300 font-bold text-cyan-300"> the miracle</span>
        </h2>
-       <p className="text-base text-gray-700">
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque it.
+       <p className="text-base italic">
+        Good heath is a state of mental, physical and social well being ond it does not just mean the absence of disease
        </p>
       </div>
-      <div className="mt-10 flex flex-col items-center md:flex-row">
-       <a
-        href="/"
-        className="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-blue-700 px-6 font-medium tracking-wide text-white shadow-md transition duration-200 md:mr-4 md:mb-0 md:w-auto focus:outline-none hover:bg-blue-800"
-       >
-        Stream Now{' '}
-       </a>
-       <a
-        href="/"
-        aria-label=""
-        className="underline-offset-2 inline-flex items-center font-semibold text-blue-600 underline transition-colors duration-200 hover:underline"
-       >
-        Watch how it works
-       </a>
+      <div className="mt-8 flex flex-col items-center justify-center sm:flex-row sm:space-x-4 lg:justify-start">
+       <button className="relative mt-4 rounded-lg border-2 border-cyan-300 bg-cyan-300 px-6 py-2 font-medium text-white transition hover:translate-y-1">
+        <div className="-scale-x-100 absolute left-0 -bottom-10 hidden h-10 w-10 -rotate-12 text-purple-600 md:inline-flex">
+         <svg viewBox="0 0 82 35" fill="blue" xmlns="http://www.w3.org/2000/svg">
+          <path
+           fill-rule="evenodd"
+           clip-rule="evenodd"
+           d="M0 21.3963C0.189514 19.1422 0.475057 16.717 0.554355 14.2852C0.582363 13.435 0.32301 12.6326 1.24839 12.1517C1.43863 12.053 1.7169 11.8956 1.85767 11.9661C4.2446 13.1626 6.90906 13.1934 9.41312 13.8814C11.09 14.3423 12.6519 15.089 13.7134 16.5797C13.9251 16.8774 13.9105 17.3427 14 17.7305C13.6228 17.8077 13.2227 18.01 12.8727 17.9421C10.3283 17.4477 7.78825 16.9245 5.25946 16.353C4.46612 16.1737 4.32244 16.4862 4.22859 17.1961C4.0118 18.8342 3.66769 20.4541 3.43198 22.0899C3.33086 22.7891 3.36905 23.509 3.35123 24.2197C3.34977 24.2791 3.44107 24.3474 3.43052 24.3989C3.32213 24.9318 3.2712 25.8796 3.07114 25.9142C2.49387 26.0144 1.77655 25.8915 1.25603 25.5961C-0.352473 24.6832 0.143681 23.0129 0 21.3963Z"
+           fill="#67E8F9 "
+          />
+          <path
+           fill-rule="evenodd"
+           clip-rule="evenodd"
+           d="M33.9279 29.9296C33.9687 30.0252 34.0103 30.1211 34.0512 30.2167L36.776 28.708C36.7189 28.6018 36.6613 28.4961 36.6041 28.3903C35.7123 28.9033 34.8197 29.4166 33.9279 29.9296ZM55.213 27.9357C55.2513 28.0076 55.2895 28.0795 55.3278 28.1513C56.8382 27.5018 58.3486 26.8518 59.8593 26.2019C59.8129 26.092 59.7661 25.9821 59.7197 25.8726C58.2175 26.5602 56.7153 27.2481 55.213 27.9357ZM40.7384 18.9565C40.5279 17.8215 40.3393 16.6815 40.0998 15.5525C39.952 14.8551 39.5106 14.6711 38.8099 14.825C36.6153 15.3082 34.9909 17.2686 34.7963 19.6189C34.584 22.1806 36.0472 23.7605 37.8517 25.1395C37.9927 25.2475 38.5155 25.0604 38.6986 24.8591C40.2045 23.1998 40.6396 21.163 40.7384 18.9565ZM47.8846 27.7513C53.9169 27.9699 58.9887 25.6539 63.5351 21.8258C68.7108 17.4677 72.7252 12.1435 76.2413 6.39113C77.3061 4.64903 78.3271 2.87833 79.4328 1.16371C79.7291 0.70344 80.2137 0.234515 80.706 0.0824723C81.0457 -0.0225277 81.5473 0.410268 81.9765 0.603333C81.8444 0.859247 81.7237 1.12306 81.5774 1.37032C81.1827 2.03645 80.7194 2.66758 80.3867 3.36306C79.3033 5.6264 78.3041 7.93113 77.1981 10.1824C76.4525 11.6998 75.639 13.1905 74.7457 14.6225C74.1814 15.5269 73.3694 16.269 72.7471 17.1414C71.7606 18.5237 70.9604 20.0611 69.8622 21.3395C68.1531 23.33 66.4111 25.3434 64.4139 27.0174C59.9989 30.718 54.9038 32.5263 49.0801 32.1605C46.3701 31.9904 43.6835 31.9283 41.122 30.8655C40.842 30.7492 40.3185 30.9333 40.0448 31.1527C37.2899 33.3656 34.1239 34.5277 30.6632 34.7456C28.0734 34.909 25.4198 35.1171 22.8828 34.7219C20.7546 34.3908 18.675 33.3742 16.7198 32.3694C14.9819 31.4756 13.3686 30.2773 11.8348 29.0418C9.65017 27.2812 8.09522 24.9795 7.06601 22.3556C6.91824 21.9789 7.17257 21.2819 7.46774 20.9267C7.79559 20.5315 8.26675 20.7212 8.80326 20.9647C10.4826 21.7271 11.1635 23.3172 12.0776 24.6916C13.809 27.2959 16.297 28.8333 19.144 29.6515C24.0015 31.0477 28.8342 30.4606 33.5239 28.7422C36.0572 27.8134 36.0323 27.708 34.1863 25.8643C31.7566 23.438 30.4122 20.5417 30.5982 17.0518C30.8143 13.0012 34.1347 10.1538 38.1338 10.4515C39.3892 10.5452 40.2439 11.3239 41.0648 12.1255C42.9294 13.9466 43.9712 16.2194 44.3347 18.7977C44.7112 21.4648 44.7806 24.1113 43.5286 26.6189C43.2264 27.2244 43.5171 27.489 44.1483 27.5187C45.3947 27.5778 46.6393 27.6719 47.8846 27.7513Z"
+           fill="#67E8F9"
+          />
+         </svg>
+        </div>
+        Appointment
+       </button>
+       <button className="mt-4 flex items-center rounded-lg border-2 border-cyan-300 px-6 py-2 font-medium text-cyan-300 transition hover:translate-y-1 hover:bg-white">
+        list of the doctor
+       </button>
       </div>
-      <div className="mt-12 flex flex-col space-y-3 divide-gray-300 text-sm text-gray-700 sm:flex-row sm:space-y-0 sm:divide-x">
+      <div className="mt-12 flex flex-col space-y-3 divide-gray-300 text-sm  sm:flex-row sm:space-y-0 sm:divide-x">
        <div className="flex max-w-xs space-x-2 px-4">
         <svg
          xmlns="http://www.w3.org/2000/svg"
@@ -118,24 +127,10 @@ const Hero = () => {
           d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
          />
         </svg>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-       </div>
-       <div className="flex max-w-xs space-x-2 px-4">
-        <svg
-         xmlns="http://www.w3.org/2000/svg"
-         className="h-12 w-12 text-orange-600"
-         fill="none"
-         viewBox="0 0 24 24"
-         stroke="currentColor"
-         stroke-width="2"
-        >
-         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-         />
-        </svg>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <p>
+         <span className="font-bold">1,459</span> new patients
+         <span className=""> since last month</span>
+        </p>
        </div>
       </div>
      </div>
@@ -150,7 +145,7 @@ const Hero = () => {
       >
        <path stroke-linecap="round" stroke-linejoin="round" d="M16 17l-4 4m0 0l-4-4m4 4V3" />
       </svg>
-      <div className="w-fit rounded-[6rem] mx-auto overflow-hidden rounded-tl-none rounded-br-none bg-orange-400">
+      <div className="w-fit rounded-[6rem] mx-auto overflow-hidden rounded-tl-none rounded-br-none bg-cyan-300">
        <svg
         xmlns="http://www.w3.org/2000/svg"
         className="absolute -left-10 -top-20 h-28 w-28 rounded-xl bg-white text-yellow-400"
@@ -175,7 +170,7 @@ const Hero = () => {
          clip-rule="evenodd"
         />
        </svg>
-       <img className="-mb-20" src="/images/2fugLKmm9JsRrFhS_F57Z.png" alt="" />
+       <img className="-mb-20" src={img0} alt="" />
       </div>
      </div>
     </div>
