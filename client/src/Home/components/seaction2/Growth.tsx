@@ -1,13 +1,22 @@
+import { useLogIN } from '../../../../ContextLog'
+
 const Growth = () => {
+ const { dark } = useLogIN()
  return (
-  <section className="relative overflow-hidden bg-gray-100">
+  <section
+   style={{
+    backgroundColor: `${dark ? '#000' : '#fff'}`,
+    color: `${dark ? '#fff' : '#000'}`,
+   }}
+   className="relative overflow-hidden  "
+  >
    <img
     className="absolute top-0 h-full w-full object-cover object-center opacity-30"
     src="/images/ZbQYxs58uj_TXVLLRtSaa.png"
     alt=""
    />
 
-   <div className="bg-white/60 relative mx-auto flex h-full w-full flex-col items-center justify-center px-4 py-12 backdrop-blur-md sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+   <div className=" relative mx-auto flex h-full w-full flex-col items-center justify-center px-4 py-12 backdrop-blur-md sm:px-6 sm:py-16 lg:px-8 lg:py-20">
     <h2 className="-mx-4 px-4 pt-4 pb-6 text-3xl text-blue-600 sm:text-4xl xl:text-5xl">
      Our <span className="font-bold">Growth</span>
     </h2>
