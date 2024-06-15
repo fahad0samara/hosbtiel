@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useLogIN} from "../../ContextLog";
+import {FaMinus, FaPlus} from "react-icons/fa";
 
 const FirstTimeLogin = ({onContinue}) => {
   const [hoursSubmitted, setHoursSubmitted] = useState(false);
@@ -163,70 +164,43 @@ const FirstTimeLogin = ({onContinue}) => {
   ];
 
   return (
-    <div>
-      <h1>Welcome, Doctor!</h1>
-
-      <p>
-        // This is your first time logging in. Here are some tips on how to use
-        system:
-      </p>
+    <div
+      style={{
+        backgroundColor: dark ? "#000" : "#FFF",
+        color: dark ? "white" : "black",
+      }}
+      className="p-9
+      h-screen
+     
+      "
+    >
       <div
-        className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"}
-      md:ml-20
-      ml-9
-      md:my-8
-      my-4
-      `}
+        className="flex
+      flex-col
+       justify-between items-center"
       >
-        <h1
-          className={`${
-            dark ? "text-white" : "text-black "
-          } md:text-xl font-bold
-              text-center 
-          
-            `}
-        >
-          Add your working hours and days
-        </h1>
-        <h4
-          className="
-        text-center
-    
-        text-gray-500
-    
-        "
-        >
-          Please select your working days and hours
-        </h4>
+        <h1 className="text-3xl">Welcome, Doctor!</h1>
+        <p className="text-xl">
+          This is your first time logging in.
+          <br />
+        </p>
+        <p className="text-xl">Please add your working hours to continue.</p>
       </div>
-      <div
-        className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"} 
-    mx-16
-      md:grid-cols-2
-      lg:grid-cols-2
-      
-grid-cols-1
-      md:first-letter:my-10
-      grid
-   
-      
-      
-       `}
-      >
-        <div className="  ">
-          <form className="w-full " onSubmit={handleSubmit}>
+
+      <div>
+        <div className="md:flex flex-wrap">
+          <form className="w-full flex-1" onSubmit={handleSubmit}>
             {workingHours.map((workingHour, index) => (
-              <div key={index} className=" grid grid-cols-3 ">
+              <div key={index} className="my-4 flex flex-wrap items-center">
                 <select
-                  className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"} 
-      border border-gray-400 rounded p-2 mr-3`}
-                  value={workingHour.day}
+                  style={{
+                    backgroundColor: dark ? "#000" : "#FFF",
+                    color: dark ? "white" : "black",
+                  }}
+                  className="w-full md:w-1/4 rounded-md border-cyan-300 border p-2"
                   onChange={e => handleDayChange(e, index)}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled selected>
                     Select day
                   </option>
                   {days.map(day => (
@@ -237,9 +211,11 @@ grid-cols-1
                 </select>
 
                 <select
-                  className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"} 
-      border border-gray-400 rounded p-2 mr-3`}
+                  style={{
+                    backgroundColor: dark ? "#000" : "#FFF",
+                    color: dark ? "white" : "black",
+                  }}
+                  className="w-full md:w-1/4 mt-4 md:mt-0 md:mx-2 rounded-md border-cyan-400 border p-2"
                   value={workingHour.startTime}
                   onChange={e => handleStartTimeChange(e, index)}
                 >
@@ -252,10 +228,13 @@ grid-cols-1
                     </option>
                   ))}
                 </select>
+
                 <select
-                  className={`${dark ? "bg-black" : "bg-gray-100"}
-      ${dark ? "text-white" : "text-black"} 
-      border border-gray-400 rounded p-2 mr-3`}
+                  style={{
+                    backgroundColor: dark ? "#000" : "#FFF",
+                    color: dark ? "white" : "black",
+                  }}
+                  className="w-full md:w-1/4 mt-4 md:mt-0 md:mx-2 rounded-md border-cyan-400 border p-2"
                   value={workingHour.endTime}
                   onChange={e => handleEndTimeChange(e, index)}
                 >
@@ -270,61 +249,36 @@ grid-cols-1
                 </select>
               </div>
             ))}
-            <div
-              className={`${dark ? "bg-black" : "bg-gray-100"} 
-            ${dark ? "text-white" : "text-black"}
-            flex flex-col mt-3
-            `}
-            >
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                type="button"
-                onClick={() =>
-                  setWorkingHours(
-                    workingHours.filter(
-                      // clear until 1
-                      (workingHour, i) => i !== workingHours.length - 1
-                    )
-                  )
-                }
-              >
-                Clear
-              </button>
-
-              <button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-3"
-                type="button"
-                onClick={handleAddWorkingHours}
-              >
-                Add more days
-              </button>
-
-              {
-                //if there error dibibld the btn
-                error && (
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-                    type="submit"
-                    disabled
-                  >
-                    Submit
-                  </button>
-                )
-              }
-              {
-                //if there is no error and loading is false
-                !error && !loading && (
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-                    type="submit"
-                  >
-                    Submit
-                  </button>
-                )
-              }
-            </div>
           </form>
+
+          <div className="flex flex-wrap justify-center   items-center space-x-4">
+            <button
+              type="button"
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+              onClick={() =>
+                setWorkingHours(
+                  workingHours.filter(
+                    // clear until 1
+                    (workingHour, i) => i !== workingHours.length - 1
+                  )
+                )
+              }
+            >
+              <FaMinus className="inline-block mr-2" />
+              Clear
+            </button>
+
+            <button
+              type="button"
+              className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+              onClick={handleAddWorkingHours}
+            >
+              <FaPlus className="inline-block mr-2" />
+              Add more days
+            </button>
+          </div>
         </div>
+
         <div
           className="px-2 py-2 border-b
         
@@ -354,18 +308,47 @@ grid-cols-1
               </p>
             )
           }
-
-          {
-            // if there erorr dont show the workings
-            !error &&
-              workingHours.length > 0 &&
-              workingHours.map((workingHour, index) => (
-                <p key={index}>
-                  {workingHour.day} {workingHour.startTime}{" "}
-                  {workingHour.endTime}
+          {success ? (
+            <p className="text-green-500 text-xl font-bold italic">
+              Working hours saved successfully!
+            </p>
+          ) : (
+            <>
+              {!error && workingHours.length > 0 && (
+                <p className="text-xl font-bold italic flex flex-col justify-center">
+                  Working hours:
+                  {workingHours.map((workingHour, index) => (
+                    <span key={index}>
+                      {" "}
+                      {workingHour.day} {workingHour.startTime} -{" "}
+                      {workingHour.endTime}
+                    </span>
+                  ))}
                 </p>
-              ))
-          }
+              )}
+              {error ? (
+                <button
+                  type="submit"
+                  className="bg-gray-500 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                  disabled
+                >
+                  Submit
+                </button>
+              ) : !loading ? (
+                <button
+                  type="submit"
+                  className="bg-cyan-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  onClick={handleSubmit}
+                >
+                  Add
+                </button>
+              ) : (
+                <div className="flex items-center justify-center mt-3">
+                  <p className="">Loading...</p>
+                </div>
+              )}
+            </>
+          )}
 
           {
             // success
@@ -380,15 +363,38 @@ grid-cols-1
           }
         </div>
       </div>
-      <button
-        className={`bg-${
-          hoursSubmitted ? "blue-500 hover:bg-blue-700" : "gray-400"
-        } ml-24  text-white font-bold py-2 px-4 rounded mt-3`}
-        onClick={handleContinue}
-        disabled={!hoursSubmitted || hasError}
-      >
-        Continue
-      </button>
+      {hoursSubmitted ? (
+        <div
+          className="flex
+        flex-col  
+         items-center justify-center mt-3"
+        >
+          <h1
+            className={`text-2xl font-bold ${
+              hoursSubmitted ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {hoursSubmitted
+              ? "You can now continue"
+              : "Please submit your working hours"}
+          </h1>
+          <h2>
+            {hoursSubmitted
+              ? "You can change your working hours anytime in the calender"
+              : "You can change your working hours anytime"}
+          </h2>
+
+          <button
+            className={`bg-${
+              hoursSubmitted ? "cyan-300 hover:bg-blue-700" : null
+            }  text-white font-bold py-2 px-4 rounded-xl mt-3`}
+            onClick={handleContinue}
+            disabled={!hoursSubmitted || hasError}
+          >
+            Continue
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };

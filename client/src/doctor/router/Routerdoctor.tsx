@@ -14,37 +14,10 @@ import {useLogIN} from "../../../ContextLog";
 import axios from "axios";
 import FirstTimeLogin from "../FirstTimeLogin";
 
-// function FirstTimeLogin({ onContinue }) {
-//   const [hoursSubmitted, setHoursSubmitted] = useState(false);
 
-//   const handleContinue = () => {
-//     if (hoursSubmitted) {
-//       onContinue();
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center justify-center w-full h-full fixed top-0 left-0 bg-white bg-opacity-75 z-50">
-//       <h1>Welcome, Doctor!</h1>
-//       <p>
-//         This is your first time logging in. Here are some tips on how to use the
-//         system:
-//       </p>
-//       <ul>
-//         <li>...</li>
-//         <li>...</li>
-//         <li>...</li>
-
-//       </ul>
-//       <button onClick={handleContinue} disabled={!hoursSubmitted}>
-//         Continue
-//       </button>
-//     </div>
-//   );
-// }
 
 const Routerdoctor = () => {
-  const {Doctor, dark, Profile} = useLogIN();
+  const {Doctor} = useLogIN();
 
   const [showDashboard, setShowDashboard] = useState(true); // Initially show the dashboard
   const [showFirstTimeLogin, setShowFirstTimeLogin] = useState(false);
@@ -68,7 +41,7 @@ const Routerdoctor = () => {
 
     const timerId = setTimeout(() => {
       setShowDashboard(false); // Hide the dashboard after 2 seconds
-    }, 1000);
+    }, 400);
 
     return () => clearTimeout(timerId); // Clear the timeout on unmount
   }, [Doctor]);
