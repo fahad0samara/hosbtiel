@@ -58,7 +58,7 @@ const doctorSchema = new mongoose.Schema({
     required: true,
   },
 
-  appointmentCount: {type: Number, default: 0},
+  appointmentCount: { type: Number, default: 0 },
 
   pushSubscription: {
     type: Object,

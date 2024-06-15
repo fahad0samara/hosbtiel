@@ -14,7 +14,7 @@ import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 import Event from "../model/Event";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-const {doctorValidation} = require("../middleware/validtion");
+const { doctorValidation } = require("../middleware/validtion");
 
 // registerAdmin
 
@@ -132,7 +132,7 @@ router.get(
       //@ts-ignore
       const pdfDoc = pdfMake.createPdf(docDefinition);
       // Send the PDF as a response
-      pdfDoc.getBase64(data => {
+      pdfDoc.getBase64((data) => {
         res.writeHead(200, {
           "Content-Type": "application/pdf",
           "Content-Disposition": 'attachment;filename="prescription.pdf"',
@@ -150,16 +150,16 @@ router.get(
 
 // Get a list of all admin
 router.get("/admins", checkAdmin, (req, res) => {
-  User.find({role: "admin"})
-    .then(admins => res.json(admins))
-    .catch(err => res.status(400).json(err));
+  User.find({ role: "admin" })
+    .then((admins) => res.json(admins))
+    .catch((err) => res.status(400).json(err));
 });
 
 // Delete an admin from the database
 router.delete("/admin/:id", checkAdmin, (req, res) => {
   User.findByIdAndDelete(req.params.id)
-    .then(admin => res.json(admin))
-    .catch(err => res.status(400).json(err));
+    .then((admin) => res.json(admin))
+    .catch((err) => res.status(400).json(err));
 });
 
 // Get a list of all doctors
@@ -179,7 +179,7 @@ router.get("/doctor", checkAdmin, async (req, res) => {
     const doctors = await Doctor.find()
 
       .populate("user")
-      .sort({_id: -1})
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit);
 
@@ -202,15 +202,15 @@ router.get("/doctor", checkAdmin, async (req, res) => {
 router.get("/doctor/:id", checkAdmin, (req, res) => {
   Doctor.findById(req.params.id)
     .populate("user")
-    .then(doctor => res.json(doctor))
-    .catch(err => res.status(400).json(err));
+    .then((doctor) => res.json(doctor))
+    .catch((err) => res.status(400).json(err));
 });
 
 // Update a doctor's information
 router.put("/doctor/:id", checkAdmin, (req, res) => {
-  Doctor.findByIdAndUpdate(req.params.id, req.body, {new: true})
-    .then(doctor => res.json(doctor))
-    .catch(err => res.status(400).json(err));
+  Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((doctor) => res.json(doctor))
+    .catch((err) => res.status(400).json(err));
 });
 
 // Delete a doctor from the database
@@ -247,7 +247,7 @@ router.get("/patient", checkAdmin, async (req, res) => {
     // Set the pagination information
     const patients = await Patient.find()
       .populate("user")
-      .sort({_id: -1})
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit);
 
@@ -299,13 +299,13 @@ router.get("/patient/:id", checkAdmin, async (req, res) => {
 
 router.get("/patient/prescriptions/:id", checkAdmin, async (req, res) => {
   try {
-    const prescriptions = await Prescription.find({patient: req.params.id})
+    const prescriptions = await Prescription.find({ patient: req.params.id })
       .populate("patient")
       .populate("doctor");
     if (!prescriptions)
       return res.status(404).send("Prescriptions not found for this patient.");
     // Map over the prescriptions and return a new array with the desired properties
-    const prescriptionsArray = prescriptions.map(prescription => {
+    const prescriptionsArray = prescriptions.map((prescription) => {
       return {
         _id: prescription._id,
 
@@ -335,7 +335,7 @@ router.get("/patient/all-appointments/:id", async (req, res) => {
     // Check if the patient exists
     const patient = await Patient.findById(req.params.id);
     if (!patient) {
-      return res.status(404).json({error: "Patient not found"});
+      return res.status(404).json({ error: "Patient not found" });
     }
 
     // Get the page number from the query string
@@ -349,7 +349,7 @@ router.get("/patient/all-appointments/:id", async (req, res) => {
     const allAppointments = await Appointment.find({
       patient: req.params.id,
     })
-      .sort({appointmentDate: 1})
+      .sort({ appointmentDate: 1 })
       .skip(skip)
       .limit(limit)
       .populate("doctor", "name specialty");
@@ -368,7 +368,7 @@ router.get("/patient/all-appointments/:id", async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({error});
+    res.status(500).json({ error });
   }
 });
 
@@ -388,7 +388,7 @@ router.put("/patient/:id", checkAdmin, async (req, res) => {
 router.post("/update", async (req, res) => {
   try {
     // Find the user to be updated
-    const user = await User.findOne({email: req.body.email});
+    const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).send("User not found");
 
     // Update the user's role to "Admin"
@@ -414,7 +414,7 @@ router.post("/register-user", async (req: any, res: any) => {
   if (emailFind) return res.status(400).send("Email already exists");
 
   // destructure the request body
-  const {name, email, password, role} = req.body;
+  const { name, email, password, role } = req.body;
 
   // hash the password
   const salt = bcrypt.genSaltSync(10);
@@ -441,7 +441,7 @@ router.post("/register-user", async (req: any, res: any) => {
 // Router for an administrator to register a new doctor:
 router.post("/register-dr", async (req, res) => {
   // validate the data before we make a doctor
-  const {error} = doctorValidation(req.body);
+  const { error } = doctorValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // check if the User is already in the database
@@ -486,7 +486,7 @@ router.post("/register-dr", async (req, res) => {
     const newDoctor = await doctor.save();
     res.status(201).json(newDoctor);
   } catch (err) {
-    res.status(400).json({message: err.message});
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -514,7 +514,7 @@ router.get("/doctor/Prescription/:id", async (req, res) => {
     });
   } catch (error) {
     // If there is an error, send a response with a status of 500 and the error message
-    res.status(500).json({message: error.message});
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -659,7 +659,7 @@ router.get(
       //@ts-ignore
       const pdfDoc = pdfMake.createPdf(docDefinition);
       // Send the PDF as a response
-      pdfDoc.getBase64(data => {
+      pdfDoc.getBase64((data) => {
         res.writeHead(200, {
           "Content-Type": "application/pdf",
           "Content-Disposition": 'attachment;filename="prescription.pdf"',
@@ -693,7 +693,7 @@ router.get("/doctor/all-patient/:id", async (req, res) => {
     })
       .populate("patient")
 
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
     // Remove duplicate patients
@@ -701,16 +701,16 @@ router.get("/doctor/all-patient/:id", async (req, res) => {
       (patient, index, self) =>
         index ===
         self.findIndex(
-          t => t.patient._id.toString() === patient.patient._id.toString()
+          (t) => t.patient._id.toString() === patient.patient._id.toString()
         )
     );
 
     // Extract only the patient data
-    const extractedPatients = uniquePatients.map(patient => patient.patient);
+    const extractedPatients = uniquePatients.map((patient) => patient.patient);
 
     // Get the total number of patients that the doctor saw
 
-    const count = await Appointment.countDocuments({doctor: doctorId});
+    const count = await Appointment.countDocuments({ doctor: doctorId });
     const totalPages = Math.ceil(count / limit);
     res.json({
       patients: extractedPatients,
@@ -722,7 +722,7 @@ router.get("/doctor/all-patient/:id", async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -774,7 +774,7 @@ router.post("/register-patient", async (req, res) => {
     const newPatient = await patient.save();
     res.status(201).json(newPatient);
   } catch (err) {
-    res.status(400).json({message: err.message});
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -818,7 +818,7 @@ router.get("/stats/admin/:id", async (req, res) => {
     //Get the most recent Appointment
     const latestAppointment = await Appointment.findOne({
       doctor: doctor._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastAppointmentDate = latestAppointment
       ? //@ts-ignore
         latestAppointment.createdAt.toLocaleTimeString()
@@ -827,7 +827,7 @@ router.get("/stats/admin/:id", async (req, res) => {
     // Get the most recent prescription date
     const latestPrescription = await Prescription.findOne({
       doctor: doctor._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastPrescriptionDate = latestPrescription
       ? //@ts-ignore
         latestPrescription.createdAt.toLocaleTimeString()
@@ -873,7 +873,7 @@ router.get("/stats/user/:id", async (req, res) => {
     //Get the most recent Appointment
     const latestAppointment = await Appointment.findOne({
       patient: patient._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastAppointmentDate = latestAppointment
       ? //@ts-ignore
         latestAppointment.createdAt.toLocaleTimeString()
@@ -882,7 +882,7 @@ router.get("/stats/user/:id", async (req, res) => {
     // Get the most recent prescription date
     const latestPrescription = await Prescription.findOne({
       patient: patient._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastPrescriptionDate = latestPrescription
       ? //@ts-ignore
         latestPrescription.createdAt.toLocaleTimeString()
@@ -905,15 +905,5 @@ router.get("/stats/user/:id", async (req, res) => {
     });
   }
 });
-
-
-
-
-
-
-
-
-
-
 
 export default router;

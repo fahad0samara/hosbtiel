@@ -1,5 +1,3 @@
-import {string} from "joi";
-
 const Joi = require("joi");
 // register validation
 
@@ -84,32 +82,15 @@ const loginValidation = (data: any) => {
 // addPrescriptions validation
 const addPrescriptionsValidation = (data: any) => {
   const schema = Joi.object({
-    doctorID: Joi.number().min(5).required(),
-    date: Joi.date().required(),
-    medicines: Joi.object({
-      name: Joi.string().min(1).required(),
-
-      type: Joi.string().min(1).required(),
-
-      frequency: Joi.string().min(1).required(),
-    }),
-
-    department: Joi.object({
-      name: Joi.string().min(1).required(),
-      type: Joi.string().min(1).required(),
-      phone: Joi.number().min(1).required(),
-    }),
-
+    date: Joi.date(),
+    refills: Joi.number().min(1).max(999999).required(),
+    frequency: Joi.string().min(1).required(),
+    medication: Joi.string().min(1).required(),
     doctor: Joi.string().min(1).required(),
-
-    tests: Joi.object({
-      name: Joi.string().min(1).required(),
-      date: Joi.date().required(),
-    }),
-
-    advice: Joi.string().min(1).required(),
+    patient: Joi.string().min(1).required(),
+    notes: Joi.string().min(1).required(),
     dosage: Joi.string().min(1).required(),
-    nextVisit: Joi.number().min(1).max(999999).required(),
+    duration: Joi.number().min(1).max(999999).required(),
   });
   return schema.validate(data);
 };

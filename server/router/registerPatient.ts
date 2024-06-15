@@ -11,9 +11,9 @@ import { isAuth } from "../middleware/jwtPatient";
 import Doctor from "../model/doctor";
 import Appointment from "../model/appointment";
 
-router.post("/registerPatient",  async (req, res) => {
+router.post("/registerPatient", async (req, res) => {
   // validate the data before we make a user
-  const {error} = registerValidation(req.body);
+  const { error } = registerValidation(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -27,16 +27,12 @@ router.post("/registerPatient",  async (req, res) => {
     const healthID = await Patient.find().countDocuments();
     const healthIDNumber = healthID + 10;
 
-
     // hash passwords
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     // create a new user
     const patient = new Patient({
-   
- 
-
       prescriptions: req.body.prescriptions,
       healthIDNumber: healthIDNumber,
       name: req.body.name,
@@ -57,15 +53,8 @@ router.post("/registerPatient",  async (req, res) => {
     res.json({
       success: true,
       message: "Patient registered successfully",
-      user:savedPatient,
-      
-  
-
-    })
-
-    
-
-
+      user: savedPatient,
+    });
   } catch (err) {
     res.status(400).json({
       message: (err as Error).message,
@@ -77,7 +66,7 @@ router.post("/registerPatient",  async (req, res) => {
 // log in
 router.post("/loginPatient", async (req, res) => {
   // validate the data before we make a user
-  const {error} = loginValidation(req.body);
+  const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   try {
@@ -85,15 +74,12 @@ router.post("/loginPatient", async (req, res) => {
     const patient = await Patient.findOne({
       healthIDNumber: req.body.healthIDNumber,
     });
-    if (!patient) return res.status(400).send(" healthIDNumber is wrong"
-    );
-        // check if the email exists
+    if (!patient) return res.status(400).send(" healthIDNumber is wrong");
+    // check if the email exists
     const emailExist = await Patient.findOne({
       email: req.body.email,
     });
     if (!emailExist) return res.status(400).send("Email is wrong");
-    
-
 
     // create and assign a token
     const token = jwt.sign(
@@ -116,20 +102,17 @@ router.post("/loginPatient", async (req, res) => {
   }
 });
 
-// get the Patient 
+// get the Patient
 router.get("/getPatient:id", async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
-    res.send(patient
-    );
+    res.send(patient);
   } catch (err) {
     res.status(400).json({
       message: (err as Error).message,
       err,
     });
   }
-  
-
 });
 
 // router.post("/appointments", async (req, res) => {
@@ -142,7 +125,6 @@ router.get("/getPatient:id", async (req, res) => {
 //     const workingHours = doctor.workingHours.find(
 //       (hours) => hours.day === req.body.date
 //     );
-
 
 //     if (!workingHours) {
 //       return res.status(400).json({
@@ -187,6 +169,5 @@ router.get("/getPatient:id", async (req, res) => {
 // });
 
 // get the Patient
-
 
 export default router;

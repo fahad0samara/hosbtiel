@@ -6,7 +6,7 @@ import Doctor from "../model/doctor";
 import User from "../model/User";
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const {CloudinaryStorage} = require("multer-storage-cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 import Patient from "../model/patient";
 import Prescription from "../model/prescription";
 import Appointment from "../model/appointment";
@@ -24,7 +24,7 @@ const extractToken = (req: any, res: any, next: any) => {
 
   // Check if the token exists
   if (!token) {
-    return res.status(401).json({error: "Unauthorized access1"});
+    return res.status(401).json({ error: "Unauthorized access1" });
   }
 
   try {
@@ -33,7 +33,7 @@ const extractToken = (req: any, res: any, next: any) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET as string);
     next();
   } catch (error) {
-    return res.status(401).json({error: "Unauthorized access2"});
+    return res.status(401).json({ error: "Unauthorized access2" });
   }
 };
 
@@ -41,7 +41,7 @@ const extractToken = (req: any, res: any, next: any) => {
 const checkDoctor = (req: any, res: any, next: any) => {
   try {
     // Get the user's role and id from the token
-    const {role, doctorId} = req.user;
+    const { role, doctorId } = req.user;
 
     // Check if the user is a doctor and if the id in the token matches the id in the route
     if (role === "doctor" && doctorId === req.params.id) {
@@ -68,8 +68,6 @@ router.get("/checkFirstTimeLogin/:id", async (req, res) => {
   } else {
     res.sendStatus(404);
   }
-
-
 });
 
 // Update the first-time login flag
@@ -83,22 +81,7 @@ router.post("/completeFirstTimeLogin/:id", async (req, res) => {
   } else {
     res.sendStatus(404);
   }
-
 });
-
-
-
-    
-
-
-  
-
-
-
-
-  
-
-
 
 router.get("/doctors/:id", extractToken, checkDoctor, async (req, res) => {
   try {
@@ -115,7 +98,7 @@ router.get("/doctors/:id", extractToken, checkDoctor, async (req, res) => {
     // Send the doctor's information to the client
     res.json(doctor);
   } catch (err) {
-    res.status(500).json({error: err.message});
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -146,7 +129,7 @@ router.post(
         availableDaysAndHours: doctor.availableDaysAndHours,
       });
     } catch (err) {
-      res.status(500).json({error: err.message});
+      res.status(500).json({ error: err.message });
     }
   }
 );
@@ -172,7 +155,7 @@ router.get(
         availableDaysAndHours: doctor.availableDaysAndHours,
       });
     } catch (err) {
-      res.status(500).json({error: err.message});
+      res.status(500).json({ error: err.message });
     }
   }
 );
@@ -183,7 +166,7 @@ router.get("/appointments/:id", extractToken, checkDoctor, async (req, res) => {
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
 
-    const appointments = await Appointment.find({doctor: doctorId})
+    const appointments = await Appointment.find({ doctor: doctorId })
       .populate("patient")
 
       .populate("doctor")
@@ -198,7 +181,7 @@ router.get("/appointments/:id", extractToken, checkDoctor, async (req, res) => {
     console.log("🚀 ~ file: doctor.ts ~ line 152 ~ router.get ~ error", error);
     console.log("====================================");
     console.log(error);
-    res.status(500).json({error});
+    res.status(500).json({ error });
   }
 });
 
@@ -212,7 +195,6 @@ router.get("/appointments/:id/:date", async (req, res) => {
       doctor: doctorId,
       appointmentDate: appointmentDate,
     }).populate("patient");
-
 
     // Get the appointment count for the current day
     const appointmentCount = await Appointment.countDocuments({
@@ -245,10 +227,9 @@ router.get("/appointments/:id/:date", async (req, res) => {
       nextDayAppointments: nextDayAppointments,
     });
     console.log(appointments);
-    
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -257,7 +238,7 @@ router.get("/appointment/:id", async (req, res) => {
     // Check if the patient exists
     const doctor = await Doctor.findById(req.params.id);
     if (!doctor) {
-      return res.status(404).json({error: "doctor not found"});
+      return res.status(404).json({ error: "doctor not found" });
     }
 
     const now = new Date();
@@ -269,7 +250,7 @@ router.get("/appointment/:id", async (req, res) => {
     const appointments = await Appointment.find({
       doctor: req.params.id,
     })
-      .sort({appointmentDate: 1})
+      .sort({ appointmentDate: 1 })
       .populate("patient");
 
     for (let i = 0; i < appointments.length; i++) {
@@ -318,11 +299,11 @@ router.get(
         doctor: doctorId,
       })
         .populate("patient")
-        .sort({createdAt: -1})
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
 
-      const count = await Appointment.countDocuments({doctor: doctorId});
+      const count = await Appointment.countDocuments({ doctor: doctorId });
       const totalPages = Math.ceil(count / limit);
       res.json({
         patients: patients,
@@ -334,7 +315,7 @@ router.get(
       });
     } catch (error) {
       console.log(error.message);
-      res.status(500).json({error: error.message});
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -350,7 +331,7 @@ router.get("/all-patients/:id/:date", async (req, res) => {
       appointmentDate: appointmentDate,
     })
       .populate("patient")
-      .sort({createdAt: -1});
+      .sort({ createdAt: -1 });
 
     // Send the patients to the client
     res.json({
@@ -361,7 +342,7 @@ router.get("/all-patients/:id/:date", async (req, res) => {
     console.log("error", error);
     console.log("====================================");
     console.log(error.message);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -390,15 +371,15 @@ router.post(
         message: "Working hours and availability updated successfully",
       });
     } catch (error) {
-      res.status(500).json({error: error.message});
+      res.status(500).json({ error: error.message });
     }
   }
 );
 
 router.post("/Prescription", async (req, res) => {
   // validate the data before we make a doctor
-  // const {error} = addPrescriptionsValidation(req.body);
-  // if (error) return res.status(400).send(error.details[0].message);
+  const { error } = addPrescriptionsValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const patient = await Patient.findById(req.body.patient);
   if (!patient) return res.status(404).send("Patient not found");
 
@@ -442,7 +423,7 @@ router.get("/Prescription", async (req, res) => {
     res.json(prescriptions);
   } catch (error) {
     // If there is an error, send a response with a status of 500 and the error message
-    res.status(500).json({message: error.message});
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -469,7 +450,7 @@ router.get("/Prescription/:id", async (req, res) => {
     });
   } catch (error) {
     // If there is an error, send a response with a status of 500 and the error message
-    res.status(500).json({message: error.message});
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -491,7 +472,7 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
     })
       .populate("patient")
 
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
     // Remove duplicate patients
@@ -499,16 +480,16 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
       (patient, index, self) =>
         index ===
         self.findIndex(
-          t => t.patient._id.toString() === patient.patient._id.toString()
+          (t) => t.patient._id.toString() === patient.patient._id.toString()
         )
     );
 
     // Extract only the patient data
-    const extractedPatients = uniquePatients.map(patient => patient.patient);
+    const extractedPatients = uniquePatients.map((patient) => patient.patient);
 
     // Get the total number of patients that the doctor saw
 
-    const count = await Appointment.countDocuments({doctor: doctorId});
+    const count = await Appointment.countDocuments({ doctor: doctorId });
     const totalPages = Math.ceil(count / limit);
     res.json({
       patients: extractedPatients,
@@ -520,7 +501,7 @@ router.get("/all-patient/:id", extractToken, checkDoctor, async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -543,7 +524,7 @@ router.get("/stats/:id", async (req, res) => {
     //Get the most recent Appointment
     const latestAppointment = await Appointment.findOne({
       doctor: doctor._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastAppointmentDate = latestAppointment
       ? //@ts-ignore
         latestAppointment.createdAt.toLocaleTimeString()
@@ -552,7 +533,7 @@ router.get("/stats/:id", async (req, res) => {
     // Get the most recent prescription date
     const latestPrescription = await Prescription.findOne({
       doctor: doctor._id,
-    }).sort({createdAt: -1});
+    }).sort({ createdAt: -1 });
     const lastPrescriptionDate = latestPrescription
       ? //@ts-ignore
         latestPrescription.createdAt.toLocaleTimeString()
@@ -583,11 +564,11 @@ const storage = new CloudinaryStorage({
     folder: "avatars Doctor",
     allowed_formats: ["jpg", "png"],
 
-    transformation: [{width: 150, height: 150, crop: "limit"}],
+    transformation: [{ width: 150, height: 150, crop: "limit" }],
   },
 });
 
-const multerUpload = multer({storage: storage});
+const multerUpload = multer({ storage: storage });
 async function uploadAvatar(req: Request, previousAvatarUrl: string) {
   return new Promise((resolve, reject) => {
     multerUpload.single("avatar")(req, null, (err: any) => {
@@ -630,7 +611,7 @@ router.post("/avatar/:id", async (req, res) => {
     // check if user exists
     const doctor = await Doctor.findById(req.params.id);
     if (!doctor) {
-      return res.status(404).send({message: "Doctor not found"});
+      return res.status(404).send({ message: "Doctor not found" });
     }
 
     // save the URL of the previous avatar image
@@ -657,7 +638,4 @@ router.post("/avatar/:id", async (req, res) => {
   }
 });
 
-
-
-export default router
-
+export default router;

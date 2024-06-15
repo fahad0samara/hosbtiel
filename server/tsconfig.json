@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-      "moduleResolution": "Node",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
-  
+
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -18,18 +18,12 @@
     "inlineSourceMap": true
   },
 
- 
-  
-  
   "ts-node": {
-      "esm": true,
-      "experimentalSpecifierResolution": "node",
-      "compilerOptions": {
-        "module": "CommonJS"
-      }
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   },
-  "lib": [
-    "esnext"
-  ]
-
+  "lib": ["esnext"]
 }
