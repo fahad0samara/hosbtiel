@@ -1,8 +1,1 @@
-<svg id="10015.io" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
-	<defs>
-		<clipPath id="blob">
-			<path fill="#474bff" d="M443,275.5Q459,311,434.5,337.5Q410,364,366,358.5Q322,353,310,386.5Q298,420,269,418Q240,416,217.5,397Q195,378,163,383.5Q131,389,113,367Q95,345,67.5,325Q40,305,49,272.5Q58,240,73,215.5Q88,191,92,163Q96,135,125.5,129Q155,123,168,90Q181,57,210.5,56.5Q240,56,262,79.5Q284,103,324,86Q364,69,354,117Q344,165,394,169.5Q444,174,435.5,207Q427,240,443,275.5Z" />
-		</clipPath>
-	</defs>
-	<image x="0" y="0" width="100%" height="100%" clip-path="url(#blob)" xlink:href="https://images.unsplash.com/photo-1609840534277-88833ef3ddeb?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=870&amp;q=80" preserveAspectRatio="xMidYMid slice"></image>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="10015.io" viewBox="0 0 480 480"><defs><clipPath id="blob"><path fill="#474bff" d="M443,275.5Q459,311,434.5,337.5Q410,364,366,358.5Q322,353,310,386.5Q298,420,269,418Q240,416,217.5,397Q195,378,163,383.5Q131,389,113,367Q95,345,67.5,325Q40,305,49,272.5Q58,240,73,215.5Q88,191,92,163Q96,135,125.5,129Q155,123,168,90Q181,57,210.5,56.5Q240,56,262,79.5Q284,103,324,86Q364,69,354,117Q344,165,394,169.5Q444,174,435.5,207Q427,240,443,275.5Z"/></clipPath></defs><image width="100%" height="100%" x="0" y="0" clip-path="url(#blob)" preserveAspectRatio="xMidYMid slice" xlink:href="https://images.unsplash.com/photo-1609840534277-88833ef3ddeb?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=870&amp;q=80"/></svg>
